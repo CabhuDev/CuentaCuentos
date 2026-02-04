@@ -204,5 +204,103 @@ class GeminiService:
             return None
 
 
+
+    async def synthesize_lessons(self, critiques_data: list) -> Optional[Dict[str, Any]]:
+        """
+        Sintetiza lecciones aprendidas de un lote de críticas usando Gemini.
+        
+        Args:
+            critiques_data: Lista de diccionarios con críticas (id, story_id, critique_text, score)
+        
+        Returns:
+            Diccionario con lecciones sintetizadas en formato estructurado
+        """
+        if not self._configured:
+            raise ValueError("Gemini API no está configurada. Verifica GEMINI_API_KEY.")
+        
+        if not critiques_data or len(critiques_data) == 0:
+            return None
+        
+        # Formatear críticas para el prompt
+        critiques_summary = []
+        for i, critique in enumerate(critiques_data, 1):
+            critiques_summary.append(f"""
+Crítica #{i} (Story ID: {critique.get('story_id', 'unknown')}):
+Score: {critique.get('score', 'N/A')}/10
+Contenido: {critique.get('critique_text', 'N/A')}
+""")
+        
+        synthesis_prompt = f"""
+Eres un experto en narrativa infantil analizando un lote de {len(critiques_data)} críticas recientes de cuentos.
+
+Tu tarea es identificar PATRONES RECURRENTES y extraer lecciones ACCIONABLES para mejorar futuros cuentos.
+
+CRÍTICAS A ANALIZAR:
+{"".join(critiques_summary)}
+
+Genera una síntesis en formato JSON con esta estructura:
+
+{{
+  "synthesis_summary": "Resumen de 2-3 líneas sobre los patrones encontrados",
+  "lessons_learned": [
+    {{
+      "insight": "Descripción clara y específica de la lección aprendida",
+      "category": "pacing|language_choice|narrative_structure|character_development|emotional_impact",
+      "priority": "high|medium|low",
+      "actionable_guidance": "Consejo concreto para aplicar en el próximo cuento",
+      "supporting_evidence": "Referencia específica de las críticas que sustentan esto"
+    }}
+  ],
+  "style_adjustments": {{
+    "strengths_to_maintain": ["fortaleza 1", "fortaleza 2", ...],
+    "areas_to_improve": ["área 1", "área 2", ...],
+    "new_constraints": ["restricción opcional nueva si es necesario"],
+    "suggested_focus": "Enfoque principal para los próximos 5 cuentos"
+  }},
+  "meta_insights": {{
+    "avg_score_trend": "up|down|stable",
+    "most_common_issue": "categoría más problemática",
+    "strongest_aspect": "categoría mejor evaluada"
+  }}
+}}
+
+IMPORTANTE:
+- Identifica patrones que aparecen en MÚLTIPLES críticas
+- Las lecciones deben ser ESPECÍFICAS y ACCIONABLES
+- Prioriza "high" solo si el patrón es crítico y recurrente
+- Mantén un tono constructivo y enfocado en mejora continua
+"""
+        
+        try:
+            response = self.client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=synthesis_prompt
+            )
+            
+            import json
+            import re
+            
+            response_text = response.text.strip()
+            print(f"[gemini_service] 🧠 Sintetizando lecciones de {len(critiques_data)} críticas...")
+            
+            # Remover bloques de markdown si existen
+            json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', response_text, re.DOTALL)
+            if json_match:
+                response_text = json_match.group(1)
+            
+            # Parsear JSON
+            synthesis_data = json.loads(response_text)
+            print(f"[gemini_service] ✅ Síntesis completada: {len(synthesis_data.get('lessons_learned', []))} lecciones")
+            return synthesis_data
+            
+        except json.JSONDecodeError as e:
+            print(f"Error parseando JSON de síntesis: {e}")
+            print(f"Respuesta recibida: {response.text[:500]}")
+            return None
+        except Exception as e:
+            print(f"Error en síntesis de lecciones: {e}")
+            return None
+
+
 # Instancia singleton
 gemini_service = GeminiService()

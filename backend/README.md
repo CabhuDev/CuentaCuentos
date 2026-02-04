@@ -67,7 +67,15 @@ backend/
     * `generate_story()` - Genera contenido del cuento
     * `generate_critique()` - Crítica automática con análisis JSON
     * `generate_illustration_template()` - **NUEVO** Plantilla JSON para ilustraciones
+    * `synthesize_lessons()` - **NUEVO** Sintetiza patrones de aprendizaje de críticas
     * `generate_embedding()` - Embeddings con `embed_content(contents=text)`
+- **`learning_service.py`** - **✅ NUEVO** Sistema de aprendizaje evolutivo
+  - Gestiona persistencia de `learning_history.json` y `style_profile.json`
+  - Métodos principales:
+    * `add_lessons_to_history()` - Añade lecciones sintetizadas
+    * `update_style_profile()` - Actualiza métricas de evolución
+    * `get_active_lessons()` - Filtra lecciones activas por categoría
+    * `get_synthesis_statistics()` - Estadísticas del sistema de aprendizaje
 
 ### `/routers` - Endpoints API
 - **`characters.py`** - CRUD de personajes (`GET /characters`)
@@ -75,8 +83,13 @@ backend/
   - Embeddings semánticos
   - **Plantillas de ilustraciones automáticas** (JSON listo para IA de imágenes)
   - **Crítica automática en background** (BackgroundTasks)
+  - **Síntesis automática cada 2 críticas** - Dispara análisis de patrones con Gemini
   - Gestión de cuentos (`GET /stories`, `GET /stories/{id}`)
 - **`critiques.py`** - Críticas manuales y endpoint `GET /stories/{id}/critiques`
+- **`learning.py`** - **✅ NUEVO** Sistema de aprendizaje evolutivo:
+  - `POST /learning/synthesize` - Síntesis manual de lecciones
+  - `GET /learning/statistics` - Estadísticas del sistema
+  - `GET /learning/lessons` - Lista de lecciones con filtros
 
 ### `/deprecated` - Código Obsoleto (Respaldo)
 - **`README.md`** - Documentación de archivos deprecados
@@ -234,8 +247,20 @@ create_tables()
   - **Dispara crítica automática** en background
 - `POST /stories/prompt` - Genera prompt estructurado (sin IA)
 - `POST /stories` - Crea cuento manual (sin IA)
-- `GET /stories` - Lista cuentos (filtrable por `is_seed`)
-- `GET /stories/{id}` - Obtiene cuento específico (incluye `illustration_template`)
+- `GET /stories` - Lista cuentos (Obtiene críticas de un cuento específico
+- **Crítica automática**: Se genera en background al crear cuento (BackgroundTasks)
+
+### 🧠 **Aprendizaje Evolutivo (NUEVO)**
+- `POST /learning/synthesize` - **Síntesis manual** de lecciones (analiza últimas N críticas)
+- `GET /learning/statistics` - **Estadísticas** del sistema de aprendizaje
+  - Total de síntesis realizadas
+  - Lecciones aprendidas y activas
+  - Críticas hasta próxima síntesis
+  - Score promedio de últimos 10 cuentos
+- `GET /learning/lessons` - **Lista de lecciones** con filtros por categoría y estado
+- `GET /learning/history` - **Historial completo** de learning_history.json
+- `GET /learning/style-profile` - **Perfil de estilo** completo de style_profile.json
+- **Síntesis automática**: Cada 2 críticas el sistema analiza patrones y aprende automáticamente
 
 ### Críticas y Análisis
 - `POST /critiques` - Añade crítica manual a un cuento
@@ -330,7 +355,8 @@ prompt = prompt_service.build_story_prompt(prompt_inputs)
 ### **Generación Automática** (`POST /stories/generate`)
 1. **Input del Usuario** → `StoryGenerateInput` con personaje, tema, edad, etc.
 2. **Resolución de Personaje** → Busca datos completos en `characters.json`  
-3. **Construcción de Prompt** → Combina guía de estilo + personaje + contexto + historial
+3. **🧠 Síntesis Automática** → **✅ NUEVO** Cada 2 críticas, analiza patrones y aprende
+10. **Construcción de Prompt** → Combina guía de estilo + personaje + contexto + historial
 4. **🤖 Generación con IA** → **✅ Gemini 2.5 Flash** crea el cuento completo
 5. **📊 Embedding Semántico** → Genera vector para búsqueda (text-embedding-004)
 6. **🎨 Plantilla de Ilustraciones** → **✅ NUEVO** JSON con prompts para IA de imágenes
@@ -406,6 +432,22 @@ curl -X POST http://localhost:8000/stories/prompt \
     "character_name": "Martín el Valiente",
     "theme": "una aventura en el bosque",
     "target_age": 6
+
+# 5. 🧠 SINTETIZAR LECCIONES (Aprendizaje manual)
+curl -X POST "http://localhost:8000/learning/synthesize?last_n_critiques=2" \
+  -H "Content-Type: application/json"
+
+# 6. Ver estadísticas de aprendizaje
+curl http://localhost:8000/learning/statistics
+
+# 7. Listar lecciones activas
+curl "http://localhost:8000/learning/lessons?status_filter=active&category=pacing"
+
+# 8. Ver historial completo de aprendizaje
+curl http://localhost:8000/learning/history
+
+# 9. Ver perfil de estilo actual
+curl http://localhost:8000/learning/style-profile
   }'
 ```
 
@@ -434,17 +476,22 @@ if gemini_service.is_configured():
 ## 🔮 Estado de Desarrollo
 
 ### ✅ **COMPLETADO**
-- ✅ **Arquitectura API-first** con CORS para frontend independiente
-- ✅ **Integración Google Gemini** completa con SDK actualizado `google-genai==0.2.2`
-- ✅ **Generación automática** de cuentos con Gemini 2.5 Flash
-- ✅ **Crítica automática** en background con BackgroundTasks
-- ✅ **Plantillas de ilustraciones** JSON generadas automáticamente con IA
-- ✅ **Embeddings semánticos** con text-embedding-004
-- ✅ **Sistema de personajes** con coherencia narrativa
-- ✅ **Construcción inteligente de prompts** con múltiples fuentes
-- ✅ **Endpoints API** documentados y funcionales
-- ✅ **Configuración modular** con variables de entorno
-- ✅ **Base de datos SQLite** para desarrollo (PostgreSQL + pgvector opcional)
+- ✅ **🧠 Bucle de aprendizaje evolutivo** con síntesis automática cada 2 críticas
+- ✅ **Sistema de lecciones** con persistencia en JSON
+- ✅ **Análisis de patrones** con Gemini para extraer insights
+- ✅ **Auditoría de seguridad** completa para GitHub (ver `SECURITY.md`)
+
+### 🔄 **EN DESARROLLO/PENDIENTE**
+- [ ] **Aplicación de lecciones** a prompts de generación de cuentos
+- [ ] **Tracking de efectividad** de lecciones aplicadas (A/B testing)
+- [ ] **Búsqueda semántica** usando embeddings generados
+- [ ] **Generación real de imágenes** usando illustration_template
+- [ ] **Dashboard frontend** para visualizar evolución del aprendizaje
+- [ ] **Cache de respuestas** para mejorar performance  
+- [ ] **Rate limiting** y autenticación JWT
+- [ ] **Testing automatizado** con pytest
+- [ ] **Migraciones de DB** con Alembic
+- [ ] **Logging estructurado** para produccióngreSQL + pgvector opcional)
 
 ### 🔄 **EN DESARROLLO/PENDIENTE**
 - [ ] **Búsqueda semántica** usando embeddings generados
@@ -486,10 +533,66 @@ if gemini_service.is_configured():
 
 ### **Integración con Frontend**
 El frontend consume esta API desde `http://localhost:3000`:
-```javascript
-// En frontend/js/app.js
-const API_BASE_URL = 'http://127.0.0.1:8000';
+## 🧠 Sistema de Aprendizaje Evolutivo
 
+### **Visión General**
+El sistema implementa un **bucle de aprendizaje automático** que analiza críticas de cuentos, identifica patrones y extrae lecciones para mejorar futuras generaciones.
+
+### **Componentes del Sistema**
+1. **Gemini Synthesis** - Análisis de patrones en lotes de críticas
+2. **Learning Service** - Persistencia de lecciones y métricas
+3. **Auto-Trigger** - Síntesis automática cada N críticas (configurable)
+4. **JSON Storage** - `learning_history.json` y `style_profile.json`
+
+### **Flujo de Aprendizaje**
+```
+Generar Cuento → Crítica Automática → Contador de Críticas
+                                              ↓
+                                      ¿Múltiplo de 5?
+                                              ↓ Sí
+                                    Gemini Synthesis
+                                              ↓
+                        Extrae: lessons_learned, style_adjustments
+                                              ↓
+                                    Learning Service
+                                              ↓
+                        Actualiza: learning_history.json
+                                   style_profile.json
+```
+
+### **Configuración**
+```python
+# En backend/routers/stories.py
+SYNTHESIS_THRESHOLD = 2  # Síntesis cada 2 críticas
+
+# Para cambiar el umbral, modificar esta constante
+# Valores recomendados: 2-10 críticas
+```
+
+### **Endpoints de Aprendizaje**
+```bash
+# Síntesis manual (últimas 5 críticas)
+POST /learning/synthesize?last_n_critiques=5
+
+# Estadísticas del sistema
+GET /learning/statistics
+
+# Lecciones filtradas
+GET /learning/lessons?category=pacing&status_filter=active
+```
+
+### **Archivos de Datos**
+- **`data/learning_history.json`** - Historial completo de síntesis
+- **`data/style_profile.json`** - Perfil evolutivo del sistema
+
+### **Documentación Completa**
+Ver [`BUCLE-APRENDIZAJE.md`](../BUCLE-APRENDIZAJE.md) para guía detallada.
+
+---
+
+**🏗️ Para documentación completa del proyecto, ver [`README.md`](../README.md) en la raíz**  
+**🔒 Para auditoría de seguridad, ver [`SECURITY.md`](../SECURITY.md)**  
+**🧠 Para sistema de aprendizaje, ver [`BUCLE-APRENDIZAJE.md`](../BUCLE-APRENDIZAJE.md)
 // Obtener personajes
 const characters = await fetch(`${API_BASE_URL}/characters`).then(r => r.json());
 

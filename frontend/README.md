@@ -8,6 +8,7 @@ Interfaz web del sistema CuentaCuentos AI. Cliente ligero HTML/CSS/JavaScript qu
 frontend/
 ├── index.html              # 📝 Generador de cuentos (formulario)
 ├── cuentos.html            # 📚 Biblioteca de cuentos guardados
+├── aprendizaje.html        # 🧠 Sistema de aprendizaje evolutivo (NUEVO)
 ├── css/
 │   └── styles.css          # 🎨 Estilos compartidos
 └── js/
@@ -60,6 +61,65 @@ Página para explorar todos los cuentos guardados en la base de datos.
 4. Copiar al portapapeles o descargar como archivo .json
 5. Botón "Volver a la lista" para regresar
 6. Link "Crear Nuevo Cuento" para ir al generador
+
+### 3. **aprendizaje.html** - Sistema de Aprendizaje Evolutivo (NUEVO)
+
+Página para visualizar cómo el sistema aprende y mejora con cada cuento generado.
+
+**Características:**
+- ✅ **Estadísticas en tiempo real:**
+  - Total de síntesis realizadas
+  - Lecciones aprendidas totales
+  - Lecciones activas
+  - Críticas analizadas
+- ✅ **Resumen de evolución** (tarjeta destacada):
+  - Fecha de última síntesis
+  - Focos actuales de aprendizaje
+  - Score promedio de últimos 10 cuentos
+- ✅ **Barra de progreso** hacia próxima síntesis automática
+- ✅ **Lista de lecciones** con:
+  - Título y descripción
+  - Categoría (ritmo, vocabulario, engagement, etc.)
+  - Estado (activa, archivada, en revisión)
+  - Fecha de síntesis
+  - Ejemplos de aplicación
+- ✅ **Filtros dinámicos:**
+  - Por categoría (pacing, vocabulary, engagement, etc.)
+  - Por estado (active, under-review, archived)
+- ✅ **Visualización de archivos JSON:**
+  - **Ver Learning History** - Muestra learning_history.json completo
+  - **Ver Style Profile** - Muestra style_profile.json completo
+  - Copiar al portapapeles
+  - Descargar como archivo .json
+- ✅ **Acciones:**
+  - Síntesis manual de lecciones
+  - Actualizar datos en tiempo real
+- ✅ **Diseño visual:**
+  - Tarjetas con gradientes
+  - Badges de estado
+  - Mensajes de éxito/error
+  - Visualizador JSON con formato
+
+**URL:** `http://localhost:3000/aprendizaje.html`
+
+**Flujo de uso:**
+1. Ve estadísticas generales del sistema de aprendizaje
+2. Observa resumen de evolución con métricas clave
+3. Observa progreso hacia próxima síntesis (cada 2 críticas)
+4. Filtra lecciones por categoría y estado
+5. Explora cada lección con ejemplos de aplicación
+6. **Haz clic en "Ver Learning History"** para ver el JSON completo
+7. **Haz clic en "Ver Style Profile"** para ver la evolución del estilo
+8. Copia o descarga los archivos JSON para análisis externo
+9. Ejecuta síntesis manual si lo deseas
+10. Navega entre generador, biblioteca y aprendizaje
+
+**Endpoints consumidos:**
+- `GET /learning/statistics` - Estadísticas del sistema
+- `GET /learning/lessons?category=X&status_filter=Y` - Lista de lecciones
+- `GET /learning/history` - Historial completo JSON
+- `GET /learning/style-profile` - Perfil de estilo JSON
+- `POST /learning/synthesize?last_n_critiques=2` - Síntesis manual
 
 ## 🎨 Estilos (styles.css)
 

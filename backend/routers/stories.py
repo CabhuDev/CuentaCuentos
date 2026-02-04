@@ -57,10 +57,45 @@ async def auto_critique_story(story_id: str, story_content: str):
             
             print(f"[auto_critique_story] ✅ Crítica guardada para {story_id} - Score: {overall_score}/10")
             
-            # TODO: Cada N críticas, disparar síntesis de lecciones
-            # critique_count = db_session.query(db.Critique).count()
-            # if critique_count % 10 == 0:
-            #     await synthesize_lessons()
+            # 🔄 BUCLE DE APRENDIZAJE: Cada N críticas, disparar síntesis automática
+            critique_count = db_session.query(db.Critique).count()
+            SYNTHESIS_THRESHOLD = 2  # Síntesis cada 2 críticas
+            
+            if critique_count % SYNTHESIS_THRESHOLD == 0:
+                print(f"[auto_critique_story] 🧠 Umbral alcanzado ({critique_count} críticas) - Disparando síntesis de lecciones...")
+                
+                # Importar servicios necesarios
+                from services.learning_service import learning_service
+                
+                # Obtener las últimas N críticas
+                recent_critiques = db_session.query(db.Critique).order_by(
+                    db.Critique.timestamp.desc()
+                ).limit(SYNTHESIS_THRESHOLD).all()
+                
+                # Preparar datos para síntesis
+                critiques_data = []
+                critique_ids = []
+                for c in recent_critiques:
+                    critiques_data.append({
+                        'id': c.id,
+                        'story_id': c.story_id,
+                        'critique_text': c.critique_text,
+                        'score': c.score
+                    })
+                    critique_ids.append(c.id)
+                
+                # Generar síntesis
+                synthesis_result = await gemini_service.synthesize_lessons(critiques_data)
+                
+                if synthesis_result:
+                    # Guardar lecciones y actualizar perfil
+                    learning_service.add_lessons_to_history(synthesis_result, critique_ids)
+                    learning_service.update_style_profile(synthesis_result)
+                    
+                    lessons_count = len(synthesis_result.get('lessons_learned', []))
+                    print(f"[auto_critique_story] ✅ Síntesis completada: {lessons_count} lecciones aprendidas")
+                else:
+                    print(f"[auto_critique_story] ⚠️ Síntesis falló - continuando...")
             
         finally:
             db_session.close()
