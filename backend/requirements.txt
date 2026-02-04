@@ -1,0 +1,21 @@
+# Framework web
+fastapi==0.115.6
+uvicorn==0.34.0
+
+# Base de datos SQLite (incluido en Python)
+sqlalchemy==2.0.36
+
+# PostgreSQL - OPCIONAL (solo si usas PostgreSQL en lugar de SQLite)
+# Descomenta estas líneas si necesitas PostgreSQL con pgvector:
+# psycopg2-binary==2.9.10
+# pgvector==0.3.6
+
+# Validación de datos
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# Variables de entorno
+python-dotenv==1.0.1
+
+# API de Google Gemini (nuevo SDK)
+google-genai==0.2.2

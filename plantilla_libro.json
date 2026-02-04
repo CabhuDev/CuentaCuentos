@@ -1,0 +1,71 @@
+{
+  "guia_estilo_cuento": {
+    "coleccion": "Cuentos para Crecer",
+    "audiencia_objetivo": "Niños de 2 a 6 años",
+    "tono": [
+      "Gentil",
+      "positivo",
+      "mágico-cotidiano",
+      "reconfortante",
+      "con asombro suave"
+    ],
+    "valores_clave": [
+      "Amistad",
+      "Autoestima",
+      "Creatividad",
+      "Ayuda mutua",
+      "Curiosidad",
+      "Cuidado del entorno"
+    ],
+    "flexibilidad": {
+      "variacion_tematica": [
+        "Exploración",
+        "Primeros miedos",
+        "Juego compartido",
+        "Aprender algo nuevo",
+        "Ayudar a un amigo"
+      ],
+      "variacion_escenarios": [
+        "Casa",
+        "Parque",
+        "Escuela infantil",
+        "Bosque cercano",
+        "Playa tranquila",
+        "Barrio"
+      ],
+      "elementos_opcionales": [
+        "Rima ligera en 1-2 frases",
+        "Repetición amable de una frase",
+        "Objeto con valor simbólico",
+        "Pequeño giro humorístico"
+      ]
+    },
+    "estructura_narrativa": {
+      "titulo": "Descriptivo, amable y centrado en el protagonista",
+      "inicio": "Presentación del personaje + Atributo físico/personalidad + Pequeño deseo o inseguridad",
+      "desarrollo": "Aparición de un problema cotidiano (accidental o malentendido) + Intento de solución con ayuda",
+      "climax": "El protagonista usa su característica única con delicadeza para ayudar",
+      "resolucion": "Final feliz + Cambio de perspectiva del protagonista sobre sí mismo + Mensaje de cierre cálido",
+      "cierre_opcional": "Mini reflexión o pregunta suave al lector"
+    },
+    "requisitos_minimos": {
+      "onomatopeya": "Al menos una representación de sonido (ej: ¡Brum!, ¡Ziuuu!, ¡Poc!)",
+      "ausencia_de_villanos": "Los conflictos son situaciones accidentales o malentendidos, no hay maldad",
+      "lenguaje_claro": "Vocabulario sencillo y comprensible para 2-6 años"
+    },
+    "recomendaciones": {
+      "longitud_texto": "Objetivo 200-300 palabras (permitido 180-320 si mejora el ritmo)",
+      "parrafos": "Cortos y evocadores (3-5 líneas por párrafo)",
+      "lenguaje_sensorial": "Adjetivos de colores, texturas, luces y sonidos sin exceso",
+      "dialogos": "Opcionales, breves y cálidos",
+      "ritmo": "Introducción suave, clímax ágil, cierre calmado"
+    }
+  },
+  "ejemplo_input_usuario": {
+    "personaje": "Protagonista solicitado",
+    "contexto_opcional": "Detalle específico que el usuario quiera incluir",
+    "emocion_objetivo": "Ej: valentía tranquila, alegría compartida",
+    "lugar": "Ej: parque con columpios, cocina familiar",
+    "objeto_significativo": "Ej: una bufanda azul, una caja de música"
+  }
+}

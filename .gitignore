@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Entornos virtuales Python
+.venv/
+venv/
+ENV/
+env/
+backend/.venv/
+backend/venv/
+
+# Variables de entorno - ¡CRÍTICO PARA SEGURIDAD!
+.env
+*.env
+!.env.example
+backend/.env
+backend/*.env
+!backend/.env.example
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+backend/*.db
+backend/*.sqlite
+backend/*.sqlite3
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+
+# Scripts
+*.ps1
+
+
+# Datos de desarrollo (pueden contener información sensible)
+backend/data/*.json
+!backend/data/.gitkeep
+
+# Archivos de prueba
+test_output/
+*.test
+
+# Archivos de configuración locales
+config.local.py
+settings.local.py
+
+# Archivos de backup que pueden contener claves
+*.backup
+*.old

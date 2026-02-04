@@ -1,0 +1,31 @@
+{
+  "personaje_principal": {
+    "id": "martin_001",
+    "nombre": "Martín",
+    "rasgos_distintivos": {
+      "cabello": "Corto, liso y de color castaño cálido (#8D6E63)",
+      "ojos": "Enormes, redondos y muy expresivos, color miel",
+      "pestanas": "Especialmente largas y definidas, dándole un aire de curiosidad",
+      "sonrisa": "Amplia, que muestra alegría constante y ocupa gran parte de su rostro",
+      "edad_aparente": "4 años"
+    },
+    "armario_coherente": {
+      "principal": "Camiseta de algodón a rayas horizontales (color suave (#3b8c88) y blanco)",
+      "inferior": "Pantalón corto de color ocre o tierra (#BCAAA4)",
+      "calzado": "Zapatillas de lona sencillas de color azul"
+    },
+    "accesorios_frecuentes": [
+      {
+        "item": "Pelota Roja",
+        "hex": "#FF3D00",
+        "vibe": "Saltarina y brillante"
+      }
+    ],
+    "reglas_ilustracion": {
+      "estilo": "Minimalista infantil, estilo editorial de alta calidad",
+      "tecnica": "Acuarela digital con bordes suaves, sin sombras negras pesadas",
+      "paleta_maestra": ["#8D6E63", "#FFDAB9", "#FF3D00", "#E3F2FD"],
+      "prompt_base_ia": "Cute little boy named Martín, short brown hair, very large eyes, long eyelashes, big smile, wearing a blue and white striped t-shirt, high-quality minimalist children's book illustration, soft watercolor texture, white background, simple clean lines"
+    }
+  }
+}
