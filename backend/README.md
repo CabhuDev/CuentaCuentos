@@ -41,7 +41,17 @@ backend/
 
 ### `/data` - Archivos de Configuración
 - **`characters.json`** - Definiciones de personajes con coherencia visual y narrativa
-- **`style_guide.json`** - Guía de estilo flexible para generación de cuentos
+- **`style_guide.json`** - **✅ MEJORADO** Guía de estilo con refinamiento literario profesional:
+  - **6 estructuras narrativas alternativas** (Aventura, Desafío, Transformación, Juego, Amistad, Ciclo Natural)
+  - **8 variaciones de cierre** (no siempre pregunta al lector)
+  - **Nivel de complejidad por edad** (2-3, 4-5, 5-6 años con ejemplos)
+  - **Evocación emocional:** Show, don't tell con banco de emociones
+  - **Refinamiento literario:** Tríadas, texturas, dinamismo, cadencia musical, silencio
+  - **Requisitos nuevos:** Táctil obligatorio, tríada obligatoria, test de voz alta
+  - **🔥 Nota crítica de oficio:** EVOCACIÓN vs. NOMINACIÓN - La regla irrompible
+    * 6 emociones con ejemplos ❌ nominación / ✅ evocación
+    * Vocabulario evocativo completo para cada emoción (miedo, felicidad, tristeza, etc.)
+    * Explicación pedagógica del desarrollo de inteligencia emocional
 - **`style_profile.json`** - Perfil evolutivo del sistema de escritura
 - **`learning_history.json`** - Historial de lecciones sintetizadas
 - **`critique_output.json`** - Ejemplo del formato de críticas automáticas
@@ -58,10 +68,17 @@ backend/
 
 ### `/services` - Lógica de Negocio
 - **`character_service.py`** - Gestión de personajes y coherencia narrativa
-- **`prompt_service.py`** - Construcción inteligente de prompts para generación  
+- **`prompt_service.py`** - **✅ MEJORADO** Construcción inteligente de prompts con refinamiento literario:
   - Integra lecciones aprendidas del sistema evolutivo
-  - **✅ NUEVO** Integra ejemplos de RAG (cuentos similares exitosos)
+  - Integra ejemplos de RAG (cuentos similares exitosos)
   - Genera prompts híbridos: reglas + lecciones + ejemplos concretos
+  - **NUEVO:** Instrucciones de variación estructural (6 patrones alternativos)
+  - **NUEVO:** Sección completa de evocación emocional (show, don't tell)
+  - **NUEVO:** Refinamiento literario con 5 técnicas profesionales
+  - **NUEVO:** Guía de complejidad según edad objetivo (2-3, 4-5, 5-6 años)
+  - **NUEVO:** Test de voz alta como requisito crítico
+  - **🔥 NUEVO:** Nota crítica de oficio con máxima prominencia (EVOCACIÓN vs. NOMINACIÓN)
+  - Prompt incluye sección destacada con líneas de separación para la regla irrompible
 - **`gemini_service.py`** - **✅ ACTUALIZADO** Integración con Google Gemini usando el nuevo SDK `google-genai==0.2.2`
   - Migrado desde `google.generativeai` (deprecado)
   - Usa `Client()` en lugar de `configure()`

@@ -283,7 +283,242 @@ class Critique(Base):
 - ✅ Integración completa en pipeline de generación
 - ✅ Frontend con estadísticas RAG en aprendizaje.html
 
+## � **Mejora: Flexibilidad Estructural en Cuentos**
+
+### **Problema Identificado:**
+Los cuentos seguían un patrón **demasiado rígido y predecible**:
+1. Personaje con inseguridad
+2. Problema que aparece
+3. Personaje usa su característica especial
+4. Moraleja explícita + pregunta al lector
+
+**Resultado:** Todos los cuentos se sentían iguales, solo cambiando el personaje.
+
+### **Solución Implementada:**
+
+#### **1. style_guide.json - Estructuras Alternativas** ✅
+Reemplazada estructura rígida por **6 patrones narrativos diferentes**:
+
+- **Aventura de Descubrimiento**: Exploración → sorpresa → celebración
+- **Desafío Cotidiano**: Problema → intentos creativos → colaboración
+- **Transformación Interna**: Inseguridad → revelación → valentía
+- **Juego y Diversión**: Idea creativa → experimentación → diversión
+- **Amistad en Acción**: Encuentro → malentendido → conexión
+- **Ciclo Natural**: Observación → cambio → aceptación
+
+#### **2. Variaciones de Cierre** ✅
+8 opciones diferentes de final (NO siempre pregunta al lector):
+- Sin moraleja explícita
+- Terminar con acción en presente
+- Final con diálogo emotivo
+- Imagen sensorial fuerte
+- Cierre circular
+- Pregunta abierta (OCASIONAL, no siempre)
+- Moraleja en diálogo del personaje
+- Final abierto que sugiere continuación
+
+#### **3. Variación de Párrafos** ✅
+Instrucciones explícitas para:
+- Alternar longitudes (corto-largo-corto)
+- Párrafos de 1-2 frases para impacto
+- Párrafos de 3-4 frases para desarrollo
+- Párrafos más largos (5-6) solo si el clímax lo requiere
+
+#### **4. prompt_service.py - Instrucciones Explícitas** ✅
+El prompt ahora incluye:
+```
+⚠️ IMPORTANTE - VARIACIÓN ESTRUCTURAL:
+NO uses SIEMPRE la misma estructura. Este cuento debe tener una estructura diferente a los anteriores.
+```
+
+Y al final:
+```
+⭐ INSTRUCCIÓN CLAVE:
+Elige UNA de las estructuras alternativas listadas arriba.
+NO repitas el patrón: inseguridad → problema → característica especial → moraleja + pregunta.
+VARÍA la longitud de los párrafos para crear ritmo narrativo.
+Usa cierres diversos: NO termines SIEMPRE con pregunta directa al lector.
+```
+
+#### **Elementos Prohibidos:**
+- ❌ Repetir siempre la misma estructura
+- ❌ Terminar siempre con pregunta al lector
+- ❌ Hacer todos los párrafos del mismo tamaño
+- ❌ Forzar moraleja cuando el cuento ya la transmite
+- ❌ Usar siempre el patrón "descubre que su característica es valiosa"
+
+#### **Resultado Esperado:**
+- ✅ Cada cuento tendrá estructura narrativa diferente
+- ✅ Variedad en finales (algunos sin pregunta, otros con diálogo, otros abiertos)
+- ✅ Ritmo más natural con párrafos variados
+- ✅ Menos predecibilidad y más frescura narrativa
+- ✅ Mantiene calidad pero aumenta diversidad
+
+## 🎭 **Refinamiento Literario: El "Toque de Maestro"**
+
+### **Inspiración:**
+Basado en análisis de experto en literatura infantil profesional para niños de 2-6 años. Se identificaron **6 técnicas clave** que transforman un cuento funcional en uno memorable.
+
+### **Problema: La Gran Brecha (2 vs 6 años)**
+Un niño de 2 años necesita onomatopeyas frecuentes y frases ultra-cortas. Un niño de 6 ya entiende ironía suave y vocabulario más rico.
+
+#### **Solución: Nivel de Complejidad por Edad** ✅
+
+Integrado en `style_guide.json` → sección `nivel_complejidad`:
+
+**2-3 años:** Frases MUY cortas (4-6 palabras), onomatopeyas frecuentes, repetición, vocabulario concreto  
+*Ejemplo: "El gato salta. ¡Pum! La pelota rueda."*
+
+**4-5 años:** Frases medianas (7-10 palabras), subordinadas simples ('cuando', 'porque'), vocabulario más rico  
+*Ejemplo: "El gato saltó sobre la pelota roja porque quería jugar."*
+
+**5-6 años:** Frases complejas (hasta 12 palabras), ironía suave, vocabulario desafiante, metáforas simples  
+*Ejemplo: "El gato, que era muy curioso, se preguntaba qué secreto escondía aquella pelota brillante."*
+
+### **6 Técnicas Profesionales Implementadas:**
+
+#### **1. Show, Don't Tell** ✅
+**Regla de Oro:** NO nombrar la emoción. Describir con acciones físicas del personaje.
+
+- ❌ MAL: "Paco estaba muy feliz"
+- ✅ BIEN: "Paco no dejaba de dar saltitos y sus ojos brillaban como dos canicas"
+
+**Banco de evocaciones integrado:**
+- Felicidad → Saltar, brillar los ojos, sonrisa amplia
+- Tristeza → Cabeza baja, hombros caídos, lágrima
+- Miedo → Manos temblorosas, esconderse, ojos abiertos
+- Curiosidad → Inclinar cabeza, tocar con dedo, mirar fijamente
+
+#### **2. Uso de Tríadas (La Regla del Tres)** ✅
+**Concepto:** El ritmo mágico - el número tres tiene poder narrativo.
+
+**Ejemplos:**
+- Tres adjetivos: *"El bosque era verde, húmedo y lleno de susurros"*
+- Tres intentos: *"Primero con vara. Luego con cuerda. Por último, con sus manos"*
+- Tres objetos: *"Vio una mariposa, un caracol y una hoja que bailaba"*
+
+**Requisito:** AL MENOS una tríada por cuento
+
+#### **3. Texturas y Temperaturas** ✅
+**Objetivo:** El niño debe SENTIR el cuento en sus manos, no solo verlo.
+
+**Vocabulario táctil:**
+- Texturas: suave, rugoso, sedoso, esponjoso, resbaladizo
+- Temperaturas: frío, tibio, calentito, fresquito
+- Sensaciones: cosquilleo, abrazo cálido, brisa en la cara
+
+**Ejemplo:** *"El musgo era tan suave como la almohada de Luna."*  
+**Requisito:** AL MENOS una referencia táctil por cuento
+
+#### **4. Dinamismo Visual** ✅
+**Concepto:** Acciones que el niño pueda IMITAR mientras escucha.
+
+**Beneficio:** Experiencia corporal, no solo auditiva.
+
+**Verbos dinámicos:**
+- Estirarse hacia el cielo, soplar despacito, cerrar ojos fuerte
+- Abrir las manos como estrellas, dar saltitos, agacharse bajito
+
+#### **5. Cadencia Musical** ✅
+**Regla:** Ritmo de **canción de cuna**, incluso sin rima explícita.
+
+**Técnicas:**
+- Alternar frases cortas/largas, pausas como respiraciones
+- Repetir estructuras sintácticas (paralelismo)
+- Aliteración suave, evitar palabras que "tropiecen"
+
+**Ejemplo:** *"La luna brillaba. Brillaba suave. Brillaba sobre el mar dormido."*  
+**Test crítico:** Si no suena hermoso al leer en voz alta, reescribir.
+
+#### **6. Silencio y Espacio** ✅
+**Filosofía:** MENOS ES MÁS. Espacio para ilustración e imaginación.
+
+**Principios:**
+- No describir TODO - dejar huecos para imaginar
+- Momentos de silencio narrativo (párrafos muy cortos)
+- Confiar en la inteligencia del niño
+- El cuento se OYE - priorizar cadencia sonora
+
+**Ejemplo:** *"Y entonces... silencio. Solo el viento y las hojas."*
+
+### **Implementación Técnica:**
+
+#### **style_guide.json** ✅
+Nuevas secciones:
+- `nivel_complejidad` (2-3, 4-5, 5-6 años con ejemplos)
+- `evocacion_emocional` (show don't tell + banco de emociones)
+- `refinamiento_literario`:
+  - `uso_de_triadas`, `texturas_y_temperaturas`
+  - `dinamismo_visual`, `cadencia_musical`
+  - `silencio_y_espacio`
+
+#### **prompt_service.py** ✅
+Prompt expandido con:
+- Sección "EVOCACIÓN EMOCIONAL - REGLA DE ORO"
+- Sección "REFINAMIENTO LITERARIO (el toque de maestro)" con 5 subsecciones
+- Ejemplos concretos de cada técnica
+- Guía de complejidad según edad objetivo
+
+#### **requisitos_minimos actualizados:**
+- `evocacion_sensorial`: AL MENOS una referencia táctil
+- `triada_ritmica`: AL MENOS una tríada
+- `show_dont_tell`: OBLIGATORIO - acciones físicas, no etiquetas
+
+### **Resultado Comparativo:**
+
+**ANTES (Funcional pero plano):**
+```
+"Paco estaba feliz. Jugó con la pelota. Fue divertido."
+→ Correcto pero sin magia
+```
+
+**AHORA (Con refinamiento literario):**
+```
+"Paco no dejaba de dar saltitos (dinamismo).
+Sus ojos brillaban como dos canicas (show don't tell).
+La pelota era roja, suave y redondita (tríada + textura).
+¡Boing, boing, boing! (onomatopeya + ritmo)
+Y entonces... solo risas y el susurro del viento. (silencio)"
+→ Memorable, sensorial, ritmo de canción de cuna
+```
+
+### **Impacto Esperado:**
+- ✅ Cuentos con **calidad editorial profesional**
+- ✅ Experiencia **multisensorial** (visual + táctil + auditiva + corporal)
+- ✅ **Adaptación automática** según edad del público
+- ✅ **Ritmo musical** sin necesidad de rima forzada
+- ✅ Confianza en la **inteligencia del niño**
+- ✅ Cuentos que se convierten en **favoritos para releer**
+- ✅ **Desarrollo de inteligencia emocional** identificando señales físicas con emociones
+
+### **Nota Crítica de Oficio: EVOCACIÓN vs. NOMINACIÓN** 🔥
+
+**La regla irrompible de la literatura infantil de calidad:**
+
+**PRINCIPIO:** NUNCA nombrar la emoción directamente (nominación). SIEMPRE evocarla con señales físicas y acciones concretas (evocación).
+
+**POR QUÉ ES VITAL:** Ayuda a los niños a identificar señales físicas corporales con emociones, desarrollando su inteligencia emocional de forma natural.
+
+**Ejemplos Críticos:**
+
+| Emoción | ❌ Nominación (MAL) | ✅ Evocación (BIEN) |
+|---------|---------------------|---------------------|
+| **Miedo** | "El conejito estaba muy asustado" | "Las rodillas del conejito empezaron a temblar como gelatina y sus orejas se pegaron contra su cabeza" |
+| **Felicidad** | "Luna se puso muy contenta" | "Luna dio tres saltitos en el aire y su risa sonaba como campanitas" |
+| **Tristeza** | "Max estaba triste" | "Max se sentó despacito, con la cabeza baja, y una lagrimita redonda rodó por su mejilla" |
+
+**REGLA IRROMPIBLE:** En CADA escena emocional del cuento, el narrador debe MOSTRAR la emoción a través del cuerpo del personaje, NUNCA etiquetarla con un adjetivo emocional directo. El niño debe SENTIR la emoción leyendo las señales físicas, no que le digan qué sentir.
+
+**Implementación:**
+- ✅ Sección completa en `style_guide.json` → `nota_critica_de_oficio`
+- ✅ Prominencia máxima en prompt (sección con líneas de separación)
+- ✅ 6 emociones con vocabulario evocativo completo
+- ✅ Ejemplos ❌/✅ para cada emoción
+
 ## 🎊 **Estado Final: PROYECTO LISTO PARA PRODUCCIÓN**
+- ✅ Mantiene calidad pero aumenta diversidad
+
+## �🎊 **Estado Final: PROYECTO LISTO PARA PRODUCCIÓN**
 
 El sistema está **completamente funcional** con:
 1. **Backend API REST** modular y escalable

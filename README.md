@@ -4,7 +4,7 @@ Este proyecto es un motor de escritura de cuentos infantiles basado en la API de
 
 ## ✨ Características Principales
 
-- **Generación inteligente:** Cuentos para niños de 2-6 años con coherencia narrativa y visual
+- **Generación inteligente con calidad editorial:** Cuentos para niños de 2-6 años con coherencia narrativa y visual
 - **Personajes persistentes:** Mantiene consistencia de personajes a través de múltiples historias
 - **Aprendizaje evolutivo:** Sistema de crítica automática y síntesis de lecciones cada 2 críticas
 - **RAG (Retrieval-Augmented Generation):** Sistema completo de búsqueda semántica:
@@ -14,7 +14,79 @@ Este proyecto es un motor de escritura de cuentos infantiles basado en la API de
   - Extracción automática de técnicas exitosas
   - Dashboard de estadísticas en tiempo real
 - **Prompts híbridos:** Combina reglas abstractas + lecciones aprendidas + ejemplos concretos
+- **Flexibilidad estructural:** 6 patrones narrativos diferentes para evitar repetición
+- **Refinamiento literario profesional:** 6 técnicas de literatura infantil de calidad:
+  - **Show, Don't Tell:** Emociones con acciones físicas (ojos brillantes vs "feliz")
+  - **Regla del Tres:** Tríadas rítmicas (tres adjetivos, tres intentos, tres objetos)
+  - **Experiencia Táctil:** Texturas y temperaturas en cada cuento
+  - **Dinamismo Visual:** Acciones que el niño puede imitar mientras escucha
+  - **Cadencia Musical:** Ritmo de canción de cuna sin rima forzada
+  - **Silencio y Espacio:** Menos es más, confiando en la imaginación del niño
+- **Adaptación por edad:** Complejidad ajustada automáticamente (2-3, 4-5, 5-6 años)
 - **Guía de estilo flexible:** Framework adaptable para diferentes tipos de narrativas
+
+## 🎭 Calidad Literaria Profesional
+
+El sistema implementa **6 técnicas de literatura infantil profesional** basadas en análisis de expertos:
+
+### 1. Adaptación por Edad (La Gran Brecha)
+- **2-3 años:** Frases ultra-cortas (4-6 palabras), onomatopeyas frecuentes, repetición
+- **4-5 años:** Frases medianas (7-10 palabras), subordinadas simples, vocabulario enriquecido
+- **5-6 años:** Frases complejas (hasta 12 palabras), ironía suave, metáforas simples
+
+### 2. Show, Don't Tell (Evocación Emocional)
+- ❌ MAL: "Paco estaba muy feliz"
+- ✅ BIEN: "Paco no dejaba de dar saltitos y sus ojos brillaban como dos canicas"
+- Banco de 6 emociones con acciones físicas específicas
+
+### 3. Regla del Tres (Tríadas Rítmicas)
+- Tres adjetivos: *"El bosque era verde, húmedo y lleno de susurros"*
+- Tres intentos: *"Primero con vara. Luego con cuerda. Por último, con sus manos"*
+- Al menos 1 tríada obligatoria por cuento
+
+### 4. Experiencia Táctil
+- Texturas: suave, rugoso, sedoso, esponjoso, resbaladizo
+- Temperaturas: frío, tibio, calentito, fresquito
+- Al menos 1 referencia táctil obligatoria
+
+### 5. Dinamismo Visual
+- Acciones imitables: estirarse, soplar, cerrar ojos, dar saltitos
+- Convierte el cuento en experiencia corporal
+
+### 6. Cadencia Musical + Silencio
+- Ritmo de canción de cuna sin rima forzada
+- Menos es más: espacio para ilustración e imaginación
+- Test: debe sonar hermoso al leerlo en voz alta
+
+### 🔥 Nota Crítica de Oficio: EVOCACIÓN vs. NOMINACIÓN
+
+**La regla irrompible de la literatura infantil de calidad:**
+
+**NUNCA** nombrar la emoción directamente (nominación).  
+**SIEMPRE** evocarla con señales físicas y acciones concretas (evocación).
+
+**¿Por qué es vital?** Ayuda a los niños a identificar señales físicas corporales con emociones, desarrollando su inteligencia emocional de forma natural.
+
+**Ejemplos críticos:**
+
+| Emoción | ❌ Nominación (MAL) | ✅ Evocación (BIEN) |
+|---------|---------------------|---------------------|
+| **Miedo** | "El conejito estaba muy asustado" | "Las rodillas del conejito empezaron a temblar como gelatina y sus orejas se pegaron contra su cabeza" |
+| **Felicidad** | "Luna se puso muy contenta" | "Luna dio tres saltitos en el aire y su risa sonaba como campanitas" |
+| **Tristeza** | "Max estaba triste" | "Max se sentó despacito, con la cabeza baja, y una lagrimita redonda rodó por su mejilla" |
+
+**Vocabulario evocativo integrado:**
+- **Miedo:** temblar, esconderse, abrazar fuerte, ojos muy abiertos, respirar rápido
+- **Felicidad:** saltar, brillar los ojos, sonrisa de oreja a oreja, aplaudir, reír
+- **Tristeza:** cabeza baja, hombros caídos, lágrima que rueda, voz bajita
+- **Sorpresa:** boca abierta, ojos como platos, salto hacia atrás, jadeo
+- **Curiosidad:** inclinar cabeza, acercarse en puntillas, tocar con un dedo
+- **Enfado:** mejillas rojas, ceño fruncido, cruzar brazos, pisotón
+
+**Implementación técnica:**
+- ✅ Sección completa `nota_critica_de_oficio` en `style_guide.json`
+- ✅ Máxima prominencia en el prompt (con líneas de separación destacadas)
+- ✅ 6 emociones con ejemplos ❌/✅ y vocabulario evocativo completo
 
 ## 🚀 Arquitectura Técnica
 
@@ -27,6 +99,8 @@ Este proyecto es un motor de escritura de cuentos infantiles basado en la API de
   - Aprendizaje evolutivo con síntesis automática
   - Arquitectura modular por capas
   - Cache de embeddings para optimización
+  - Flexibilidad estructural (6 patrones narrativos alternos)
+  - Refinamiento literario profesional (6 técnicas de calidad editorial)
 
 ## 📁 Estructura del Proyecto
 

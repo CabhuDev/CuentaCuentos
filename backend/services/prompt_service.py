@@ -147,6 +147,9 @@ class PromptService:
         requisitos = guia.get("requisitos_minimos", {})
         recomendaciones = guia.get("recomendaciones", {})
         flex = guia.get("flexibilidad", {})
+        evocacion = guia.get("evocacion_emocional", {})
+        refinamiento = guia.get("refinamiento_literario", {})
+        nivel_edad = guia.get("nivel_complejidad", {})
 
         # Resolver personaje si se proporciona ID
         character_detail = None
@@ -188,30 +191,146 @@ class PromptService:
             self._format_list(guia.get("tono", [])),
             "Valores clave:",
             self._format_list(guia.get("valores_clave", [])),
-            "Estructura narrativa:",
-            f"- Título: {estructura.get('titulo', 'Sin especificar')}",
-            f"- Inicio: {estructura.get('inicio', 'Sin especificar')}",
-            f"- Desarrollo: {estructura.get('desarrollo', 'Sin especificar')}",
-            f"- Clímax: {estructura.get('climax', 'Sin especificar')}",
-            f"- Resolución: {estructura.get('resolucion', 'Sin especificar')}",
-            f"- Cierre opcional: {estructura.get('cierre_opcional', 'Sin especificar')}",
+            "",
+            "⚠️ IMPORTANTE - VARIACIÓN ESTRUCTURAL:",
+            "NO uses SIEMPRE la misma estructura. Este cuento debe tener una estructura diferente a los anteriores.",
+            "Opciones de estructura disponibles:",
+        ]
+        
+        # Añadir estructuras alternativas
+        estructuras_alt = estructura.get("estructuras_alternativas", [])
+        if estructuras_alt:
+            for i, est in enumerate(estructuras_alt, 1):
+                prompt_parts.append(f"{i}. {est.get('nombre', 'Sin nombre')}: {est.get('patron', '')}")
+                prompt_parts.append(f"   Cierre: {est.get('cierre', '')}")
+        
+        prompt_parts.extend([
+            "",
+            "Variaciones de cierre recomendadas (NO usar pregunta al lector en TODOS los cuentos):",
+        ])
+        
+        # Añadir opciones de cierre
+        cierres = estructura.get("variaciones_de_cierre", [])
+        for cierre in cierres[:5]:  # Primeras 5 opciones
+            prompt_parts.append(f"  • {cierre}")
+        
+        prompt_parts.extend([
+            "",
+            "VARIACIÓN DE PÁRRAFOS:",
+            "- NO hagas todos los párrafos del mismo tamaño",
+            "- Alterna entre párrafos cortos (1-2 frases) y más largos (4-5 frases)",
+            "- Usa párrafos muy cortos para momentos de impacto o cambio",
+            "",
+            "ELEMENTOS A EVITAR:",
+        ])
+        
+        elementos_evitar = estructura.get("elementos_a_evitar", [])
+        for elemento in elementos_evitar:
+            prompt_parts.append(f"  ❌ {elemento}")
+        
+        prompt_parts.extend([
+            "",
             "Requisitos mínimos:",
             f"- Onomatopeya: {requisitos.get('onomatopeya', 'Sin especificar')}",
             f"- Ausencia de villanos: {requisitos.get('ausencia_de_villanos', 'Sin especificar')}",
             f"- Lenguaje claro: {requisitos.get('lenguaje_claro', 'Sin especificar')}",
+            f"- Evocación sensorial: {requisitos.get('evocacion_sensorial', 'Sin especificar')}",
+            f"- Tríada rítmica: {requisitos.get('triada_ritmica', 'Sin especificar')}",
+            f"- SHOW DON'T TELL: {requisitos.get('show_dont_tell', 'Sin especificar')}",
+            "",
+            "🎭 EVOCACIÓN EMOCIONAL - REGLA DE ORO:",
+            f"❌ MAL: {evocacion.get('mal_ejemplo', 'Sin especificar')}",
+            f"✅ BIEN: {evocacion.get('buen_ejemplo', 'Sin especificar')}",
+            "Cuando el personaje sienta una emoción, NO la nombres. Descríbela con acciones físicas:",
+        ])
+        
+        # Añadir ejemplos de emociones
+        emociones = evocacion.get("emociones_comunes", {})
+        if emociones:
+            for emocion, acciones in list(emociones.items())[:4]:  # Primeras 4
+                prompt_parts.append(f"  • {emocion.capitalize()}: {acciones}")
+        
+        prompt_parts.extend([
+            "",
+            "✨ REFINAMIENTO LITERARIO (el 'toque de maestro'):",
+            "",
+            "1. USO DE TRÍADAS (la regla del tres - ritmo mágico):",
+        ])
+        
+        triadas = refinamiento.get("uso_de_triadas", {})
+        if triadas and triadas.get("ejemplos"):
+            for ejemplo in triadas.get("ejemplos", [])[:2]:
+                prompt_parts.append(f"   • {ejemplo}")
+        
+        prompt_parts.extend([
+            "",
+            "2. TEXTURAS Y TEMPERATURAS (el niño debe SENTIR el cuento):",
+            "   Incluir AL MENOS una referencia táctil:",
+        ])
+        
+        texturas = refinamiento.get("texturas_y_temperaturas", {})
+        if texturas and texturas.get("vocabulario"):
+            for vocab in texturas.get("vocabulario", [])[:2]:
+                prompt_parts.append(f"   • {vocab}")
+        
+        prompt_parts.extend([
+            "",
+            "3. DINAMISMO VISUAL (acciones que el niño pueda IMITAR):",
+            "   Describir movimientos físicos que el niño pueda hacer mientras escucha:",
+        ])
+        
+        dinamismo = refinamiento.get("dinamismo_visual", {})
+        if dinamismo and dinamismo.get("verbos_dinamicos"):
+            for verbo in dinamismo.get("verbos_dinamicos", [])[:4]:
+                prompt_parts.append(f"   • {verbo}")
+        
+        prompt_parts.extend([
+            "",
+            "4. CADENCIA MUSICAL:",
+            "   Las frases deben tener ritmo de CANCIÓN DE CUNA, incluso sin rima explícita.",
+        ])
+        
+        cadencia = refinamiento.get("cadencia_musical", {})
+        if cadencia and cadencia.get("tecnicas"):
+            for tecnica in cadencia.get("tecnicas", [])[:3]:
+                prompt_parts.append(f"   • {tecnica}")
+        
+        if cadencia.get("ejemplo_ritmo"):
+            prompt_parts.append(f"   Ejemplo: {cadencia.get('ejemplo_ritmo')}")
+        
+        prompt_parts.extend([
+            "",
+            "5. SILENCIO Y ESPACIO:",
+            "   MENOS ES MÁS. Deja espacio para la ilustración y la imaginación del niño.",
+            "   No describir TODO. Confía en la inteligencia del niño.",
+            "",
+            "📏 NIVEL DE COMPLEJIDAD SEGÚN EDAD:",
+        ])
+        
+        # Añadir guía de complejidad si hay edad especificada
+        if nivel_edad:
+            prompt_parts.append(f"   Importante: {nivel_edad.get('importante', '')}")
+            for edad_rango in ["2-3_años", "4-5_años", "5-6_años"]:
+                edad_info = nivel_edad.get(edad_rango, {})
+                if edad_info:
+                    prompt_parts.append(f"   {edad_rango.replace('_', ' ')}: {edad_info.get('ejemplo', '')}")
+        
+        prompt_parts.extend([
+            "",
             "Recomendaciones:",
             f"- Longitud: {recomendaciones.get('longitud_texto', 'Sin especificar')}",
             f"- Párrafos: {recomendaciones.get('parrafos', 'Sin especificar')}",
             f"- Lenguaje sensorial: {recomendaciones.get('lenguaje_sensorial', 'Sin especificar')}",
             f"- Diálogos: {recomendaciones.get('dialogos', 'Sin especificar')}",
             f"- Ritmo: {recomendaciones.get('ritmo', 'Sin especificar')}",
+            f"- Test voz alta: {recomendaciones.get('test_voz_alta', 'Si no suena bien al leer en voz alta, reescribir')}",
             "Flexibilidad sugerida:",
             f"- Variación temática: {', '.join(flex.get('variacion_tematica', [])) or 'Sin especificar'}",
             f"- Variación de escenarios: {', '.join(flex.get('variacion_escenarios', [])) or 'Sin especificar'}",
             f"- Elementos opcionales: {', '.join(flex.get('elementos_opcionales', [])) or 'Sin especificar'}",
             "Inputs del usuario:",
             self._format_list(user_lines),
-        ]
+        ])
 
         # Añadir ejemplos de RAG si están disponibles
         if similar_stories:
@@ -225,7 +344,43 @@ class PromptService:
             if lessons_section:
                 prompt_parts.extend(lessons_section)
         
+        # Añadir NOTA CRÍTICA DE OFICIO (máxima prominencia)
+        nota_critica = guia.get("nota_critica_de_oficio", {})
+        if nota_critica:
+            prompt_parts.extend([
+                "",
+                "=" * 80,
+                "🔥 REGLA IRROMPIBLE DE LITERATURA INFANTIL DE CALIDAD:",
+                "=" * 80,
+                f"{nota_critica.get('titulo', '')}",
+                "",
+                f"PRINCIPIO: {nota_critica.get('principio', '')}",
+                f"POR QUÉ ES VITAL: {nota_critica.get('porque_es_vital', '')}",
+                "",
+                "EJEMPLOS CRÍTICOS - Aprende la diferencia:",
+            ])
+            
+            ejemplos = nota_critica.get("ejemplos_criticos", {})
+            for emocion, ejemplo in list(ejemplos.items())[:3]:  # Primeros 3 ejemplos
+                prompt_parts.append(f"  {emocion.upper()}:")
+                prompt_parts.append(f"    {ejemplo.get('nominacion_mal', '')}")
+                prompt_parts.append(f"    {ejemplo.get('evocacion_bien', '')}")
+            
+            prompt_parts.extend([
+                "",
+                "⚠️ REGLA IRROMPIBLE:",
+                f"{nota_critica.get('regla_irrompible', '')}",
+                "=" * 80,
+                ""
+            ])
+        
         prompt_parts.extend([
+            "",
+            "⭐ INSTRUCCIÓN CLAVE:",
+            "Elige UNA de las estructuras alternativas listadas arriba.",
+            "NO repitas el patrón: inseguridad → problema → característica especial → moraleja + pregunta.",
+            "VARÍA la longitud de los párrafos para crear ritmo narrativo.",
+            "Usa cierres diversos: NO termines SIEMPRE con pregunta directa al lector.",
             "IMPORTANTE: Mantén la coherencia visual y narrativa del personaje a lo largo del cuento.",
             "Entrega un texto único, cálido y coherente, evitando clichés explícitos.",
         ])
