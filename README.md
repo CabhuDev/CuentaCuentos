@@ -538,9 +538,24 @@ Estos archivos **NUNCA** se suben a GitHub:
 
 ## 📄 Licencia
 
-[Especificar licencia según necesidades del proyecto]
-    actionable_lesson TEXT
-);
+Este proyecto está licenciado bajo la **MIT License**. Esto significa que puedes:
+
+- ✅ Usar el código libremente (personal o comercial)
+- ✅ Modificar y adaptar según tus necesidades
+- ✅ Distribuir copias del proyecto
+- ✅ Sublicenciar y vender
+
+**Requisitos:**
+- 📄 Incluir el aviso de copyright y la licencia en las copias
+- 🔒 El software se proporciona "tal cual", sin garantías
+
+Ver el archivo [LICENSE](LICENSE) para más detalles.
+
+---
+
+## 🎓 Nota sobre Contenido Generado
+
+Los cuentos generados por este sistema son creados por IA (Google Gemini). El uso de estos cuentos es responsabilidad del usuario y debe cumplir con los términos de servicio de Google Gemini AI.
 ---
 
 ## 📚 Documentación por Componente
@@ -552,5 +567,5 @@ Estos archivos **NUNCA** se suben a GitHub:
 
 ---
 
-**Desarrollado con ❤️ usando FastAPI y Google Gemini**
+**Desarrollado por Pablo Cabello**
 
