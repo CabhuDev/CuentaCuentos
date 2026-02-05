@@ -336,6 +336,14 @@
             <div class="loading">Cargando estadísticas...</div>
         </div>
 
+        <!-- Estadísticas RAG -->
+        <div style="margin: 30px 0;">
+            <h2>🔍 Estadísticas del Sistema RAG</h2>
+            <div id="ragStatsContainer" class="stats-grid">
+                <div class="loading">Cargando estadísticas RAG...</div>
+            </div>
+        </div>
+
         <!-- Filtros -->
         <div class="filters-section">
             <h3>🔍 Filtrar Lecciones</h3>
@@ -453,7 +461,8 @@
         async function loadLearningData() {
             await Promise.all([
                 loadStatistics(),
-                loadLessons()
+                loadLessons(),
+                loadRAGStats()
             ]);
         }
 
@@ -478,6 +487,56 @@
                     </div>
                 `;
             }
+        }
+
+        async function loadRAGStats() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/rag/stats`);
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+
+                const ragStats = await response.json();
+                displayRAGStats(ragStats);
+            } catch (error) {
+                console.error('Error loading RAG stats:', error);
+                document.getElementById('ragStatsContainer').innerHTML = `
+                    <div class="error-message">
+                        No se pudieron cargar las estadísticas RAG. Asegúrate de que el backend esté ejecutándose.
+                    </div>
+                `;
+            }
+        }
+
+        function displayRAGStats(stats) {
+            const container = document.getElementById('ragStatsContainer');
+            
+            // Calcular porcentaje de cobertura
+            const coveragePercent = stats.coverage_percentage || 0;
+            const isReady = stats.ready_for_rag;
+            
+            container.innerHTML = `
+                <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <div class="stat-label">Cuentos Totales</div>
+                    <div class="stat-value">${stats.total_stories || 0}</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #3f51b5 0%, #5a55ae 100%);">
+                    <div class="stat-label">Con Embeddings</div>
+                    <div class="stat-value">${stats.stories_with_embeddings || 0}</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, ${coveragePercent === 100 ? '#28a745' : '#ffc107'} 0%, ${coveragePercent === 100 ? '#20c997' : '#ff9800'} 100%);">
+                    <div class="stat-label">Cobertura</div>
+                    <div class="stat-value">${coveragePercent.toFixed(1)}%</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, ${isReady ? '#28a745' : '#dc3545'} 0%, ${isReady ? '#20c997' : '#c82333'} 100%);">
+                    <div class="stat-label">Estado RAG</div>
+                    <div class="stat-value" style="font-size: 2em;">${isReady ? '✅' : '❌'}</div>
+                    <div style="font-size: 0.8em; margin-top: 5px;">
+                        ${isReady ? 'Listo' : 'No listo'}
+                    </div>
+                </div>
+            `;
         }
 
         async function loadLessons() {
@@ -571,7 +630,7 @@
             container.innerHTML = lessons.map(lesson => `
                 <div class="lesson-card">
                     <div class="lesson-header">
-                        <div class="lesson-title">${lesson.title || 'Sin título'}</div>
+                        <div class="lesson-title">${lesson.title || lesson.insight || 'Sin título'}</div>
                         <span class="lesson-badge badge-${lesson.status || 'active'}">
                             ${lesson.status || 'active'}
                         </span>
@@ -579,13 +638,21 @@
                     
                     <div class="lesson-meta">
                         <span class="lesson-category">${lesson.category || 'general'}</span>
-                        ${lesson.synthesis_date ? `<span>📅 ${new Date(lesson.synthesis_date).toLocaleDateString('es-ES')}</span>` : ''}
+                        ${lesson.synthesized_at ? `<span>📅 ${new Date(lesson.synthesized_at).toLocaleDateString('es-ES')}</span>` : ''}
                         ${lesson.effectiveness_score ? `<span>⭐ Efectividad: ${lesson.effectiveness_score}/10</span>` : ''}
+                        ${lesson.applied_count ? `<span>🎯 Aplicada ${lesson.applied_count} veces</span>` : '<span>🆕 No aplicada aún</span>'}
                     </div>
                     
                     <div class="lesson-description">
-                        ${lesson.description || 'Sin descripción'}
+                        ${lesson.description || lesson.insight || 'Sin descripción'}
                     </div>
+                    
+                    ${lesson.actionable_guidance ? `
+                        <div class="lesson-examples">
+                            <h4>💡 Guía de aplicación:</h4>
+                            <p>${lesson.actionable_guidance}</p>
+                        </div>
+                    ` : ''}
                     
                     ${lesson.examples && lesson.examples.length > 0 ? `
                         <div class="lesson-examples">

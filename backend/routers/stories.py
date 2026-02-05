@@ -3,7 +3,7 @@ import uuid
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
-from models import database_sqlite as db
+from models.database_sqlite import Story, Critique, get_db
 from models.schemas import (
     StoryCreate,
     StoryResponse,
@@ -46,7 +46,7 @@ async def auto_critique_story(story_id: str, story_content: str):
         db_session = SessionLocal()
         
         try:
-            db_critique = db.Critique(
+            db_critique = Critique(
                 id=str(uuid.uuid4()),
                 story_id=story_id,
                 critique_text=str(critique_data),  # JSON completo como texto
@@ -58,7 +58,7 @@ async def auto_critique_story(story_id: str, story_content: str):
             print(f"[auto_critique_story] ✅ Crítica guardada para {story_id} - Score: {overall_score}/10")
             
             # 🔄 BUCLE DE APRENDIZAJE: Cada N críticas, disparar síntesis automática
-            critique_count = db_session.query(db.Critique).count()
+            critique_count = db_session.query(Critique).count()
             SYNTHESIS_THRESHOLD = 2  # Síntesis cada 2 críticas
             
             if critique_count % SYNTHESIS_THRESHOLD == 0:
@@ -68,8 +68,8 @@ async def auto_critique_story(story_id: str, story_content: str):
                 from services.learning_service import learning_service
                 
                 # Obtener las últimas N críticas
-                recent_critiques = db_session.query(db.Critique).order_by(
-                    db.Critique.timestamp.desc()
+                recent_critiques = db_session.query(Critique).order_by(
+                    Critique.timestamp.desc()
                 ).limit(SYNTHESIS_THRESHOLD).all()
                 
                 # Preparar datos para síntesis
@@ -115,13 +115,22 @@ async def auto_critique_story(story_id: str, story_content: str):
 async def generate_story(
     story_inputs: StoryGenerateInput, 
     background_tasks: BackgroundTasks,
-    db_session: Session = Depends(db.get_db)
+    db_session: Session = Depends(get_db)
 ):
     """
     Genera un cuento completo usando Gemini basado en los inputs del usuario.
     Además, dispara automáticamente una crítica en background para mejorar el sistema.
     """
+    print(f"[generateStory] 🎯 Iniciando generación de cuento...")
+    print(f"[generateStory] Datos del cuento:")
+    print(f"  - theme: {story_inputs.theme}")
+    print(f"  - character_names: {story_inputs.character_names}")
+    print(f"  - moral_lesson: {story_inputs.moral_lesson}")
+    print(f"  - target_age: {story_inputs.target_age}")
+    print(f"  - length: {story_inputs.length}")
+    
     if not gemini_service.is_configured():
+        print(f"[generateStory] ❌ Gemini no configurado")
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Servicio Gemini no configurado. Verifica GEMINI_API_KEY."
@@ -129,6 +138,7 @@ async def generate_story(
     
     try:
         # 1. Construir descripción del contexto
+        print(f"[generateStory] 📝 Construyendo contexto...")
         context_parts = [f"Tema: {story_inputs.theme}"]
         
         # Agregar personajes si fueron seleccionados
@@ -145,10 +155,12 @@ async def generate_story(
             context_parts.append(f"Elementos especiales: {story_inputs.special_elements}")
         
         context = " | ".join(context_parts)
+        print(f"[generateStory] Contexto construido: {context}")
         
         # 2. Convertir formato moderno a formato de prompt legacy
         # Si no hay personajes, usar tema como base
         main_character = story_inputs.character_names[0] if story_inputs.character_names else "un personaje"
+        print(f"[generateStory] Personaje principal: {main_character}")
         
         prompt_inputs = StoryPromptInput(
             personaje=main_character,
@@ -156,16 +168,53 @@ async def generate_story(
             emocion_objetivo=story_inputs.moral_lesson,
             personajes_secundarios=story_inputs.character_names[1:] if story_inputs.character_names and len(story_inputs.character_names) > 1 else None
         )
-        prompt = prompt_service.build_story_prompt(prompt_inputs)
+        
+        # 2.5. Buscar cuentos similares con RAG
+        print(f"[generateStory] 🔍 Buscando cuentos similares con RAG...")
+        from services.rag_service import rag_service
+        
+        similar_stories = await rag_service.search_similar_stories(
+            db=db_session,
+            theme=story_inputs.theme,
+            target_age=story_inputs.target_age,
+            top_k=2,  # Máximo 2 ejemplos
+            min_similarity=0.5,  # Similitud mínima 50%
+            min_score=7.5  # Score mínimo 7.5/10
+        )
+        
+        if similar_stories:
+            print(f"[generateStory] ✅ RAG encontró {len(similar_stories)} ejemplos similares")
+        else:
+            print(f"[generateStory] ℹ️ RAG no encontró ejemplos suficientemente similares")
+        
+        print(f"[generateStory] 🔧 Generando prompt con prompt_service...")
+        prompt = await prompt_service.build_story_prompt(
+            prompt_inputs, 
+            apply_lessons=True,
+            similar_stories=similar_stories
+        )
+        print(f"[generateStory] ✅ Prompt generado ({len(prompt)} caracteres)")
+        
+        # Trackear lecciones aplicadas
+        from services.learning_service import learning_service
+        active_lessons = learning_service.get_active_lessons()
+        applied_lesson_ids = [lesson['lesson_id'] for lesson in active_lessons]
+        
+        if applied_lesson_ids:
+            print(f"[generateStory] 🎓 Aplicando {len(applied_lesson_ids)} lecciones al cuento")
         
         # 3. Generar cuento con Gemini
+        print(f"[generateStory] 🤖 Enviando request a Gemini...")
         story_content = await gemini_service.generate_story(prompt)
         
         if not story_content:
+            print(f"[generateStory] ❌ Gemini no retornó contenido")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Error generando el cuento con Gemini"
             )
+        
+        print(f"[generateStory] ✅ Cuento generado ({len(story_content)} caracteres)")
         
         # 4. Generar título automáticamente (primera línea limpia)
         title_lines = story_content.strip().split('\n')
@@ -176,14 +225,21 @@ async def generate_story(
         if len(title) > 100:
             title = title[:97] + "..."
         
+        print(f"[generateStory] 📌 Título: {title}")
+        
         # 5. Generar embedding
+        print(f"[generateStory] 📊 Generando embedding...")
         embedding_vector = await gemini_service.generate_embedding(story_content)
+        print(f"[generateStory] ✅ Embedding generado")
         
         # 6. Generar plantilla de ilustraciones
+        print(f"[generateStory] 🎨 Generando plantilla de ilustraciones...")
         illustration_template = await gemini_service.generate_illustration_template(story_content, title)
+        print(f"[generateStory] ✅ Plantilla de ilustraciones generada")
         
         # 7. Guardar en base de datos (SQLite usa embedding_json en lugar de embedding)
-        db_story = db.Story(
+        print(f"[generateStory] 💾 Guardando en base de datos...")
+        db_story = Story(
             title=title,
             content=story_content,
             is_seed=False,
@@ -194,9 +250,16 @@ async def generate_story(
         db_session.commit()
         db_session.refresh(db_story)
         
+        print(f"[generateStory] ✅ Cuento guardado con ID: {db_story.id}")
+        
+        # Incrementar contador de aplicación de lecciones
+        if applied_lesson_ids:
+            learning_service.increment_lesson_application(applied_lesson_ids)
+            print(f"[generateStory] 📊 Contador de aplicación actualizado para {len(applied_lesson_ids)} lecciones")
+        
         # 8. Disparar crítica automática en background
         background_tasks.add_task(auto_critique_story, db_story.id, story_content)
-        print(f"[generate_story] 📝 Crítica automática programada para cuento {db_story.id}")
+        print(f"[generateStory] 📝 Crítica automática programada para cuento {db_story.id}")
         
         return StoryResponseWithPrompt(
             id=db_story.id,
@@ -208,7 +271,13 @@ async def generate_story(
             prompt_used=prompt,
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
+        print(f"[generateStory] ❌ Error completo: Error en la generación automática: {str(e)}")
+        import traceback
+        print(f"[generateStory] ❌ Stack trace:")
+        traceback.print_exc()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error en la generación automática: {str(e)}"
@@ -239,7 +308,7 @@ def generate_story_prompt(prompt_inputs: StoryPromptInput):
     status_code=status.HTTP_201_CREATED,
     summary="Crear un nuevo cuento",
 )
-def create_story(story: StoryCreate, db_session: Session = Depends(db.get_db)):
+def create_story(story: StoryCreate, db_session: Session = Depends(get_db)):
     """
     Crea un nuevo cuento en la base de datos.
 
@@ -257,7 +326,7 @@ def create_story(story: StoryCreate, db_session: Session = Depends(db.get_db)):
             pass
 
     # TODO: Lógica para generar el embedding aquí (Function A y B de tu plan)
-    db_story = db.Story(
+    db_story = Story(
         title=story.title,
         content=story.content,
         is_seed=story.is_seed,
@@ -289,12 +358,12 @@ def create_story(story: StoryCreate, db_session: Session = Depends(db.get_db)):
 def get_stories(
     is_seed: Optional[bool] = None,
     limit: int = 100,
-    db_session: Session = Depends(db.get_db),
+    db_session: Session = Depends(get_db),
 ):
     """Obtiene una lista de todos los cuentos, con opción de filtrar por 'seed'."""
-    query = db_session.query(db.Story)
+    query = db_session.query(Story)
     if is_seed is not None:
-        query = query.filter(db.Story.is_seed == is_seed)
+        query = query.filter(Story.is_seed == is_seed)
     stories = query.limit(limit).all()
     return stories
 
@@ -304,9 +373,9 @@ def get_stories(
     response_model=StoryResponse,
     summary="Obtener un cuento por su ID",
 )
-def get_story(story_id: uuid.UUID, db_session: Session = Depends(db.get_db)):
+def get_story(story_id: uuid.UUID, db_session: Session = Depends(get_db)):
     """Obtiene los detalles de un cuento específico por su ID."""
-    story = db_session.query(db.Story).filter(db.Story.id == story_id).first()
+    story = db_session.query(Story).filter(Story.id == story_id).first()
     if not story:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Story not found"
@@ -318,13 +387,13 @@ def get_story(story_id: uuid.UUID, db_session: Session = Depends(db.get_db)):
     "/{story_id}/critiques",
     summary="Obtener críticas de un cuento",
 )
-def get_story_critiques(story_id: str, db_session: Session = Depends(db.get_db)):
+def get_story_critiques(story_id: str, db_session: Session = Depends(get_db)):
     """
     Obtiene todas las críticas generadas automáticamente para un cuento específico.
     Útil para ver cómo el sistema evaluó el cuento y qué lecciones aprendió.
     """
     # Verificar que el cuento existe
-    story = db_session.query(db.Story).filter(db.Story.id == story_id).first()
+    story = db_session.query(Story).filter(Story.id == story_id).first()
     if not story:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -332,9 +401,9 @@ def get_story_critiques(story_id: str, db_session: Session = Depends(db.get_db))
         )
     
     # Obtener todas las críticas del cuento
-    critiques = db_session.query(db.Critique).filter(
-        db.Critique.story_id == story_id
-    ).order_by(db.Critique.timestamp.desc()).all()
+    critiques = db_session.query(Critique).filter(
+        Critique.story_id == story_id
+    ).order_by(Critique.timestamp.desc()).all()
     
     return {
         "story_id": story_id,

@@ -163,6 +163,31 @@ class LearningService:
         
         return active
     
+    def increment_lesson_application(self, lesson_ids: List[int]) -> bool:
+        """
+        Incrementa el contador de aplicaciones para lecciones específicas
+        
+        Args:
+            lesson_ids: Lista de IDs de lecciones que se aplicaron
+        """
+        try:
+            history = self.load_learning_history()
+            modified = False
+            
+            for lesson in history:
+                if lesson.get('lesson_id') in lesson_ids:
+                    lesson['applied_count'] = lesson.get('applied_count', 0) + 1
+                    modified = True
+            
+            if modified:
+                return self.save_learning_history(history)
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error incrementando contador de aplicaciones: {e}")
+            return False
+    
     def get_synthesis_statistics(self) -> Dict:
         """Obtiene estadísticas del sistema de aprendizaje"""
         history = self.load_learning_history()

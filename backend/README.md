@@ -59,6 +59,9 @@ backend/
 ### `/services` - Lógica de Negocio
 - **`character_service.py`** - Gestión de personajes y coherencia narrativa
 - **`prompt_service.py`** - Construcción inteligente de prompts para generación  
+  - Integra lecciones aprendidas del sistema evolutivo
+  - **✅ NUEVO** Integra ejemplos de RAG (cuentos similares exitosos)
+  - Genera prompts híbridos: reglas + lecciones + ejemplos concretos
 - **`gemini_service.py`** - **✅ ACTUALIZADO** Integración con Google Gemini usando el nuevo SDK `google-genai==0.2.2`
   - Migrado desde `google.generativeai` (deprecado)
   - Usa `Client()` en lugar de `configure()`
@@ -76,20 +79,43 @@ backend/
     * `update_style_profile()` - Actualiza métricas de evolución
     * `get_active_lessons()` - Filtra lecciones activas por categoría
     * `get_synthesis_statistics()` - Estadísticas del sistema de aprendizaje
+    * `increment_lesson_application()` - Trackea uso de lecciones
+- **`rag_service.py`** - **✅ NUEVO** Sistema RAG (Retrieval-Augmented Generation)
+  - Búsqueda semántica de cuentos similares exitosos
+  - Cache de embeddings para optimización
+  - Similitud coseno con SQLite JSON embeddings
+  - **✅ CORREGIDO** - Parsing de critique_text como JSON (línea 169)
+  - Extracción de técnicas desde feedback.strengths[:3]
+  - Parámetros: min_similarity=0.5, min_score=7.5, top_k=2
+  - Métodos principales:
+    * `search_similar_stories()` - Busca top-K cuentos similares con pre-filtrado
+    * `get_theme_embedding()` - Embeddings con cache persistente
+    * `cosine_similarity()` - Cálculo de similitud vectorial
+  - Manejo robusto de errores con try/except en parsing JSON
 
 ### `/routers` - Endpoints API
 - **`characters.py`** - CRUD de personajes (`GET /characters`)
 - **`stories.py`** - **Generación automática** (`POST /stories/generate`) con:
-  - Embeddings semánticos
+  - **✅ RAG integrado** - Busca cuentos similares exitosos antes de generar
+  - Embeddings semánticos para búsqueda
   - **Plantillas de ilustraciones automáticas** (JSON listo para IA de imágenes)
   - **Crítica automática en background** (BackgroundTasks)
   - **Síntesis automática cada 2 críticas** - Dispara análisis de patrones con Gemini
+  - Trackeo de lecciones aplicadas
   - Gestión de cuentos (`GET /stories`, `GET /stories/{id}`)
 - **`critiques.py`** - Críticas manuales y endpoint `GET /stories/{id}/critiques`
 - **`learning.py`** - **✅ NUEVO** Sistema de aprendizaje evolutivo:
   - `POST /learning/synthesize` - Síntesis manual de lecciones
   - `GET /learning/statistics` - Estadísticas del sistema
   - `GET /learning/lessons` - Lista de lecciones con filtros
+  - `GET /learning/history` - Historial completo JSON
+  - `GET /learning/style-profile` - Perfil evolutivo JSON
+- **`rag.py`** - **✅ FUNCIONAL** Testing y debugging de RAG:
+  - `GET /rag/search?theme=hermanos&top_k=2` - Busca cuentos similares (✅ TESTEADO)
+  - `GET /rag/stats` - Estadísticas: total stories, con embeddings, coverage % (✅ FRONTEND INTEGRADO)
+  - `GET /rag/cache/status` - Estado del cache de embeddings
+  - `DELETE /rag/cache/clear` - Limpiar cache
+  - **Dashboard frontend**: aprendizaje.html con 4 cards de estadísticas RAG
 
 ### `/deprecated` - Código Obsoleto (Respaldo)
 - **`README.md`** - Documentación de archivos deprecados

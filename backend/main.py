@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import APP_TITLE, APP_DESCRIPTION, APP_VERSION
-from routers import stories, characters, critiques, learning
+from routers import stories, characters, critiques, learning, rag
 from services.character_service import character_service
 from services.prompt_service import prompt_service
 from services.gemini_service import gemini_service
@@ -27,6 +27,7 @@ app.include_router(stories.router)
 app.include_router(characters.router)
 app.include_router(critiques.router)
 app.include_router(learning.router)
+app.include_router(rag.router)
 
 
 @app.on_event("startup")

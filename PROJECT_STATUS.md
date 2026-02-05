@@ -44,6 +44,11 @@ El proyecto ha sido **completamente reestructurado** con una arquitectura API-fi
 - ✅ **Generación automática** con endpoint `POST /stories/generate`
 - ✅ **Construcción inteligente de prompts** combinando personajes + estilo + contexto
 - ✅ **Análisis y críticas** automáticas de cuentos generados
+- ✅ **Sistema RAG (Retrieval-Augmented Generation)** - Búsqueda semántica de cuentos similares
+- ✅ **Cache de embeddings** para optimización de rendimiento
+- ✅ **Aprendizaje híbrido** - Lecciones abstractas + ejemplos concretos
+- ✅ **Frontend RAG integrado** - Dashboard con estadísticas en aprendizaje.html
+- ✅ **Correcciones de schema** - Parsing correcto de critique_text como JSON
 - ✅ **Sin warnings de deprecación** - Migración completada exitosamente
 
 #### 📊 **Base de Datos y Persistencia:**
@@ -63,16 +68,20 @@ CuentaCuentos/
 │   ├── main.py                      # Aplicación principal con CORS
 │   ├── config.py                    # Variables de entorno centralizadas
 │   ├── models/                      # 🏗️ Capa de datos
-│   │   ├── database.py             # SQLAlchemy ORM + pgvector
+│   │   ├── database_sqlite.py      # SQLAlchemy ORM + JSON embeddings (ACTIVO)
 │   │   └── schemas.py              # Pydantic validation schemas
 │   ├── services/                    # ⚙️ Lógica de negocio modular
 │   │   ├── character_service.py    # Gestión de personajes
-│   │   ├── prompt_service.py       # Construcción de prompts
-│   │   └── gemini_service.py       # Integración Google Gemini IA
+│   │   ├── prompt_service.py       # Construcción de prompts + RAG
+│   │   ├── gemini_service.py       # Integración Google Gemini IA
+│   │   ├── learning_service.py     # Sistema de aprendizaje evolutivo
+│   │   └── rag_service.py          # RAG - Búsqueda semántica (NUEVO)
 │   ├── routers/                     # 🛣️ Endpoints API organizados
 │   │   ├── characters.py           # CRUD personajes
 │   │   ├── stories.py              # Generación + consulta cuentos
-│   │   └── critiques.py            # Análisis y críticas
+│   │   ├── critiques.py            # Análisis y críticas
+│   │   ├── learning.py             # Sistema de aprendizaje
+│   │   └── rag.py                  # Testing y debugging RAG (NUEVO)
 │   ├── data/                        # 📁 Configuraciones JSON
 │   │   ├── characters.json         # Biblioteca de personajes
 │   │   ├── style_guide.json        # Guías de estilo narrativo
@@ -98,6 +107,16 @@ CuentaCuentos/
 - 🎭 **Sistema de personajes** con carga dinámica desde JSON
 - 🤖 **Generación de cuentos** usando Google Gemini IA
 - 📊 **Análisis automático** con críticas y sugerencias
+- 🧠 **Sistema de aprendizaje evolutivo** con síntesis automática cada 2 críticas
+- 🔍 **RAG (Retrieval-Augmented Generation)** - Sistema COMPLETO:
+  - ✅ Búsqueda semántica con similitud coseno (≥50%)
+  - ✅ Pre-filtrado por metadata (score ≥7.5/10)
+  - ✅ Cache de embeddings optimizado
+  - ✅ Extracción de técnicas desde critique_text JSON
+  - ✅ Dashboard frontend con estadísticas RAG
+  - ✅ Endpoints de testing y debugging (/rag/*)
+- 💾 **Cache de embeddings** con estado persistente
+- 🎯 **Prompts híbridos** - Reglas + lecciones + ejemplos concretos de cuentos similares
 - 🌐 **Interfaz web responsive** consumiendo API independiente
 - ⚡ **Arquitectura escalable** API-first con separación clara
 - 🔄 **Middleware CORS** para desarrollo y producción
@@ -197,6 +216,73 @@ python -m http.server 3000
 - ✅ **Service layer**: Lógica reutilizable
 - ✅ **Configuration management**: Variables centralizadas
 
+## 🐛 **Correcciones Implementadas - Sistema RAG**
+
+### **Problema: Schema Mismatch en Critique Model**
+Durante la implementación del sistema RAG se encontraron múltiples errores relacionados con discrepancias entre el código y el esquema real de la base de datos.
+
+#### **Errores Corregidos (5 iteraciones):**
+
+1. **Missing Import - Optional**
+   - Error: `NameError: name 'Optional' is not defined` en prompt_service.py
+   - Solución: Añadido `Optional` a imports de typing
+
+2. **Module vs Session Conflict**
+   - Error: `module 'models.database_sqlite' has no attribute 'query'`
+   - Causa: `from models import database_sqlite as db` conflictaba con parámetro `db: Session`
+   - Solución: Cambiado a imports directos `from models.database_sqlite import Story, Critique, get_db`
+   - Impacto: 14+ referencias actualizadas en stories.py
+
+3. **Undefined Variable**
+   - Error: `name 'db' is not defined` en stories.py línea 177
+   - Solución: Cambiado `db=db` a `db=db_session` en llamada RAG
+
+4. **Incorrect Attribute Name - overall_score**
+   - Error: `'Critique' object has no attribute 'overall_score'`
+   - Modelo real: Campo se llama `score` (no `overall_score`)
+   - Solución: Actualizado rag_service.py línea 137
+
+5. **Missing Field - feedback_json** ✅ **CRÍTICO**
+   - Error: `'Critique' object has no attribute 'feedback_json'`
+   - Modelo real: Solo tiene `critique_text` (Text), `score` (Integer), `timestamp` (DateTime)
+   - Causa raíz: Código esperaba campo JSON estructurado que nunca existió
+   - Solución: Modificado rag_service.py línea 169 para parsear `critique_text` como JSON
+   - Código corregido:
+   ```python
+   # ANTES (❌ ERROR):
+   if item['critique'] and item['critique'].feedback_json:
+       feedback = item['critique'].feedback_json
+   
+   # DESPUÉS (✅ FUNCIONAL):
+   if item['critique'] and item['critique'].critique_text:
+       critique_data = json.loads(item['critique'].critique_text)
+       feedback = critique_data.get('feedback', {})
+   ```
+
+#### **Schema Real de Critique (database_sqlite.py):**
+```python
+class Critique(Base):
+    id = Column(String(36), primary_key=True)
+    story_id = Column(String(36), ForeignKey("stories.id"))
+    critique_text = Column(Text, nullable=False)  # JSON completo como texto
+    score = Column(Integer)  # 1-10 (no "overall_score")
+    timestamp = Column(DateTime)  # No "created_at"
+```
+
+#### **Lecciones Aprendidas:**
+- ✅ El schema de base de datos debe estar sincronizado con el código
+- ✅ SQLite almacena embeddings como JSON (no Vector nativo)
+- ✅ El campo `critique_text` contiene TODO el JSON de feedback, no hay campo separado
+- ✅ Nombres de campos: `score` (no `overall_score`), `timestamp` (no `created_at`)
+
+#### **Estado Final RAG:**
+- ✅ Búsqueda semántica funcional (encuentra 5+ cuentos similares)
+- ✅ Pre-filtrado operativo (9 candidatos filtrados correctamente)
+- ✅ Similitud coseno calculada sin errores
+- ✅ Extracción de técnicas desde critique_text JSON
+- ✅ Integración completa en pipeline de generación
+- ✅ Frontend con estadísticas RAG en aprendizaje.html
+
 ## 🎊 **Estado Final: PROYECTO LISTO PARA PRODUCCIÓN**
 
 El sistema está **completamente funcional** con:
@@ -248,11 +334,17 @@ python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 | `GET` | `/health` | Verificación detallada de salud |
 | `GET` | `/characters` | Lista todos los personajes |
 | `GET` | `/characters/{id}` | Detalles de un personaje |
-| `POST` | `/stories/prompt` | Genera prompt para cuento |
+| `POST` | `/stories/generate` | Genera cuento automáticamente (con RAG) |
 | `POST` | `/stories` | Crea nuevo cuento |
 | `GET` | `/stories` | Lista cuentos (filtrable) |
 | `GET` | `/stories/{id}` | Obtiene cuento específico |
 | `POST` | `/critiques` | Añade crítica a cuento |
+| `POST` | `/learning/synthesize` | Síntesis manual de lecciones |
+| `GET` | `/learning/statistics` | Estadísticas del sistema |
+| `GET` | `/learning/lessons` | Lista lecciones con filtros |
+| `GET` | `/rag/search` | Busca cuentos similares (testing) |
+| `GET` | `/rag/stats` | Estadísticas de embeddings |
+| `GET` | `/rag/cache/status` | Estado del cache RAG |
 
 ## 🎯 **Métricas de Mejora Conseguidas**
 

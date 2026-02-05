@@ -1,6 +1,6 @@
 # Servicio de generación de prompts
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from config import STYLE_GUIDE_PATH
 from models.schemas import StoryPromptInput
 from services.character_service import character_service
@@ -9,6 +9,14 @@ from services.character_service import character_service
 class PromptService:
     def __init__(self):
         self._style_guide = None
+        self._learning_service = None
+
+    def _get_learning_service(self):
+        """Lazy load del learning service para evitar imports circulares"""
+        if self._learning_service is None:
+            from services.learning_service import learning_service
+            self._learning_service = learning_service
+        return self._learning_service
 
     def load_style_guide(self) -> Dict[str, Any]:
         """Cargar guía de estilo desde archivo JSON"""
@@ -26,8 +34,113 @@ class PromptService:
             return "- (sin especificar)"
         return "\n".join(f"- {item}" for item in items)
 
-    def build_story_prompt(self, prompt_inputs: StoryPromptInput) -> str:
-        """Construir prompt para generación de cuentos"""
+    def _build_lessons_section(self) -> List[str]:
+        """
+        Construye sección con lecciones activas del sistema de aprendizaje.
+        Retorna lista de strings para incluir en el prompt.
+        """
+        try:
+            learning_service = self._get_learning_service()
+            active_lessons = learning_service.get_active_lessons()
+            
+            if not active_lessons:
+                print("[prompt_service] No hay lecciones activas para aplicar")
+                return []
+            
+            print(f"[prompt_service] 🎓 Aplicando {len(active_lessons)} lecciones activas al prompt")
+            
+            lessons_section = [
+                "",
+                "=== LECCIONES APRENDIDAS PARA APLICAR ===",
+                "El sistema ha aprendido lo siguiente de cuentos anteriores. APLICA estas lecciones:"
+            ]
+            
+            # Agrupar lecciones por categoría
+            by_category = {}
+            for lesson in active_lessons:
+                category = lesson.get('category', 'general')
+                if category not in by_category:
+                    by_category[category] = []
+                by_category[category].append(lesson)
+            
+            # Formatear cada categoría
+            for category, lessons in by_category.items():
+                lessons_section.append(f"\n📌 {category.upper().replace('_', ' ')}:")
+                for lesson in lessons:
+                    insight = lesson.get('insight', '')
+                    guidance = lesson.get('actionable_guidance', '')
+                    
+                    if insight:
+                        lessons_section.append(f"  • {insight}")
+                    if guidance:
+                        lessons_section.append(f"    → Acción: {guidance}")
+            
+            lessons_section.append("\n=== FIN DE LECCIONES ===")
+            lessons_section.append("")
+            
+            return lessons_section
+            
+        except Exception as e:
+            print(f"[prompt_service] ⚠️ Error cargando lecciones: {e}")
+            return []
+    
+    def _build_examples_section(self, similar_stories: List[Dict[str, Any]]) -> List[str]:
+        """
+        Construye sección con ejemplos de cuentos similares exitosos (RAG).
+        
+        Args:
+            similar_stories: Lista de cuentos similares del RAG service
+            
+        Returns:
+            Lista de strings para incluir en el prompt
+        """
+        if not similar_stories:
+            return []
+        
+        print(f"[prompt_service] 📚 Añadiendo {len(similar_stories)} ejemplos exitosos al prompt")
+        
+        examples_section = [
+            "",
+            "=== EJEMPLOS DE CUENTOS EXITOSOS SIMILARES ===",
+            "Estos son fragmentos de tus cuentos anteriores sobre temas similares que obtuvieron buenos scores.",
+            "Aprende de ellos pero NO copies. Usa las mismas técnicas con tu propio estilo:"
+        ]
+        
+        for example in similar_stories:
+            examples_section.append(f"\n📖 Ejemplo #{example['rank']} - Score: {example['score']}/10 (Similitud: {int(example['similarity']*100)}%)")
+            examples_section.append(f"Título: {example['title']}")
+            
+            # Fragmento del cuento
+            examples_section.append(f"Fragmento:")
+            examples_section.append(f'"{example["fragment"]}"')
+            
+            # Técnicas que funcionaron
+            if example.get('techniques'):
+                examples_section.append(f"✅ Lo que funcionó bien:")
+                for technique in example['techniques']:
+                    examples_section.append(f"   - {technique}")
+        
+        examples_section.append("\n=== FIN DE EJEMPLOS ===")
+        examples_section.append("")
+        
+        return examples_section
+
+    async def build_story_prompt(
+        self, 
+        prompt_inputs: StoryPromptInput, 
+        apply_lessons: bool = True,
+        similar_stories: Optional[List[Dict[str, Any]]] = None
+    ) -> str:
+        """
+        Construir prompt para generación de cuentos
+        
+        Args:
+            prompt_inputs: Datos del usuario para el cuento
+            apply_lessons: Si es True, incluye lecciones activas en el prompt
+            similar_stories: Lista de cuentos similares del RAG (opcional)
+        """
+        print(f"[prompt_service] Construyendo prompt (apply_lessons={apply_lessons}, RAG={similar_stories is not None})...")
+        
         style_guide = self.load_style_guide()
         guia = style_guide.get("guia_estilo_cuento", {})
         estructura = guia.get("estructura_narrativa", {})
@@ -98,11 +211,29 @@ class PromptService:
             f"- Elementos opcionales: {', '.join(flex.get('elementos_opcionales', [])) or 'Sin especificar'}",
             "Inputs del usuario:",
             self._format_list(user_lines),
-            "IMPORTANTE: Mantén la coherencia visual y narrativa del personaje a lo largo del cuento.",
-            "Entrega un texto único, cálido y coherente, evitando clichés explícitos.",
         ]
 
-        return "\n".join(prompt_parts)
+        # Añadir ejemplos de RAG si están disponibles
+        if similar_stories:
+            examples_section = self._build_examples_section(similar_stories)
+            if examples_section:
+                prompt_parts.extend(examples_section)
+        
+        # Añadir lecciones aprendidas si está habilitado
+        if apply_lessons:
+            lessons_section = self._build_lessons_section()
+            if lessons_section:
+                prompt_parts.extend(lessons_section)
+        
+        prompt_parts.extend([
+            "IMPORTANTE: Mantén la coherencia visual y narrativa del personaje a lo largo del cuento.",
+            "Entrega un texto único, cálido y coherente, evitando clichés explícitos.",
+        ])
+
+        final_prompt = "\n".join(prompt_parts)
+        print(f"[prompt_service] ✅ Prompt construido ({len(final_prompt)} caracteres)")
+        
+        return final_prompt
 
     def refresh_style_guide(self):
         """Forzar recarga de la guía de estilo"""

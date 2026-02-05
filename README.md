@@ -6,7 +6,14 @@ Este proyecto es un motor de escritura de cuentos infantiles basado en la API de
 
 - **Generación inteligente:** Cuentos para niños de 2-6 años con coherencia narrativa y visual
 - **Personajes persistentes:** Mantiene consistencia de personajes a través de múltiples historias
-- **Aprendizaje evolutivo:** Sistema de crítica automática y síntesis de lecciones
+- **Aprendizaje evolutivo:** Sistema de crítica automática y síntesis de lecciones cada 2 críticas
+- **RAG (Retrieval-Augmented Generation):** Sistema completo de búsqueda semántica:
+  - Similitud coseno con embeddings (text-embedding-004)
+  - Pre-filtrado inteligente (score ≥7.5, similitud ≥50%)
+  - Cache optimizado de embeddings
+  - Extracción automática de técnicas exitosas
+  - Dashboard de estadísticas en tiempo real
+- **Prompts híbridos:** Combina reglas abstractas + lecciones aprendidas + ejemplos concretos
 - **Guía de estilo flexible:** Framework adaptable para diferentes tipos de narrativas
 
 ## 🚀 Arquitectura Técnica
@@ -15,7 +22,11 @@ Este proyecto es un motor de escritura de cuentos infantiles basado en la API de
 - **LLM:** Google Gemini 2.5 Flash (SDK: google-genai 0.2.2)
 - **Base de Datos:** SQLite con embeddings JSON (desarrollo) / PostgreSQL con pgvector (producción opcional)
 - **Frontend:** HTML/CSS/JavaScript vanilla (sin frameworks)
-- **Patrón de Diseño:** RAG (Retrieval-Augmented Generation) + Arquitectura modular por capas
+- **Patrón de Diseño:** 
+  - RAG (Retrieval-Augmented Generation) con búsqueda semántica
+  - Aprendizaje evolutivo con síntesis automática
+  - Arquitectura modular por capas
+  - Cache de embeddings para optimización
 
 ## 📁 Estructura del Proyecto
 
@@ -37,12 +48,16 @@ CuentaCuentos/
 │   │   └── schemas.py         # Modelos Pydantic (validación API)
 │   ├── services/              # Lógica de negocio
 │   │   ├── character_service.py  # Gestión de personajes
-│   │   ├── prompt_service.py     # Construcción de prompts
-│   │   └── gemini_service.py     # SDK google-genai (embeddings + generación)
+│   │   ├── prompt_service.py     # Construcción de prompts + RAG
+│   │   ├── gemini_service.py     # SDK google-genai (embeddings + generación)
+│   │   ├── learning_service.py   # Sistema de aprendizaje evolutivo
+│   │   └── rag_service.py        # RAG - Búsqueda semántica (NUEVO)
 │   ├── routers/               # Endpoints API
 │   │   ├── characters.py      # GET /characters
-│   │   ├── stories.py         # POST /stories/generate, GET /stories
-│   │   └── critiques.py       # POST /critiques
+│   │   ├── stories.py         # POST /stories/generate (con RAG), GET /stories
+│   │   ├── critiques.py       # POST /critiques
+│   │   ├── learning.py        # Sistema de aprendizaje evolutivo
+│   │   └── rag.py             # Testing y debugging RAG (NUEVO)
 │   ├── deprecated/            # Código obsoleto (respaldo)
 │   │   ├── README.md          # Documentación de archivos deprecados
 │   │   ├── main_old.py        # Versión monolítica antigua
@@ -75,12 +90,18 @@ CuentaCuentos/
 
 ## 🔄 Flujo de Trabajo
 
-1. **Input del Usuario:** Personaje + contexto opcional + parámetros narrativos
+1. **Input del Usuario:** Tema + personajes opcionales + parámetros narrativos
 2. **Resolución de Personaje:** Busca en `characters.json` para mantener coherencia
-3. **Construcción de Prompt:** Combina guía de estilo + datos del personaje + lecciones aprendidas
-4. **Generación:** Gemini 2.5 Pro genera el cuento siguiendo el prompt estructurado
-5. **Crítica Automática:** Gemini 2.5 Pro evalúa el cuento y extrae lecciones
-6. **Síntesis de Aprendizaje:** Actualiza el perfil de estilo basado en críticas acumuladas
+3. **Búsqueda RAG:** Sistema busca cuentos similares exitosos (score ≥7.5, similitud ≥50%)
+4. **Construcción de Prompt Híbrido:** Combina:
+   - Guía de estilo base
+   - Datos del personaje
+   - Lecciones aprendidas (abstractas)
+   - Ejemplos concretos de cuentos similares (RAG)
+5. **Generación:** Gemini 2.5 Flash genera el cuento siguiendo el prompt enriquecido
+6. **Crítica Automática:** Gemini evalúa el cuento en background
+7. **Síntesis de Aprendizaje:** Cada 2 críticas, actualiza lecciones y perfil de estilo
+8. **Ciclo Evolutivo:** Las nuevas lecciones mejoran futuros cuentos
 
 ## 📊 Esquema de Base de Datos (SQLite)
 
@@ -102,9 +123,12 @@ class Critique(Base):
     __tablename__ = "critiques"
     id = Column(String(36), primary_key=True)
     story_id = Column(String(36), ForeignKey("stories.id", ondelete="CASCADE"))
-    critique_text = Column(Text, nullable=False)
-    score = Column(Integer)  # 1-10
+    critique_text = Column(Text, nullable=False)  # JSON completo como string
+    score = Column(Integer)  # 1-10 (extraído del JSON)
     timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    # Nota: critique_text contiene JSON con estructura:
+    # {"feedback": {"strengths": [...], "weaknesses": [...]}, "score": 8, ...}
 
 class Lesson(Base):
     __tablename__ = "lessons"
@@ -287,22 +311,29 @@ python -m http.server 3000
 - [x] Modelos de datos para cuentos, críticas y evolución de estilo
 - [x] Configuración centralizada y estructura escalable
 - [x] **Integración completa con Google Gemini 2.5 Flash**
-- [x] **Interfaz web completa (generador + biblioteca)**
+- [x] **Interfaz web completa (generador + biblioteca + aprendizaje)**
 - [x] **Migración a nuevo SDK de Gemini (google-genai)**
 - [x] **Sistema de personajes con checkboxes opcionales**
-- [x] **Navegación entre páginas (generador ↔ biblioteca)**
+- [x] **Navegación entre páginas (generador ↔ biblioteca ↔ aprendizaje)**
+- [x] **Sistema de aprendizaje evolutivo con síntesis automática**
+- [x] **RAG con búsqueda semántica de cuentos similares**
+- [x] **Cache de embeddings para optimización**
+- [x] **Prompts híbridos (reglas + lecciones + ejemplos)**
 
 ### 🔄 En Progreso
-- [ ] Sistema de crítica automática (Function C: SelfCritique)
-- [ ] Bucle de síntesis de aprendizaje (Function D: SynthesizeLearning)
+- [ ] Métricas de efectividad RAG (A/B testing)
+- [ ] Tracking de scores antes/después de aplicar lecciones
+- [ ] Dashboard visual de evolución de aprendizaje
 - [ ] Paginación en biblioteca de cuentos
 
 ### 📅 Próximos Pasos
-- [ ] Script de ingesta para cuentos semilla (60 cuentos base)
-- [ ] Panel de observabilidad para monitorear evolución del estilo
-- [ ] Sistema de tareas asíncronas para crítica en tiempo real
+- [ ] Migrar a PostgreSQL + pgvector para producción (búsqueda ~10x más rápida)
+- [ ] A/B testing de efectividad RAG
+- [ ] Gráficos de evolución de scores en dashboard
+- [ ] Archivo automático de lecciones obsoletas
 - [ ] Exportar cuentos (PDF/texto)
-- [ ] Búsqueda y filtros en biblioteca
+- [ ] Búsqueda y filtros avanzados en biblioteca
+- [ ] Sistema de usuarios y autenticación
 
 ## 🎨 Ejemplo de Uso
 

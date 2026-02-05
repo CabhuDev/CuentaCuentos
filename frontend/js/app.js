@@ -125,6 +125,8 @@ async function generateStory(event) {
 
     try {
         console.log('[generateStory] 📡 Enviando request a:', `${API_BASE_URL}/stories/generate`);
+        console.log('[generateStory] 📦 Payload:', JSON.stringify(storyData, null, 2));
+        
         const response = await fetch(`${API_BASE_URL}/stories/generate`, {
             method: 'POST',
             headers: {
@@ -137,9 +139,18 @@ async function generateStory(event) {
         console.log('[generateStory] Response headers:', Object.fromEntries(response.headers.entries()));
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('[generateStory] ❌ Error response:', errorData);
-            throw new Error(errorData.detail || 'Error generating story');
+            let errorMessage = 'Error generating story';
+            try {
+                const errorData = await response.json();
+                console.error('[generateStory] ❌ Error response:', errorData);
+                errorMessage = errorData.detail || errorMessage;
+            } catch (jsonError) {
+                console.error('[generateStory] ❌ Error parseando JSON de error:', jsonError);
+                const errorText = await response.text();
+                console.error('[generateStory] ❌ Respuesta en texto:', errorText);
+                errorMessage = `Error ${response.status}: ${errorText}`;
+            }
+            throw new Error(errorMessage);
         }
 
         const result = await response.json();
