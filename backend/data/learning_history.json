@@ -1,0 +1,160 @@
+[
+  {
+    "lesson_id": 1,
+    "origin_story_id": "uuid-seed-61",
+    "insight": "El exceso de adjetivos frena el ritmo en escenas de clímax. Mejor: 1-2 adjetivos sensoriales clave por párrafo.",
+    "category": "pacing",
+    "applied_count": 10,
+    "effectiveness_score": 0.9,
+    "status": "active",
+    "synthesized_at": "2026-01-15"
+  },
+  {
+    "lesson_id": 2,
+    "origin_story_id": "uuid-seed-64",
+    "insight": "Las metáforas naturales (animales, plantas, clima) generan más empatía que las tecnológicas en esta audiencia.",
+    "category": "language_choice",
+    "applied_count": 13,
+    "effectiveness_score": 0.92,
+    "status": "active",
+    "synthesized_at": "2026-01-20"
+  },
+  {
+    "lesson_id": 3,
+    "origin_story_id": "uuid-seed-42",
+    "insight": "Los diálogos funcionan mejor para resolver conflictos cuando el protagonista escucha primero, luego actúa.",
+    "category": "narrative_structure",
+    "applied_count": 8,
+    "effectiveness_score": 0.85,
+    "status": "active",
+    "synthesized_at": "2026-02-01"
+  },
+  {
+    "lesson_id": 4,
+    "origin_critique_ids": [
+      "587faea9-e13f-4780-ad78-db2fb08477a3",
+      "9fa58d84-837c-4d1b-b08b-388cd4f4520e"
+    ],
+    "insight": "Es fundamental modelar explícitamente los pasos que los personajes toman para superar la frustración o resolver problemas, mostrando el proceso de transición emocional y la estrategia activa, en lugar de solo el resultado.",
+    "category": "character_development",
+    "priority": "high",
+    "actionable_guidance": "Al desarrollar la trama, desglosa los momentos clave de frustración a calma o de problema a solución. Introduce una pequeña acción, un pensamiento observable o un diálogo interno que demuestre la autorregulación o la aplicación de una nueva estrategia para los lectores jóvenes.",
+    "supporting_evidence": "Crítica #1: 'Profundidad en la Transición Emocional', 'Ritmo en la Resolución' y 'considera integrar un paso o una señal externa (o interna, pero más elaborada) que guíe explícitamente al personaje'.",
+    "applied_count": 5,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-04"
+  },
+  {
+    "lesson_id": 5,
+    "origin_critique_ids": [
+      "587faea9-e13f-4780-ad78-db2fb08477a3",
+      "9fa58d84-837c-4d1b-b08b-388cd4f4520e"
+    ],
+    "insight": "La inmersión del lector se beneficia enormemente de la adición estratégica de detalles sensoriales y ambientales, que enriquecen el mundo del cuento sin sobrecargarlo.",
+    "category": "language_choice",
+    "priority": "medium",
+    "actionable_guidance": "Revisa las descripciones de escenarios y objetos. Identifica 1-2 oportunidades por escena clave para añadir un detalle sensorial (sonido, olor, textura, color específico) que sea apropiado para la edad y añada profundidad a la experiencia del lector.",
+    "supporting_evidence": "Crítica #1: 'Detalles Sensoriales Adicionales'; Crítica #2: 'La descripción del entorno de los 'tesoros' en los cajones es breve; podría enriquecerse con un detalle más'.",
+    "applied_count": 5,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-04"
+  },
+  {
+    "lesson_id": 6,
+    "origin_critique_ids": [
+      "587faea9-e13f-4780-ad78-db2fb08477a3",
+      "9fa58d84-837c-4d1b-b08b-388cd4f4520e"
+    ],
+    "insight": "La coherencia narrativa se fortalece cuando la motivación inicial del personaje está directa e intrínsecamente ligada al problema principal del cuento, creando un flujo lógico y una progresión clara.",
+    "category": "narrative_structure",
+    "priority": "medium",
+    "actionable_guidance": "Antes de empezar a escribir, asegúrate de que el objetivo o la acción inicial de tu personaje sea el catalizador directo o la causa subyacente del conflicto central de la historia, haciendo que su búsqueda de solución sea más orgánica y convincente.",
+    "supporting_evidence": "Crítica #2: 'se podría pulir ligeramente la conexión entre el deseo inicial de Lumi... y el problema principal', 'Asegúrate de que la motivación inicial del personaje esté intrínsecamente ligada al problema principal'.",
+    "applied_count": 5,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-04"
+  },
+  {
+    "lesson_id": 7,
+    "origin_critique_ids": [
+      "6eeff0e1-8976-4a8e-80b3-b23ddc7d4560",
+      "f4c94d3e-dd1f-452d-80b7-e6cffc4275a1"
+    ],
+    "insight": "Intensificar la descripción del conflicto inicial y permitir que el protagonista demuestre una breve frustración o un intento fallido antes de la solución o ayuda externa. Esto no solo hace el problema más palpable, sino que también enriquece el arco del personaje y magnifica el sentido de logro al resolverlo.",
+    "category": "character_development",
+    "priority": "high",
+    "actionable_guidance": "Al plantear un problema en la historia, dedica una frase adicional a describir vívidamente el 'embrollo' (visual o emocional) y asegúrate de incluir un momento breve pero claro donde el personaje principal intenta resolverlo por sí mismo sin éxito o expresa su frustración, antes de que llegue la idea o la ayuda.",
+    "supporting_evidence": "Crítica #1: 'una descripción ligeramente más vívida del caos inicial podría intensificar el problema', 'un muy breve intento o expresión de frustración más concreta por parte de Leo antes de la idea de Mía, podría enriquecer su arco de personaje'.",
+    "applied_count": 3,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-05"
+  },
+  {
+    "lesson_id": 8,
+    "origin_critique_ids": [
+      "6eeff0e1-8976-4a8e-80b3-b23ddc7d4560",
+      "f4c94d3e-dd1f-452d-80b7-e6cffc4275a1"
+    ],
+    "insight": "Asegurar que los títulos y conceptos centrales de la narrativa sean lo más directos y literales posible para el público de 2 a 6 años. Mientras que la poesía es valorada, la mente infantil temprana se beneficia de una comunicación clara y explícita en relación con la trama.",
+    "category": "language_choice",
+    "priority": "medium",
+    "actionable_guidance": "Revisa los títulos y los elementos conceptuales clave para garantizar que su significado sea explícito y directamente comprensible para niños pequeños. Si se usa una metáfora, que esta esté anclada firmemente y de forma muy palpable en la trama principal.",
+    "supporting_evidence": "Crítica #2: 'para la mente literal de niños de 2 a 6 años, el concepto de un 'secreto' no es un elemento explícito en la trama', 'Podría ser ajustado para ser más directo o literal en relación con la trama principal para esta audiencia'.",
+    "applied_count": 3,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-05"
+  },
+  {
+    "lesson_id": 9,
+    "origin_critique_ids": [
+      "6eeff0e1-8976-4a8e-80b3-b23ddc7d4560",
+      "f4c94d3e-dd1f-452d-80b7-e6cffc4275a1"
+    ],
+    "insight": "Continuar y potenciar el uso efectivo de onomatopeyas y descripciones sensoriales, ya que son herramientas poderosas para captar la atención, añadir dinamismo y enriquecer la experiencia inmersiva del lector infantil.",
+    "category": "emotional_impact",
+    "priority": "high",
+    "actionable_guidance": "Integra de forma deliberada y creativa onomatopeyas variadas y descripciones que apelen a múltiples sentidos (vista, oído, tacto, temperatura) para hacer la narración más vibrante, interactiva y memorable para el público objetivo.",
+    "supporting_evidence": "Crítica #1: 'La inclusión de onomatopeyas... es excelente para captar la atención', Crítica #2: 'Uso efectivo de onomatopeyas... que añaden dinamismo', 'Descripciones sensoriales cálidas y evocadoras... que enriquecen la imaginación del lector'.",
+    "applied_count": 3,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-05"
+  },
+  {
+    "lesson_id": 10,
+    "origin_critique_ids": [
+      "3489ef65-9443-456d-8838-401dc1d5d377",
+      "241f9b17-e905-42f5-a31c-ca0dcb9d7d83"
+    ],
+    "insight": "Es fundamental asegurar que todos los elementos narrativos, desde las herramientas utilizadas por el personaje hasta la moraleja final, estén integrados de forma orgánica y fluida en la historia. Esto permite que la resolución se sienta natural y que la lección sea descubierta por el niño, potenciando su reflexión.",
+    "category": "narrative_structure",
+    "priority": "high",
+    "actionable_guidance": "Para el próximo cuento, introduce sutilmente los objetos o habilidades que serán clave para la resolución de un problema mucho antes de su uso. Respecto a la lección principal, evítala como una pregunta directa al final; en su lugar, teje el mensaje de manera que sea una conclusión natural de los eventos o una reflexión implícita del personaje, permitiendo que el niño infiera el mensaje.",
+    "supporting_evidence": "Crítica #1: 'El elemento del 'trocito de alga marina'... podría sentirse un poco introducido de forma abrupta.' y 'asegúrate de que todos los elementos o 'herramientas' que el personaje utiliza en la resolución del problema estén previamente integrados o al menos mencionados sutilmente'. Crítica #2: 'Si bien la pregunta final es efectiva..., se podría buscar integrar la moral o lección de forma más orgánica dentro de la narrativa final, permitiendo que el niño infiera el mensaje'.",
+    "applied_count": 1,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-05"
+  },
+  {
+    "lesson_id": 11,
+    "origin_critique_ids": [
+      "3489ef65-9443-456d-8838-401dc1d5d377",
+      "241f9b17-e905-42f5-a31c-ca0dcb9d7d83"
+    ],
+    "insight": "Mientras las descripciones son efectivas, hay una oportunidad para enriquecer aún más la inmersión sensorial del entorno y asegurar que el vocabulario sea universalmente accesible para todo el rango de edad objetivo (2-6 años), especialmente para los más pequeños.",
+    "category": "language_choice",
+    "priority": "medium",
+    "actionable_guidance": "Experimenta con la adición puntual de uno o dos detalles sensoriales más (ej. olor a tierra, sonido del viento, textura de un objeto) en momentos clave para profundizar la conexión del lector con el escenario. Revisa cuidadosamente el vocabulario para el extremo inferior del rango de edad (2-3 años), simplificando palabras más abstractas para asegurar la máxima comprensión sin sacrificar la riqueza descriptiva.",
+    "supporting_evidence": "Crítica #1: 'palabras como 'vistoso' o 'frustración' pueden ser un poco más abstractas para los niños más pequeños (2-3 años)'. Crítica #2: 'se podrían añadir puntualmente uno o dos detalles sensoriales más del parque (ej. el olor a tierra húmeda, el sonido del viento en los árboles) para una inmersión aún más rica en el ambiente'.",
+    "applied_count": 1,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-05"
+  }
+]

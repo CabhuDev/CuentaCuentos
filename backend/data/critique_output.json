@@ -1,0 +1,30 @@
+{
+  "story_metadata": {
+    "story_id": "uuid-generado",
+    "timestamp": "2026-02-04T10:00:00Z",
+    "is_seed": false,
+    "generation_model": "gemini-1.5-flash"
+  },
+  "evaluation": {
+    "score_coherence": 8,
+    "score_pacing": 7,
+    "score_age_appropriateness": 9,
+    "overall_score": 8.0
+  },
+  "feedback": {
+    "strengths": [
+      "El protagonista muestra vulnerabilidad genuina en la introducción",
+      "El conflicto es accidental y reconocible para la audiencia objetivo",
+      "La onomatopeya se integra naturalmente (¡Splash!)",
+      "El desenlace genera crecimiento sin sermón"
+    ],
+    "areas_for_improvement": [
+      "El desenlace se siente ligeramente apresurado: 1-2 párrafos adicionales ganarían impacto",
+      "Repetición de la palabra 'suave' en 3 contextos diferentes",
+      "Falta un objeto o detalle simbólico para anclar la lección en la memoria del lector"
+    ],
+    "actionable_lesson": "En futuras iteraciones: (1) Expande el desenlace dedicando 1-2 párrafos más a la reflexión cálida del protagonista. (2) Usa un diccionario de sinónimos para 'suave' (sedoso, delicado, tierno, apacible). (3) Considera añadir un objeto simbólico discreto que represente el cambio (ej: un regalo, una piedra, un dibujo).",
+    "applied_lessons": [1, 2]
+  },
+  "recommendation": "approved_for_training_corpus"
+}
