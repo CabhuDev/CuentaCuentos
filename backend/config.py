@@ -24,6 +24,11 @@ LEARNING_HISTORY_PATH = DATA_DIR / "learning_history.json"
 # API Keys
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+# ElevenLabs Configuration
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "21m00Tcm4TlvDq8ikWAM")
+ELEVENLABS_MODEL_ID = os.getenv("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
+
 # Configuración de la app
 APP_TITLE = "CuentaCuentos AI Engine"
 APP_DESCRIPTION = "API para la generación y mejora evolutiva de cuentos infantiles."

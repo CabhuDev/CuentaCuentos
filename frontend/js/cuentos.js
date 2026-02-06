@@ -50,11 +50,36 @@ async function loadStoriesList() {
                     <span>v${story.version}</span>
                 </div>
                 <div class="story-card-preview">${preview}</div>
+                <div class="story-card-actions">
+                    <button class="btn-audio-mini" data-story-id="${story.id}" title="Generar audio">
+                        🎵 Audio
+                    </button>
+                    <button class="btn-play-mini hidden" data-story-id="${story.id}" title="Reproducir audio">
+                        ▶️ Reproducir
+                    </button>
+                </div>
             `;
+            
+            // Agregar event listeners a los botones
+            const audioBtn = card.querySelector('.btn-audio-mini');
+            const playBtn = card.querySelector('.btn-play-mini');
+            
+            audioBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                generateAudio(story.id, story.content, audioBtn, playBtn);
+            });
+            
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                playAudio(story.id);
+            });
             
             storiesList.appendChild(card);
         });
         console.log('[loadStoriesList] ✅ Lista de cuentos renderizada exitosamente');
+        
+        // Verificar qué cuentos tienen audio generado
+        updateAudioButtons();
         
     } catch (error) {
         console.error('[loadStoriesList] ❌ Error:', error);
@@ -115,6 +140,24 @@ function showStoryDetails(story) {
                 })}</span>
                 <span>Versión ${story.version}</span>
             </div>
+            
+            <!-- Controles de Audio -->
+            <div class="audio-controls-container">
+                <button id="btn-generate-audio" class="btn-audio-generate" onclick="generateAudioForCurrentStory()">
+                    🎵 Generar Narración en Audio
+                </button>
+                <div id="audio-player-container" class="audio-player hidden">
+                    <audio id="audio-player" controls>
+                        <source id="audio-source" src="" type="audio/mpeg">
+                        Tu navegador no soporta audio HTML5.
+                    </audio>
+                    <button class="btn-delete-audio" onclick="deleteAudioForCurrentStory()" title="Eliminar audio">
+                        🗑️ Eliminar Audio
+                    </button>
+                </div>
+                <div id="audio-status" class="audio-status"></div>
+            </div>
+            
             <div class="story-text">${story.content}</div>
             ${illustrationButton}
         </div>
@@ -122,6 +165,22 @@ function showStoryDetails(story) {
     
     // Guardar referencia global al cuento actual para funciones de plantilla
     window.currentStory = story;
+    
+    // Verificar si ya existe audio para este cuento
+    checkAudioExists(story.id).then(exists => {
+        if (exists) {
+            // Mostrar reproductor en lugar del botón de generar
+            const button = document.getElementById('btn-generate-audio');
+            const playerContainer = document.getElementById('audio-player-container');
+            const audioSource = document.getElementById('audio-source');
+            const audioPlayer = document.getElementById('audio-player');
+            
+            button.classList.add('hidden');
+            audioSource.src = `${API_BASE_URL}/static/audio/${story.id}.mp3`;
+            audioPlayer.load();
+            playerContainer.classList.remove('hidden');
+        }
+    });
     
     // Scroll al top
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -213,3 +272,207 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('[DOMContentLoaded] ✅ Event listeners configurados');
 });
+
+// ===== FUNCIONES DE AUDIO =====
+
+// Verificar si existe audio para un cuento
+async function checkAudioExists(storyId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/audio/cuentos/${storyId}/estado`);
+        if (!response.ok) return false;
+        const data = await response.json();
+        return data.existe;
+    } catch (error) {
+        console.error('[checkAudioExists] Error:', error);
+        return false;
+    }
+}
+
+// Generar audio para el cuento actual (vista detalle)
+async function generateAudioForCurrentStory() {
+    if (!window.currentStory) {
+        alert('No hay cuento seleccionado');
+        return;
+    }
+    
+    const storyId = window.currentStory.id;
+    const texto = window.currentStory.content;
+    
+    const button = document.getElementById('btn-generate-audio');
+    const statusDiv = document.getElementById('audio-status');
+    
+    // Deshabilitar botón y mostrar estado
+    button.disabled = true;
+    button.textContent = '⏳ Generando audio...';
+    statusDiv.textContent = 'Generando narración con ElevenLabs...';
+    statusDiv.className = 'audio-status info';
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/audio/cuentos/${storyId}/generar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ texto, cuento_id: storyId })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Error al generar audio');
+        }
+        
+        const data = await response.json();
+        console.log('[generateAudioForCurrentStory] Audio generado:', data);
+        
+        // Mostrar reproductor
+        const playerContainer = document.getElementById('audio-player-container');
+        const audioSource = document.getElementById('audio-source');
+        const audioPlayer = document.getElementById('audio-player');
+        
+        audioSource.src = data.audio_url;
+        audioPlayer.load();
+        playerContainer.classList.remove('hidden');
+        button.classList.add('hidden');
+        
+        statusDiv.textContent = `✅ Audio generado exitosamente (${data.characters_used} caracteres, ~${data.duration}s)`;
+        statusDiv.className = 'audio-status success';
+        
+        // Ocultar mensaje después de 5 segundos
+        setTimeout(() => {
+            statusDiv.textContent = '';
+            statusDiv.className = 'audio-status';
+        }, 5000);
+        
+    } catch (error) {
+        console.error('[generateAudioForCurrentStory] Error:', error);
+        statusDiv.textContent = `❌ Error: ${error.message}`;
+        statusDiv.className = 'audio-status error';
+        button.disabled = false;
+        button.textContent = '🎵 Generar Narración en Audio';
+    }
+}
+
+// Eliminar audio del cuento actual
+async function deleteAudioForCurrentStory() {
+    if (!window.currentStory) return;
+    
+    if (!confirm('¿Estás seguro de eliminar el audio?')) return;
+    
+    const storyId = window.currentStory.id;
+    const statusDiv = document.getElementById('audio-status');
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/audio/cuentos/${storyId}`, {
+            method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Error al eliminar audio');
+        }
+        
+        // Ocultar reproductor y mostrar botón de generar
+        const playerContainer = document.getElementById('audio-player-container');
+        const button = document.getElementById('btn-generate-audio');
+        
+        playerContainer.classList.add('hidden');
+        button.classList.remove('hidden');
+        button.disabled = false;
+        
+        statusDiv.textContent = '🗑️ Audio eliminado correctamente';
+        statusDiv.className = 'audio-status info';
+        
+        setTimeout(() => {
+            statusDiv.textContent = '';
+            statusDiv.className = 'audio-status';
+        }, 3000);
+        
+    } catch (error) {
+        console.error('[deleteAudioForCurrentStory] Error:', error);
+        statusDiv.textContent = `❌ Error: ${error.message}`;
+        statusDiv.className = 'audio-status error';
+    }
+}
+
+// Generar audio desde tarjeta (lista de cuentos)
+async function generateAudio(storyId, storyContent, buttonElement, playButton) {
+    const originalText = buttonElement.textContent;
+    buttonElement.disabled = true;
+    buttonElement.textContent = '⏳';
+    
+    try {
+        // Generar audio directamente con el contenido que ya tenemos
+        const response = await fetch(`${API_BASE_URL}/audio/cuentos/${storyId}/generar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ texto: storyContent, cuento_id: storyId })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || 'Error al generar audio');
+        }
+        
+        // Mostrar botón de reproducir
+        buttonElement.classList.add('hidden');
+        if (playButton) {
+            playButton.classList.remove('hidden');
+        }
+        
+        console.log('[generateAudio] ✅ Audio generado para:', storyId);
+        
+    } catch (error) {
+        console.error('[generateAudio] Error:', error);
+        alert(`Error al generar audio: ${error.message}`);
+        buttonElement.disabled = false;
+        buttonElement.textContent = originalText;
+    }
+}
+
+// Reproducir audio desde tarjeta
+function playAudio(storyId) {
+    // Crear modal con reproductor
+    const modal = document.createElement('div');
+    modal.className = 'audio-modal';
+    modal.innerHTML = `
+        <div class="audio-modal-content">
+            <h3>🎵 Reproducir Audio</h3>
+            <audio controls autoplay style="width: 100%; margin: 20px 0;">
+                <source src="${API_BASE_URL}/static/audio/${storyId}.mp3" type="audio/mpeg">
+                Tu navegador no soporta audio HTML5.
+            </audio>
+            <button class="btn-secondary" onclick="this.closest('.audio-modal').remove()">
+                Cerrar
+            </button>
+        </div>
+    `;
+    
+    // Cerrar al hacer clic fuera
+    modal.onclick = (e) => {
+        if (e.target === modal) modal.remove();
+    };
+    
+    document.body.appendChild(modal);
+}
+
+// Verificar audios existentes al cargar la lista
+async function updateAudioButtons() {
+    const audioButtons = document.querySelectorAll('.btn-audio-mini');
+    
+    for (const button of audioButtons) {
+        const storyId = button.getAttribute('data-story-id');
+        if (!storyId) continue;
+        
+        const exists = await checkAudioExists(storyId);
+        
+        if (exists) {
+            button.classList.add('hidden');
+            const playButton = button.nextElementSibling;
+            if (playButton && playButton.classList.contains('btn-play-mini')) {
+                playButton.classList.remove('hidden');
+            }
+        }
+    }
+}

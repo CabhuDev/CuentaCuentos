@@ -96,3 +96,76 @@ class CharacterResponse(BaseModel):
     edad_aparente: Optional[str] = None
     prompt_base_ia: Optional[str] = None
     total_apariciones: Optional[int] = None
+
+
+# === SCHEMAS DE AUDIO ===
+
+class AudioGenerationRequest(BaseModel):
+    """Schema para solicitud de generación de audio"""
+    texto: str = Field(..., description="Texto del cuento a narrar")
+    cuento_id: Optional[str] = Field(None, description="ID del cuento (opcional)")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "texto": "Había una vez en un bosque encantado...",
+                "cuento_id": "cuento_123"
+            }
+        }
+
+
+class AudioGenerationResponse(BaseModel):
+    """Schema para respuesta de generación de audio"""
+    success: bool = Field(..., description="Indica si la generación fue exitosa")
+    audio_url: Optional[str] = Field(None, description="URL del archivo de audio generado")
+    message: str = Field(..., description="Mensaje descriptivo del resultado")
+    file_path: Optional[str] = Field(None, description="Ruta del archivo en el servidor")
+    duration: Optional[float] = Field(None, description="Duración del audio en segundos (estimada)")
+    characters_used: Optional[int] = Field(None, description="Caracteres utilizados del texto")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "success": True,
+                "audio_url": "/static/audio/cuento_123.mp3",
+                "message": "Audio generado exitosamente",
+                "file_path": "data/audio/cuento_123.mp3",
+                "duration": 45.5,
+                "characters_used": 250
+            }
+        }
+
+
+class VoiceInfo(BaseModel):
+    """Schema para información de voz disponible"""
+    voice_id: str = Field(..., description="ID único de la voz")
+    name: str = Field(..., description="Nombre de la voz")
+    category: Optional[str] = Field(None, description="Categoría de la voz")
+    description: Optional[str] = Field(None, description="Descripción de la voz")
+    preview_url: Optional[str] = Field(None, description="URL de previsualización")
+    labels: Optional[Dict[str, Any]] = Field(None, description="Etiquetas adicionales")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+                "name": "George",
+                "category": "premade",
+                "description": "Warm, Captivating Storyteller",
+                "labels": {"accent": "american", "age": "middle-aged"}
+            }
+        }
+
+
+class VoicesListResponse(BaseModel):
+    """Schema para respuesta de lista de voces"""
+    voices: List[VoiceInfo] = Field(..., description="Lista de voces disponibles")
+    total: int = Field(..., description="Total de voces disponibles")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "voices": [],
+                "total": 21
+            }
+        }

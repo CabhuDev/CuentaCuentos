@@ -1,8 +1,9 @@
 # Aplicación FastAPI principal - API REST pura para arquitectura frontend independiente
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from config import APP_TITLE, APP_DESCRIPTION, APP_VERSION
-from routers import stories, characters, critiques, learning, rag
+from routers import stories, characters, critiques, learning, rag, audio
 from services.character_service import character_service
 from services.prompt_service import prompt_service
 from services.gemini_service import gemini_service
@@ -28,6 +29,13 @@ app.include_router(characters.router)
 app.include_router(critiques.router)
 app.include_router(learning.router)
 app.include_router(rag.router)
+app.include_router(audio.router)
+
+# Montar directorio de archivos estáticos para audio
+import os
+AUDIO_DIR = os.path.join(os.path.dirname(__file__), "data", "audio")
+if os.path.exists(AUDIO_DIR):
+    app.mount("/static/audio", StaticFiles(directory=AUDIO_DIR), name="audio")
 
 
 @app.on_event("startup")
