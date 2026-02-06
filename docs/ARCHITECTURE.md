@@ -1,402 +1,127 @@
-# CuentaCuentos AI - Documentación del Proyecto
+# 🏗️ Arquitectura del Sistema
 
-## 📖 Visión General
+Este documento describe la arquitectura técnica del proyecto CuentaCuentos AI, un sistema API-first diseñado para la generación y mejora continua de cuentos infantiles.
 
-CuentaCuentos AI es un generador inteligente de cuentos personalizados para niños que utiliza inteligencia artificial (Google Gemini) con una arquitectura API-first que permite escalabilidad y flexibilidad.
+## 🚀 Arquitectura General
 
-## 🏗️ Arquitectura API-First
+El proyecto sigue un patrón **API-first**, separando completamente el backend (lógica de negocio e IA) del frontend (interfaz de usuario).
 
-### Separación Backend/Frontend
+```mermaid
+graph TD
+    subgraph "Usuario"
+        A[Navegador Web]
+    end
 
-**Backend (API REST)**
-- Puerto: `http://localhost:8000`
-- Framework: FastAPI
-- Responsabilidad: Lógica de negocio, IA, persistencia de datos
-- Endpoints documentados en `/docs`
+    subgraph "Infraestructura Frontend"
+        B(Cliente Web<br>HTML/CSS/JS)
+    end
+    
+    subgraph "Infraestructura Backend"
+        C{API Gateway / Servidor Web}
+        D[API REST<br>FastAPI]
+        E[Base de Datos<br>SQLite/PostgreSQL]
+        F(Motor de IA<br>Google Gemini)
+    end
 
-**Frontend (Cliente Web)**
-- Puerto: `http://localhost:3000` (servidor independiente)
-- Tecnología: HTML/CSS/JavaScript puro
-- Responsabilidad: Interfaz de usuario, consumo de API
-- Comunicación: REST API con fetch()
-
-### Ventajas de esta arquitectura:
-1. **Escalabilidad**: Backend puede servir múltiples frontends (web, móvil, etc.)
-2. **Mantenibilidad**: Separación clara de responsabilidades
-3. **Flexibilidad**: Tecnologías independientes, actualizaciones separadas
-4. **Testing**: Pruebas independientes de API y UI
-5. **Despliegue**: Estrategias de despliegue diferenciadas
-
-## 🔄 Flujo de Datos
-
-```
-Frontend (UI) <--HTTP/REST--> Backend (API) <--> Database
-                                    ↓
-                            Google Gemini AI
+    A --> B
+    B --"Llamadas HTTP/REST"--> C
+    C --> D
+    D <--> E
+    D <--> F
 ```
 
-### Proceso de Generación:
-1. **Usuario completa formulario** en frontend
-2. **Frontend envía POST** a `/stories/generate`
-3. **Backend procesa** con servicios modulares
-4. **IA genera contenido** usando Gemini API
-5. **Backend retorna JSON** con cuento y crítica
-6. **Frontend renderiza** resultado al usuario
-
-## 📁 Estructura Detallada
-
-### Backend Modular (/backend/)
-```
-backend/
-├── main.py                    # App FastAPI con CORS habilitado
-├── config.py                  # Variables de entorno centralizadas
-├── models/
-│   ├── database.py           # SQLAlchemy ORM + pgvector
-│   └── schemas.py            # Pydantic validation models
-├── services/                 # Capa de lógica de negocio
-│   ├── character_service.py  # Gestión de personajes
-│   ├── prompt_service.py     # Construcción de prompts
-│   └── gemini_service.py     # Integración con IA
-├── routers/                  # Endpoints REST organizados
-│   ├── characters.py         # CRUD personajes
-│   ├── stories.py            # Generación de cuentos
-│   └── critiques.py          # Análisis y críticas
-└── data/                     # Configuración JSON
-    ├── characters.json       # Biblioteca de personajes
-    ├── style_guide.json      # Guías de estilo
-    └── learning_history.json # Historial de aprendizaje
-```
-
-### Frontend Independiente (/frontend/)
-```
-frontend/
-├── index.html               # SPA principal
-├── css/
-│   └── styles.css           # Responsive design
-└── js/
-    └── app.js               # API client + DOM manipulation
-```
-
-## 🛠️ Stack Tecnológico Completo
-
-### Backend Stack
-| Tecnología | Propósito | Estado |
-|------------|-----------|---------|
-| FastAPI | Web framework REST | ✅ Implementado |
-| SQLAlchemy | ORM + Database abstraction | ✅ Implementado |
-| PostgreSQL | Base de datos principal | ✅ Configurado |
-| pgvector | Embeddings vectoriales | ✅ Configurado |
-| Pydantic | Data validation | ✅ Implementado |
-| Google Gemini | IA generativa | ✅ Integrado |
-| python-dotenv | Environment management | ✅ Implementado |
-
-### Frontend Stack
-| Tecnología | Propósito | Estado |
-|------------|-----------|---------|
-| HTML5 | Estructura de contenido | ✅ Implementado |
-| CSS3 | Estilos responsive | ✅ Implementado |
-| JavaScript ES6+ | Lógica de cliente | ✅ Implementado |
-| Fetch API | HTTP requests | ✅ Implementado |
-
-## 🔌 API Endpoints Documentados
-
-### Personajes (/characters)
-```http
-GET /characters
-Response: Array<Character>
-
-POST /characters
-Body: Character
-Response: Character
-```
-
-### Cuentos (/stories)
-```http
-POST /stories/generate
-Body: StoryPromptInput
-Response: StoryResponse
-
-GET /stories/{id}
-Response: Story
-```
-
-### Críticas (/critiques)
-```http
-GET /critiques/{story_id}
-Response: Critique
-```
-
-### Sistema (/health)
-```http
-GET /
-Response: {"status": "healthy", "api_docs": "/docs"}
-
-GET /health
-Response: Detailed system status
-```
-
-## 🔧 Configuración de Desarrollo
-
-### Variables de Entorno (.env)
-```bash
-# Base de datos PostgreSQL
-DATABASE_URL=postgresql://usuario:password@localhost/cuentacuentos
-
-# Google Gemini AI
-GEMINI_API_KEY=tu_api_key_aquí
-
-# Configuración de aplicación
-APP_TITLE=CuentaCuentos AI API
-APP_DESCRIPTION=API para generar cuentos personalizados para niños con IA
-APP_VERSION=1.0.0
-
-# Rutas de archivos de configuración
-CHARACTERS_FILE=./data/characters.json
-STYLE_GUIDE_FILE=./data/style_guide.json
-STYLE_PROFILE_FILE=./data/style_profile.json
-LEARNING_HISTORY_FILE=./data/learning_history.json
-```
-
-### Setup Backend
-```bash
-# 1. Navegar al backend (entorno virtual ya configurado)
-cd backend
-
-# 2. Activar entorno virtual
-.venv\Scripts\Activate.ps1  # Windows PowerShell
-.venv\Scripts\activate.bat  # Windows CMD
-source .venv/bin/activate   # Linux/macOS
-
-# 3. Verificar dependencias instaladas
-pip list
-
-# 4. Instalar dependencias si es necesario
-pip install fastapi uvicorn sqlalchemy psycopg2-binary python-dotenv google-generativeai pgvector
-
-# 5. Configurar .env (ver arriba)
-
-# 6. Ejecutar servidor
-uvicorn main:app --reload --host 127.0.0.1 --port 8000
-```
-
-### Setup Frontend
-```bash
-# Servidor HTTP simple para desarrollo
-cd frontend
-python -m http.server 3000
-
-# O usar Live Server en VS Code
-# Instalar extensión "Live Server" y clic derecho en index.html > "Open with Live Server"
-```
-
-## 🔗 Integración Frontend-Backend
-
-### JavaScript API Client
-```javascript
-const API_BASE_URL = 'http://127.0.0.1:8000';
-
-// Cargar personajes disponibles
-async function loadCharacters() {
-    const response = await fetch(`${API_BASE_URL}/characters`);
-    return await response.json();
-}
-
-// Generar cuento
-async function generateStory(storyData) {
-    const response = await fetch(`${API_BASE_URL}/stories/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(storyData)
-    });
-    return await response.json();
-}
-```
-
-### CORS Configuration
-```python
-# En main.py
-from fastapi.middleware.cors import CORSMiddleware
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # En producción: ["https://tu-frontend.com"]
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-```
-
-## 📊 Flujos de Datos
-
-### 1. Carga de Personajes
-```
-Frontend                Backend              Data
-   |                       |                  |
-   |-- GET /characters --> |                  |
-   |                       |-- load_file --> |
-   |                       |<-- JSON -------- |
-   |<-- Array<Character> --|                  |
-   |                       |                  |
-```
-
-### 2. Generación de Cuento
-```
-Frontend                Backend              AI Service           Database
-   |                       |                     |                   |
-   |-- POST /stories/ ---> |                     |                   |
-   |    generate            |-- build_prompt --> |                   |
-   |                       |-- call_gemini ----> |                   |
-   |                       |<-- story_text ----- |                   |
-   |                       |-- store_story ------|-----------------> |
-   |<-- StoryResponse ---- |                     |                   |
-```
-
-## 🧪 Testing
-
-### Backend Testing
-```bash
-# Instalar dependencias de testing
-pip install pytest pytest-asyncio httpx
-
-# Estructura de tests
-backend/tests/
-├── test_characters.py    # Test endpoints de personajes
-├── test_stories.py       # Test generación de cuentos
-├── test_services.py      # Test lógica de negocio
-└── conftest.py           # Configuración pytest
-
-# Ejecutar tests
-pytest tests/ -v
-```
-
-### Frontend Testing
-```bash
-# Testing manual con diferentes navegadores
-# Testing de API usando Postman/Insomnia
-# Testing E2E con Playwright (opcional)
-```
-
-## 🚀 Estrategias de Despliegue
-
-### Backend (API)
-```dockerfile
-# Dockerfile para backend
-FROM python:3.13-slim
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-EXPOSE 8000
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-**Opciones de despliegue:**
-- **Heroku**: Simple con `Procfile`
-- **Railway**: Deploy directo desde Git
-- **DigitalOcean App Platform**: Escalable
-- **AWS ECS/Lambda**: Para alta disponibilidad
-
-### Frontend (SPA)
-**Opciones de hosting estático:**
-- **Vercel**: Deploy automático desde Git
-- **Netlify**: CDN global incluido
-- **GitHub Pages**: Gratuito para repositorios públicos
-- **AWS S3 + CloudFront**: Máximo control
-
-### Configuración de Producción
-```javascript
-// En frontend/js/app.js para producción
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-    ? 'https://tu-api.herokuapp.com'
-    : 'http://127.0.0.1:8000';
-```
-
-## 🔄 Workflow de Desarrollo
-
-### Git Workflow
-```bash
-# Desarrollo de feature
-git checkout -b feature/nueva-funcionalidad
-# ... hacer cambios en backend O frontend
-git commit -am "Add: nueva funcionalidad en [backend|frontend]"
-git push origin feature/nueva-funcionalidad
-
-# Merge a main
-git checkout main
-git merge feature/nueva-funcionalidad
-```
-
-### Versionado Independiente
-- Backend: API versioning en URLs (`/v1/stories/generate`)
-- Frontend: Versionado en package.json o tags Git
-- Base de datos: Migraciones con Alembic
-
-## 📈 Monitoring y Observabilidad
-
-### Backend Metrics
-```python
-# En main.py - agregar middleware de métricas
-@app.middleware("http")
-async def log_requests(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    logger.info(f"{request.method} {request.url} - {response.status_code} - {process_time:.2f}s")
-    return response
-```
-
-### Health Checks
-- Backend: `/health` endpoint con métricas detalladas
-- Frontend: Verificación de conectividad con API
-- Base de datos: Connection pooling y timeouts
-
-## 🔧 Troubleshooting
-
-### Problemas Comunes
-
-**CORS Errors**
-```bash
-# Verificar configuración CORS en main.py
-# Verificar que allow_origins incluya el dominio del frontend
-```
-
-**API Key Issues**
-```bash
-# Verificar .env está configurado
-# Verificar GEMINI_API_KEY es válido
-# Verificar límites de rate en Google Cloud Console
-```
-
-**Database Connection**
-```bash
-# Verificar PostgreSQL está ejecutándose
-# Verificar DATABASE_URL es correcto
-# Verificar extensión pgvector está instalada
-```
-
-## 🎯 Roadmap Futuro
-
-### Próximas Funcionalidades
-- [ ] **Autenticación de usuarios** (JWT tokens)
-- [ ] **Multilenguaje** (i18n)
-- [ ] **Historiales de cuentos por usuario**
-- [ ] **Exportación a PDF/ePub**
-- [ ] **API de imágenes** (DALL-E integration)
-- [ ] **Caching Redis** para mejorar performance
-- [ ] **WebSockets** para generación en tiempo real
-- [ ] **Mobile app** (React Native/Flutter)
-
-### Optimizaciones Técnicas
-- [ ] **Database migrations** con Alembic
-- [ ] **API rate limiting** con slowapi
-- [ ] **Response caching** para endpoints frecuentes
-- [ ] **Async database** con asyncpg
-- [ ] **Background tasks** con Celery
-- [ ] **Logging estructurado** con structlog
+- **Frontend:** Un cliente ligero y estático (HTML, CSS, JS) que se comunica con el backend a través de una API REST. No tiene lógica de negocio.
+- **Backend:** Una aplicación FastAPI que expone endpoints REST para todas las operaciones. Contiene toda la lógica de negocio, la interacción con la base de datos y la comunicación con la IA de Google Gemini.
+
+### Tecnologías Clave
+- **Framework Backend:** FastAPI (Python)
+- **Motor de IA:** Google Gemini (gemini-2.5-flash)
+- **Base de Datos:** SQLite (desarrollo), con opción a PostgreSQL + pgvector (producción).
+- **Frontend:** HTML, CSS, JavaScript (sin frameworks).
 
 ---
 
-*Documentación actualizada para arquitectura API-first - v1.0.0*
+## 🔄 El Corazón del Sistema: El Bucle de Aprendizaje Evolutivo
+
+La característica más importante de esta arquitectura es su capacidad de auto-mejora. Esto se logra a través de un ciclo continuo de cuatro pasos: **Generar, Criticar, Sintetizar y Aplicar**.
+
+```mermaid
+graph LR
+    A[1. Generar Cuento] --> B{2. Auto-Crítica}
+    B --> C[3. Sintetizar Lecciones]
+    C --> D(4. Aplicar Lecciones)
+    D --> A
+```
+
+1.  **Generar Cuento:** Se genera un nuevo cuento utilizando el motor de IA, basado en un prompt que incluye la guía de estilo actual y las lecciones aprendidas. Para mejorar la calidad, se utiliza un sistema **RAG (Retrieval-Augmented Generation)** que busca ejemplos de cuentos exitosos en la base de datos y los añade al prompt.
+
+2.  **Auto-Crítica (en background):** Inmediatamente después de guardar el cuento, una tarea en segundo plano envía ese mismo cuento a la IA, pero esta vez con un prompt que le pide actuar como un "editor exigente". La IA devuelve una crítica estructurada con puntos fuertes, débiles y un score numérico, que se guarda en la base de datos.
+
+3.  **Sintetizar Lecciones:** Cada vez que se acumula un número determinado de críticas (ej. cada 2), un proceso automático se activa. Envía el lote de críticas a la IA y le pide que identifique **patrones y meta-lecciones**. Por ejemplo, si varias críticas mencionan que "los finales son muy abruptos", el sistema sintetiza una lección como: "Mejorar la cadencia y el cierre de los cuentos".
+
+4.  **Aplicar Lecciones:** Las lecciones sintetizadas se guardan en un archivo de configuración (`learning_history.json`). La próxima vez que se vaya a generar un cuento, el `prompt_service` carga estas lecciones activas y las inyecta en el prompt, influyendo en el estilo y la estructura de la nueva creación.
+
+Este ciclo convierte al sistema en un **motor evolutivo** que no solo genera contenido, sino que aprende de su propio trabajo para mejorar la calidad con el tiempo.
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+CuentaCuentos/
+├── backend/                   # 🔧 API REST con FastAPI
+│   ├── main.py                # Aplicación FastAPI principal
+│   ├── config.py              # Configuración centralizada
+│   ├── .env.example           # Plantilla de variables de entorno
+│   ├── requirements.txt       # Dependencias Python
+│   ├── data/                  # Archivos de datos y configuración
+│   ├── models/                # Capa de datos (SQLAlchemy, Pydantic)
+│   ├── services/              # Lógica de negocio
+│   ├── routers/               # Endpoints API
+│   └── .venv/                 # Entorno virtual
+├── frontend/                  # 🎨 Interfaz Web (cliente estático)
+│   ├── index.html             # Página de generación
+│   ├── cuentos.html           # Biblioteca de cuentos
+│   ├── aprendizaje.html       # Dashboard del bucle de aprendizaje
+│   ├── css/
+│   └── js/
+├── docs/                      # 📚 Documentación
+│   ├── ARCHITECTURE.md        # Este archivo
+│   ├── LITERARY_QUALITY.md    # Guía de estilo literario
+│   └── ...
+└── README.md                  # Archivo principal de bienvenida
+```
+
+---
+
+## 🛠️ Componentes del Sistema
+
+1.  **The Writer (El Escritor):** El `gemini_service` cuando genera cuentos. Sigue las instrucciones del `prompt_service`.
+2.  **The Editor (El Editor):** El `gemini_service` cuando genera críticas. Analiza el texto en busca de mejoras.
+3.  **The Archivist (El Archivista):** La capa de base de datos (`database_sqlite.py`) que almacena cuentos, críticas y sus embeddings.
+4.  **The Teacher (El Maestro):** El `learning_service` que orquesta la síntesis de lecciones y actualiza el perfil de estilo.
+
+## 📊 Esquema de Base de Datos (SQLite)
+
+Los modelos de datos son la base para la persistencia y el aprendizaje.
+
+```python
+# Modelos definidos en backend/models/database_sqlite.py
+
+# Almacena cada cuento generado.
+class Story(Base):
+    id: str  # UUID
+    title: str
+    content: str
+    embedding_json: list  # Vector de embedding para búsqueda semántica (RAG)
+    ...
+
+# Almacena la evaluación de cada cuento.
+class Critique(Base):
+    id: str
+    story_id: str
+    critique_text: str  # El JSON completo de la crítica
+    score: int          # El score numérico (1-10) extraído del JSON
+    ...
+```
+*(Se omiten otros modelos como `Lesson` y `Character` por brevedad).*
