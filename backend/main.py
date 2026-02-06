@@ -1,7 +1,6 @@
 # Aplicación FastAPI principal - API REST pura para arquitectura frontend independiente
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from config import APP_TITLE, APP_DESCRIPTION, APP_VERSION
 from routers import stories, characters, critiques, learning, rag, audio
 from services.character_service import character_service
@@ -12,6 +11,7 @@ app = FastAPI(
     title=APP_TITLE,
     description=APP_DESCRIPTION,
     version=APP_VERSION,
+    root_path="/cuentacuentos"  # Clave para el despliegue en un subdirectorio
 )
 
 # CORS para permitir acceso del frontend independiente
@@ -23,19 +23,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluir routers
-app.include_router(stories.router)
-app.include_router(characters.router)
-app.include_router(critiques.router)
-app.include_router(learning.router)
-app.include_router(rag.router)
-app.include_router(audio.router)
-
-# Montar directorio de archivos estáticos para audio
-import os
-AUDIO_DIR = os.path.join(os.path.dirname(__file__), "data", "audio")
-if os.path.exists(AUDIO_DIR):
-    app.mount("/static/audio", StaticFiles(directory=AUDIO_DIR), name="audio")
+# Incluir routers con prefijo /api
+API_PREFIX = "/api"
+app.include_router(stories.router, prefix=API_PREFIX)
+app.include_router(characters.router, prefix=API_PREFIX)
+app.include_router(critiques.router, prefix=API_PREFIX)
+app.include_router(learning.router, prefix=API_PREFIX)
+app.include_router(rag.router, prefix=API_PREFIX)
+app.include_router(audio.router, prefix=API_PREFIX)
 
 
 @app.on_event("startup")

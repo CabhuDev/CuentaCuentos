@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend:
+    # Construye la imagen usando el Dockerfile en el directorio actual
+    build: .
+    ports:
+      # Mapea el puerto 8002 del host al puerto 8000 del contenedor
+      # El puerto 8002 es el recomendado para este proyecto en tu VPS.
+      - "8002:8000"
+    env_file:
+      # Carga las variables de entorno desde el archivo .env del backend
+      # Asegúrate de que este archivo exista y contenga tu GEMINI_API_KEY
+      - ./backend/.env
+    volumes:
+      # Monta el código del backend en el contenedor para desarrollo en vivo.
+      # Los cambios que hagas en tu código local se reflejarán automáticamente
+      # en el contenedor sin necesidad de reconstruir la imagen.
+      - ./backend:/app/backend

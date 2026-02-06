@@ -80,7 +80,7 @@ async def generar_audio_cuento(
         )
         
         # Construir URL pública del archivo
-        audio_url = f"/static/audio/{cuento_id}.mp3"
+        audio_url = f"/data/audio/{cuento_id}.mp3"
         
         # Calcular caracteres utilizados
         characters_used = len(request.texto)
@@ -256,7 +256,7 @@ async def verificar_audio_cuento(
         existe = audio_service.audio_existe(cuento_id)
         
         if existe:
-            audio_url = f"/static/audio/{cuento_id}.mp3"
+            audio_url = f"/data/audio/{cuento_id}.mp3"
             return {
                 "existe": True,
                 "audio_url": audio_url,
