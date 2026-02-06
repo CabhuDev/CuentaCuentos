@@ -57,13 +57,7 @@ logs/
 *.bak
 *.swp
 
-# Scripts
 *.ps1
-
-
-# Datos de desarrollo (pueden contener información sensible)
-backend/data/*.json
-!backend/data/.gitkeep
 
 # Archivos de prueba
 test_output/

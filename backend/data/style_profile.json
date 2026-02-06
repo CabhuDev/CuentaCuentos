@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "collection": "Cuentos para Crecer",
+  "target_audience": "Niños de 2 a 6 años",
+  "base_corpus_size": 60,
+  "archetype": "Narrador cálido de historias cotidianas mágicas",
+  "stylistic_markers": {
+    "sentence_structure": "Oraciones cortas en clímax, subordinadas suaves en introducción",
+    "vocabulary_richness": "Media-alta, enfoque en adjetivación sensorial no abrumadora",
+    "preferred_pacing": "Suave en introducción, ágil en clímax, calmado en desenlace",
+    "dialogue_frequency": "Ocasional, breve y reconfortante",
+    "onomatopoeia_presence": "Al menos una por cuento, natural y lúdica",
+    "forbidden_cliches": [
+      "Érase una vez",
+      "Todo fue un sueño",
+      "Y vivieron felices para siempre"
+    ],
+    "enforced_constraints": "Sin villanos, sin maldad, solo conflictos accidentales o malentendidos",
+    "current_improvement_areas": [
+      "Integración más fluida y orgánica de los elementos y 'herramientas' narrativas dentro de la trama.",
+      "Tejer la lección o moraleja principal de forma más implícita y natural en el desenlace de la historia, en lugar de una pregunta o afirmación directa.",
+      "Ampliación sutil de detalles sensoriales (olfato, sonido, textura) para una inmersión ambiental más rica."
+    ]
+  },
+  "active_learning_focus": [
+    "Para los próximos 5 cuentos, el enfoque principal será perfeccionar la integración orgánica de todos los componentes narrativos y la moral de la historia, transformándolos en descubrimientos intrínsecos del lector, al tiempo que se enriquece sutilmente la experiencia sensorial para potenciar la conexión con el cuento.",
+    "Enfoque principal en potenciar el arco de superación del protagonista a través de una expresión más tangible del desafío y la frustración inicial, mientras se mantiene una comunicación conceptual ultra-clara y el atractivo sensorial para la primera infancia.",
+    "Para los próximos 5 cuentos, el enfoque principal debe ser el de *mostrar explícitamente el 'cómo'* los personajes navegan y resuelven sus desafíos emocionales y prácticos, al mismo tiempo que se construye un mundo más rico a través de detalles sensoriales."
+  ],
+  "evolution_metrics": {
+    "effectiveness_scale": "0.0 a 1.0",
+    "last_synthesis": "2026-02-05",
+    "lessons_active": 11,
+    "avg_effectiveness": 0.875,
+    "total_lessons_learned": 11
+  }
+}

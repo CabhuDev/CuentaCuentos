@@ -1,0 +1,298 @@
+{
+  "guia_estilo_cuento": {
+    "coleccion": "Cuentos para Crecer",
+    "audiencia_objetivo": "Niños de 2 a 6 años",
+    "nivel_complejidad": {
+      "importante": "ADAPTAR el cuento según la edad objetivo. La brecha entre 2 y 6 años es enorme.",
+      "2-3_años": {
+        "caracteristicas": [
+          "Frases MUY cortas (4-6 palabras máximo)",
+          "Onomatopeyas frecuentes (¡Pum!, ¡Miau!, ¡Splash!)",
+          "Repetición de estructuras ('Y después... y después...')",
+          "Enumeraciones simples (uno, dos, tres)",
+          "Vocabulario ultra concreto (sin abstracciones)"
+        ],
+        "ejemplo": "El gato salta. ¡Pum! La pelota rueda. ¡Clic, clac, clic!"
+      },
+      "4-5_años": {
+        "caracteristicas": [
+          "Frases medianas (7-10 palabras)",
+          "Subordinadas simples permitidas ('cuando', 'porque')",
+          "Vocabulario más rico pero concreto",
+          "Sutilezas emocionales básicas",
+          "Onomatopeyas ocasionales, no constantes"
+        ],
+        "ejemplo": "El gato saltó sobre la pelota roja porque quería jugar."
+      },
+      "5-6_años": {
+        "caracteristicas": [
+          "Frases más complejas (hasta 12 palabras)",
+          "Ironía suave y humor sutil permitido",
+          "Vocabulario desafiante pero contextualizado",
+          "Subtextos emocionales más profundos",
+          "Metáforas simples"
+        ],
+        "ejemplo": "El gato, que era muy curioso, se preguntaba qué secreto escondía aquella pelota brillante."
+      }
+    },
+    "tono": [
+      "Gentil",
+      "positivo",
+      "mágico-cotidiano",
+      "reconfortante",
+      "con asombro suave",
+      "cadencia de canción de cuna (incluso sin rima)"
+    ],
+    "valores_clave": [
+      "Amistad",
+      "Autoestima",
+      "Creatividad",
+      "Ayuda mutua",
+      "Curiosidad",
+      "Cuidado del entorno"
+    ],
+    "flexibilidad": {
+      "variacion_tematica": [
+        "Exploración",
+        "Primeros miedos",
+        "Juego compartido",
+        "Aprender algo nuevo",
+        "Ayudar a un amigo"
+      ],
+      "variacion_escenarios": [
+        "Casa",
+        "Parque",
+        "Escuela infantil",
+        "Bosque cercano",
+        "Playa tranquila",
+        "Barrio"
+      ],
+      "elementos_opcionales": [
+        "Rima ligera en 1-2 frases",
+        "Repetición amable de una frase",
+        "Objeto con valor simbólico",
+        "Pequeño giro humorístico",
+        "Uso de tríadas (tres adjetivos, tres intentos, tres personajes)",
+        "Aliteración suave (repetición de sonidos: 'susurros suaves del sol')",
+        "Enumeración rítmica (contar cosas en tres o cuatro)"
+      ]
+    },
+    "evocacion_emocional": {
+      "regla_de_oro": "SHOW, DON'T TELL - No nombres la emoción, muéstrala con acciones físicas",
+      "mal_ejemplo": "Paco estaba muy feliz.",
+      "buen_ejemplo": "Paco no dejaba de dar saltitos y sus ojos brillaban como dos canicas.",
+      "emociones_comunes": {
+        "felicidad": "Saltar, brillar los ojos, sonrisa amplia, aplaudir, reír",
+        "tristeza": "Cabeza baja, hombros caídos, lágrima que rueda, voz bajita",
+        "miedo": "Manos temblorosas, esconderse, abrazar fuerte algo, ojos muy abiertos",
+        "sorpresa": "Boca abierta, salto hacia atrás, ojos como platos, jadeo",
+        "curiosidad": "Inclinar la cabeza, acercarse despacio, tocar con un dedo, mirar fijamente",
+        "enfado": "Mejillas rojas, ceño fruncido, cruzar los brazos, pisotón"
+      },
+      "importante": "El niño debe SENTIR la emoción a través del cuerpo del personaje, no por una etiqueta verbal."
+    },
+    "refinamiento_literario": {
+      "uso_de_triadas": {
+        "que_es": "La regla del tres - el ritmo mágico de la literatura infantil",
+        "aplicacion": "Tres adjetivos, tres intentos, tres personajes, tres objetos",
+        "ejemplos": [
+          "El bosque era verde, húmedo y lleno de susurros",
+          "Primero lo intentó con una vara. Luego con una cuerda. Por último, con sus propias manos",
+          "Vio una mariposa, un caracol y una hoja que bailaba"
+        ],
+        "frecuencia": "Al menos una tríada por cuento"
+      },
+      "texturas_y_temperaturas": {
+        "que_es": "Descripción táctil - el niño debe SENTIR el cuento en sus manos",
+        "aplicacion": "Incluir al menos una referencia táctil por cuento",
+        "vocabulario": [
+          "Texturas: suave, rugoso, áspero, sedoso, pegajoso, esponjoso, resbaladizo",
+          "Temperaturas: frío, tibio, calentito, helado, fresquito",
+          "Sensaciones: cosquilleo, picor suave, abrazo cálido, brisa en la cara"
+        ],
+        "ejemplo": "El musgo del árbol era tan suave como la almohada de Luna."
+      },
+      "dinamismo_visual": {
+        "que_es": "Acciones que el niño pueda IMITAR mientras escucha el cuento",
+        "aplicacion": "Describir movimientos físicos específicos y sencillos",
+        "verbos_dinamicos": [
+          "Estirarse hacia el cielo",
+          "Soplar despacito",
+          "Cerrar los ojos muy fuerte",
+          "Abrir las manos como estrellas",
+          "Dar saltitos pequeños",
+          "Hacer cosquillas al aire",
+          "Agacharse muy bajito",
+          "Girar como un torbellino"
+        ],
+        "beneficio": "El cuento se convierte en experiencia corporal, no solo auditiva"
+      },
+      "cadencia_musical": {
+        "regla": "Las frases deben tener ritmo de canción de cuna, incluso sin rima explícita",
+        "tecnicas": [
+          "Alternar frases cortas y largas para crear ritmo",
+          "Usar pausas naturales (comas) como respiraciones",
+          "Repetir estructuras sintácticas (paralelismo)",
+          "Aliteración suave (repetir consonantes)",
+          "Evitar palabras que 'tropiecen' al leer en voz alta"
+        ],
+        "ejemplo_ritmo": "La luna brillaba. Brillaba suave. Brillaba sobre el mar dormido.",
+        "test": "Si no suena bien al leerlo en voz alta con voz de cuento, reescribir"
+      },
+      "silencio_y_espacio": {
+        "importante": "Menos es más. Dejar espacio para la ilustración y la imaginación.",
+        "aplicacion": [
+          "No describir TODO - dejar huecos para que el niño imagine",
+          "Permitir momentos de silencio narrativo (párrafos muy cortos)",
+          "No explicar cada detalle - confiar en la inteligencia del niño",
+          "El cuento es un objeto que se OYE - priorizar la cadencia sonora"
+        ],
+        "ejemplo": "Y entonces... silencio. Solo el viento y las hojas."
+      }
+    },
+    "estructura_narrativa": {
+      "importante": "VARIAR LA ESTRUCTURA EN CADA CUENTO. No usar siempre el mismo patrón. Alternar entre las opciones disponibles.",
+      "titulo": "Descriptivo, amable y centrado en el protagonista",
+      
+      "estructuras_alternativas": [
+        {
+          "nombre": "Aventura de Descubrimiento",
+          "patron": "Personaje curioso → explora algo nuevo → descubrimiento sorprendente → celebración",
+          "cierre": "Final abierto sin moraleja explícita, termina en momento de asombro"
+        },
+        {
+          "nombre": "Desafío Cotidiano",
+          "patron": "Situación normal → problema inesperado → varios intentos creativos → solución colaborativa",
+          "cierre": "Termina con el personaje en acción, sin pregunta directa al lector"
+        },
+        {
+          "nombre": "Transformación Interna",
+          "patron": "Inseguridad del personaje → evento revelador → pequeño acto de valentía → nueva perspectiva",
+          "cierre": "Reflexión breve del personaje sobre lo aprendido (sin moraleja adulta)"
+        },
+        {
+          "nombre": "Juego y Diversión",
+          "patron": "Momento de juego → idea creativa → experimentación lúdica → resultado divertido",
+          "cierre": "Final en medio de la acción, celebrando el momento presente"
+        },
+        {
+          "nombre": "Amistad en Acción",
+          "patron": "Encuentro casual → malentendido o diferencia → búsqueda de entendimiento → conexión genuina",
+          "cierre": "Puede terminar con diálogo entre personajes, sin narrador moralizante"
+        },
+        {
+          "nombre": "Ciclo Natural",
+          "patron": "Observación de la naturaleza → cambio o proceso → participación del personaje → aceptación del ciclo",
+          "cierre": "Final contemplativo y sereno, sin pregunta"
+        }
+      ],
+      
+      "variaciones_de_cierre": [
+        "Sin moraleja explícita - dejar que el cuento hable por sí mismo",
+        "Terminar con una acción en presente del personaje",
+        "Terminar con un diálogo emotivo entre personajes",
+        "Final con imagen sensorial fuerte (visual, sonora, táctil)",
+        "Cierre circular que retoma la primera escena con nueva perspectiva",
+        "Pregunta abierta al lector (usar SOLO ocasionalmente, no en cada cuento)",
+        "Moraleja suave integrada en diálogo o pensamiento del personaje",
+        "Final abierto que sugiere continuación de la aventura"
+      ],
+      
+      "longitud_de_parrafos": {
+        "importante": "VARIAR la longitud. No hacer todos los párrafos del mismo tamaño.",
+        "opciones": [
+          "Un párrafo muy corto (1-2 frases) para impacto",
+          "Párrafos medianos (3-4 frases) para desarrollo",
+          "Un párrafo más largo (5-6 frases) para clímax si es necesario",
+          "Alternar ritmos: corto-largo-corto o largo-corto-largo"
+        ]
+      },
+      
+      "elementos_a_evitar": [
+        "Repetir SIEMPRE la misma estructura (inseguridad → problema → solución → moraleja)",
+        "Terminar SIEMPRE con pregunta al lector",
+        "Hacer que TODOS los párrafos tengan la misma longitud",
+        "Forzar una moraleja explícita cuando el cuento ya transmite el mensaje",
+        "Usar SIEMPRE el patrón 'el personaje descubre que su característica especial es valiosa'"
+      ]
+    },
+    "requisitos_minimos": {
+      "onomatopeya": "Al menos una representación de sonido (ej: ¡Brum!, ¡Ziuuu!, ¡Poc!). Más frecuente para 2-3 años, ocasional para 5-6 años.",
+      "ausencia_de_villanos": "Los conflictos son situaciones accidentales o malentendidos, no hay maldad",
+      "lenguaje_claro": "Vocabulario sencillo y comprensible para 2-6 años (adaptado según nivel_complejidad)",
+      "evocacion_sensorial": "Al menos UNA referencia táctil (textura o temperatura) por cuento",
+      "triada_ritmica": "Al menos UNA tríada (tres elementos) para crear ritmo mágico",
+      "show_dont_tell": "OBLIGATORIO: Describir emociones con acciones físicas, NO nombrarlas directamente"
+    },
+    "recomendaciones": {
+      "longitud_texto": "Objetivo 200-300 palabras (permitido 180-320 si mejora el ritmo)",
+      "parrafos": "Cortos y evocadores (3-5 líneas por párrafo). VARIAR longitud para crear ritmo.",
+      "lenguaje_sensorial": "Prioridad: TÁCTIL (texturas, temperaturas), luego visual, auditivo. Colores, texturas, luces y sonidos sin exceso",
+      "dialogos": "Opcionales, breves y cálidos. Usar para mostrar emociones, no explicarlas",
+      "ritmo": "Introducción suave, clímax ágil, cierre calmado. Cadencia de canción de cuna incluso sin rima",
+      "test_voz_alta": "CRÍTICO: El cuento debe sonar hermoso al leerlo en voz alta. Si una frase 'tropieza', reescribir",
+      "acciones_imitables": "Incluir al menos un movimiento que el niño pueda imitar mientras escucha (estirarse, soplar, cerrar ojos)"
+    },
+    "nota_critica_de_oficio": {
+      "titulo": "EVOCACIÓN vs. NOMINACIÓN - La regla de oro de la literatura infantil de calidad",
+      "principio": "NUNCA nombrar la emoción directamente (nominación). SIEMPRE evocarla con señales físicas y acciones concretas (evocación).",
+      "porque_es_vital": "Ayuda a los niños a identificar señales físicas corporales con emociones, desarrollando su inteligencia emocional de forma natural.",
+      "ejemplos_criticos": {
+        "miedo": {
+          "nominacion_mal": "❌ El conejito estaba muy asustado",
+          "evocacion_bien": "✅ Las rodillas del conejito empezaron a temblar como gelatina y sus orejas se pegaron contra su cabeza"
+        },
+        "felicidad": {
+          "nominacion_mal": "❌ Luna se puso muy contenta",
+          "evocacion_bien": "✅ Luna dio tres saltitos en el aire y su risa sonaba como campanitas"
+        },
+        "tristeza": {
+          "nominacion_mal": "❌ Max estaba triste",
+          "evocacion_bien": "✅ Max se sentó despacito, con la cabeza baja, y una lagrimita redonda rodó por su mejilla"
+        },
+        "sorpresa": {
+          "nominacion_mal": "❌ Se sorprendió mucho",
+          "evocacion_bien": "✅ Sus ojos se abrieron tanto que parecían dos lunas llenas, y su boca hizo una 'O' perfecta"
+        },
+        "enfado": {
+          "nominacion_mal": "❌ Estaba muy enfadado",
+          "evocacion_bien": "✅ Sus mejillas se pusieron rojas como tomates y frunció el ceño mientras cruzaba los brazos"
+        }
+      },
+      "vocabulario_evocativo": {
+        "miedo": [
+          "temblar, esconderse, abrazar fuerte, ojos muy abiertos, respirar rápido",
+          "corazón que late fuerte, espalda contra la pared, voz muy bajita"
+        ],
+        "felicidad": [
+          "saltar, brillar los ojos, sonrisa de oreja a oreja, aplaudir, reír",
+          "dar volteretas, cantar, bailotear, abrazar con fuerza"
+        ],
+        "tristeza": [
+          "cabeza baja, hombros caídos, lágrima que rueda, voz bajita",
+          "sentarse despacito, mirada al suelo, suspiro profundo"
+        ],
+        "sorpresa": [
+          "boca abierta, ojos como platos, salto hacia atrás, jadeo",
+          "quedarse quieto como estatua, parpadear rápido"
+        ],
+        "curiosidad": [
+          "inclinar cabeza, acercarse en puntillas, tocar con un dedo, mirar fijamente",
+          "olfatear, agacharse para ver mejor, estirar el cuello"
+        ],
+        "enfado": [
+          "mejillas rojas, ceño fruncido, cruzar brazos, pisotón",
+          "apretarse los puños, bufar, dar media vuelta"
+        ]
+      },
+      "regla_irrompible": "En CADA escena emocional del cuento, el narrador debe MOSTRAR la emoción a través del cuerpo del personaje, NUNCA etiquetarla con un adjetivo emocional directo. El niño debe SENTIR la emoción leyendo las señales físicas, no que le digan qué sentir."
+    }
+  },
+  "ejemplo_input_usuario": {
+    "personaje": "Protagonista solicitado",
+    "contexto_opcional": "Detalle específico que el usuario quiera incluir",
+    "emocion_objetivo": "Ej: valentía tranquila, alegría compartida",
+    "lugar": "Ej: parque con columpios, cocina familiar",
+    "objeto_significativo": "Ej: una bufanda azul, una caja de música"
+  }
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "martin_001",
+    "nombre": "Martín",
+    "estado": "activo",
+    "rasgos_distintivos": {
+      "cabello": "Corto, liso y de color castaño cálido (#8D6E63)",
+      "ojos": "Enormes, redondos y muy expresivos, color miel",
+      "pestanas": "Especialmente largas y definidas, dándole un aire de curiosidad",
+      "sonrisa": "Amplia, que muestra alegría constante y ocupa gran parte de su rostro",
+      "edad_aparente": "4 años"
+    },
+    "armario_coherente": {
+      "principal": "Camiseta de algodón a rayas horizontales (color suave (#3b8c88) y blanco)",
+      "inferior": "Pantalón corto de color ocre o tierra (#BCAAA4)",
+      "calzado": "Zapatillas de lona sencillas de color azul",
+      "paleta_colores": ["#3b8c88", "#BCAAA4", "#FF3D00", "#FFFFFF"]
+    },
+    "accesorios_frecuentes": [
+      {
+        "item": "Pelota Roja",
+        "hex": "#FF3D00",
+        "vibe": "Saltarina y brillante",
+        "frecuencia": "regular"
+      }
+    ],
+    "personalidad_narrativa": {
+      "arquetipos": ["Curioso", "Empático", "Valiente en lo cotidiano"],
+      "miedos_naturales": ["Oscuridad suave", "Separación temporal"],
+      "motivaciones": ["Exploración", "Ayudar a otros", "Descubrir"],
+      "lenguaje_caracteristico": "Preguntas frecuentes, admiración suave, risas"
+    },
+    "reglas_ilustracion": {
+      "estilo": "Minimalista infantil, estilo editorial de alta calidad",
+      "tecnica": "Acuarela digital con bordes suaves, sin sombras negras pesadas",
+      "paleta_maestra": ["#8D6E63", "#FFDAB9", "#FF3D00", "#E3F2FD"],
+      "prompt_base_ia": "Cute little boy named Martín, short brown hair, very large round eyes with long eyelashes, big genuine smile, wearing a blue and white striped t-shirt and ochre shorts, high-quality minimalist children's book illustration, soft watercolor texture, white background, simple clean lines, warm and inviting"
+    },
+    "historico_apariciones": [
+      {
+        "story_id": "seed_001",
+        "titulo": "Martín y el Descubrimiento",
+        "fecha": "2026-01-15",
+        "rol": "Protagonista"
+      }
+    ],
+    "metadata": {
+      "creado_en": "2026-02-04",
+      "ultima_aparicion": "2026-02-04",
+      "total_apariciones": 1,
+      "coherencia_score": 1.0
+    }
+  }
+]
