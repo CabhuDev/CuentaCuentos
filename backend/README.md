@@ -39,3 +39,97 @@ La API está completamente documentada en la interfaz de Swagger (`/docs`). Los 
 - `GET /learning/statistics`: Muestra estadísticas sobre el proceso de aprendizaje de la IA.
 - `GET /learning/lessons`: Lista las lecciones que la IA ha aprendido.
 - `GET /rag/search`: Endpoint de prueba para la funcionalidad de búsqueda semántica (RAG).
+
+## 🛡️ Autenticación de Usuarios
+
+El backend ahora incluye un sistema de autenticación de usuarios basado en **JWT (JSON Web Tokens)** implementado con **FastAPI** y **PyJWT**.
+
+### Configuración Necesaria
+
+1.  **`SECRET_KEY` en `.env`**:
+    Debes añadir una clave secreta fuerte y única en tu archivo `.env`. Puedes generarla con `openssl rand -hex 32`.
+    ```
+    SECRET_KEY='TU_CLAVE_SECRETA_GENERADA_AQUI'
+    ```
+
+2.  **Tabla `users` en la Base de Datos**:
+    Asegúrate de que la tabla `users` exista en tu base de datos `cuentacuentos.db` (para SQLite) o en tu base de datos de producción. Puedes crearla con el siguiente comando SQL:
+    ```sql
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        hashed_password TEXT NOT NULL
+    );
+    ```
+
+### Endpoints de Autenticación
+
+Los endpoints de autenticación están disponibles en la raíz de la API (no bajo `/api`) y son:
+
+-   `POST /users/`
+    *   **Descripción**: Registra un nuevo usuario en el sistema.
+    *   **Body de la solicitud (JSON)**:
+        ```json
+        {
+            "username": "nombre_de_usuario",
+            "password": "tu_contraseña_segura"
+        }
+        ```
+    *   **Respuesta**: Devuelve los datos del usuario registrado (sin la contraseña).
+
+-   `POST /token`
+    *   **Descripción**: Permite a un usuario iniciar sesión y obtener un token de acceso JWT.
+    *   **Body de la solicitud (Form Data - `application/x-www-form-urlencoded`)**:
+        *   `username`: El nombre de usuario.
+        *   `password`: La contraseña del usuario.
+    *   **Respuesta (JSON)**:
+        ```json
+        {
+            "access_token": "eyJhbGciOiJIUzI1Ni...",
+            "token_type": "bearer"
+        }
+        ```
+        El `access_token` debe ser incluido en las solicitudes a endpoints protegidos.
+
+-   `GET /users/me`
+    *   **Descripción**: Un endpoint de ejemplo para verificar que la autenticación funciona. Devuelve la información del usuario actualmente autenticado.
+    *   **Cabeceras de la solicitud**: Requiere la cabecera `Authorization`.
+        *   `Authorization`: `Bearer TU_ACCES_TOKEN_AQUI` (reemplaza `TU_ACCES_TOKEN_AQUI` con el token obtenido de `/token`).
+
+### Ejemplo de Uso (Python con `httpx`)
+
+```python
+import httpx
+
+BASE_URL = "http://localhost:8000" # O la URL de tu despliegue
+
+# 1. Registrar un nuevo usuario
+register_data = {
+    "username": "miusuario",
+    "password": "micontraseñasegura"
+}
+response = httpx.post(f"{BASE_URL}/users/", json=register_data)
+print("Registro:", response.json())
+
+# 2. Iniciar sesión y obtener un token
+login_data = {
+    "username": "miusuario",
+    "password": "micontraseñasegura"
+}
+response = httpx.post(
+    f"{BASE_URL}/token",
+    data=login_data,
+    headers={"Content-Type": "application/x-www-form-urlencoded"}
+)
+token_response = response.json()
+access_token = token_response.get("access_token")
+print("Login:", token_response)
+
+if access_token:
+    # 3. Acceder a un endpoint protegido
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = httpx.get(f"{BASE_URL}/users/me", headers=headers)
+    print("Usuario actual (protegido):", response.json())
+else:
+    print("No se pudo obtener el token de acceso.")
+```

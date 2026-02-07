@@ -169,3 +169,36 @@ class VoicesListResponse(BaseModel):
                 "total": 21
             }
         }
+
+
+# === SCHEMAS DE AUTENTICACIÓN ===
+
+class UserBase(BaseModel):
+    username: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    disabled: Optional[bool] = None
+
+
+class UserInDB(UserBase):
+    hashed_password: str
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class User(UserBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None

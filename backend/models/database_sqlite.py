@@ -94,6 +94,33 @@ class Character(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class User(Base):
+    """Tabla de Usuarios para Autenticación"""
+    
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
+
+
+# --- Funciones CRUD para Usuarios ---
+
+def get_user_by_username(db: "Session", username: str):
+    """Obtiene un usuario por su nombre de usuario."""
+    from . import schemas  # Importación local para evitar ciclo
+    return db.query(User).filter(User.username == username).first()
+
+def create_user(db: "Session", user: "schemas.UserCreate", hashed_password: str):
+    """Crea un nuevo usuario en la base de datos."""
+    from . import schemas # Importación local
+    db_user = User(username=user.username, hashed_password=hashed_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
 # --- Dependency Injection para FastAPI ---
 def get_db():
     """Genera una sesión de base de datos para cada request."""

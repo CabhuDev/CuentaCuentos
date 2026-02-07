@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import APP_TITLE, APP_DESCRIPTION, APP_VERSION
-from routers import stories, characters, critiques, learning, rag, audio
+from routers import stories, characters, critiques, learning, rag, audio, auth
 from services.character_service import character_service
 from services.prompt_service import prompt_service
 from services.gemini_service import gemini_service
@@ -23,7 +23,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluir routers con prefijo /api
+# Incluir router de autenticación en la raíz
+app.include_router(auth.router)
+
+# Incluir otros routers con prefijo /api
 API_PREFIX = "/api"
 app.include_router(stories.router, prefix=API_PREFIX)
 app.include_router(characters.router, prefix=API_PREFIX)

@@ -33,3 +33,9 @@ ELEVENLABS_MODEL_ID = os.getenv("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
 APP_TITLE = "CuentaCuentos AI Engine"
 APP_DESCRIPTION = "API para la generación y mejora evolutiva de cuentos infantiles."
 APP_VERSION = "0.1.0"
+
+
+# Configuración de Autenticación (JWT)
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
