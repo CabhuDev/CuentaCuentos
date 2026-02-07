@@ -101,6 +101,8 @@ CuentaCuentos/
 3.  **The Archivist (El Archivista):** La capa de base de datos (`database_sqlite.py`) que almacena cuentos, críticas y sus embeddings.
 4.  **The Teacher (El Maestro):** El `learning_service` que orquesta la síntesis de lecciones y actualiza el perfil de estilo.
 
+---
+
 ## 📊 Esquema de Base de Datos (SQLite)
 
 Los modelos de datos son la base para la persistencia y el aprendizaje.
@@ -125,3 +127,127 @@ class Critique(Base):
     ...
 ```
 *(Se omiten otros modelos como `Lesson` y `Character` por brevedad).*
+
+---
+---
+
+## ⚙️ Implementación Detallada del Bucle de Aprendizaje
+
+El sistema de aprendizaje evolutivo está **100% funcional** y se compone de los siguientes elementos:
+
+### 1. Servicios Creados
+
+#### **`services/gemini_service.py`**
+- ✅ Función `synthesize_lessons()` añadida
+- Analiza lote de críticas y extrae patrones usando Gemini
+- Genera lecciones accionables en formato JSON estructurado
+
+#### **`services/learning_service.py`** (NUEVO)
+- ✅ Gestión completa del sistema de aprendizaje
+- Funciones principales:
+  - `load_learning_history()` - Carga lecciones aprendidas
+  - `save_learning_history()` - Guarda nuevas lecciones
+  - `load_style_profile()` - Carga perfil de estilo
+  - `save_style_profile()` - Actualiza perfil evolutivo
+  - `add_lessons_to_history()` - Añade lecciones desde síntesis
+  - `update_style_profile()` - Aplica ajustes de estilo
+  - `get_active_lessons()` - Filtra lecciones activas
+  - `get_synthesis_statistics()` - Estadísticas del sistema
+
+### 2. Router de API
+
+#### **`routers/learning.py`** (NUEVO)
+Endpoints disponibles:
+
+- **`POST /learning/synthesize?last_n_critiques=5`**
+  - Ejecuta síntesis manual de lecciones
+  - Analiza las últimas N críticas
+  - Actualiza `learning_history.json` y `style_profile.json`
+  - Retorna resumen con lecciones aprendidas
+
+- **`GET /learning/statistics`**
+  - Estadísticas del sistema de aprendizaje
+  - Total de lecciones, lecciones por categoría
+  - Promedio de scores recientes
+  - Fecha de última síntesis
+
+- **`GET /learning/lessons?category=pacing&status_filter=active`**
+  - Lista lecciones aprendidas
+  - Filtros: categoría y status
+
+### 3. Integración Automática
+
+#### **`routers/stories.py` - Función `auto_critique_story()`**
+- ✅ **Síntesis automática cada 2 críticas**
+- Cuando se alcanza el umbral (configurable):
+  1. Obtiene las últimas 2 críticas
+  2. Ejecuta síntesis con Gemini
+  3. Guarda lecciones en `learning_history.json`
+  4. Actualiza `style_profile.json`
+  5. Logs detallados del proceso
+
+```python
+SYNTHESIS_THRESHOLD = 2  # Configurable
+```
+
+### 4. Archivos de Datos del Aprendizaje
+
+#### **`data/learning_history.json`**
+Almacena todas las lecciones aprendidas:
+```json
+[
+  {
+    "lesson_id": 1,
+    "origin_critique_ids": ["id1", "id2", ...],
+    "insight": "Lección específica aprendida",
+    "category": "pacing|language_choice|narrative_structure|...",
+    "priority": "high|medium|low",
+    "actionable_guidance": "Consejo concreto",
+    "supporting_evidence": "Evidencia de las críticas",
+    "applied_count": 0,
+    "effectiveness_score": null,
+    "status": "active",
+    "synthesized_at": "2026-02-04"
+  }
+]
+```
+
+#### **`data/style_profile.json`**
+Perfil evolutivo que se actualiza automáticamente con cada síntesis:
+```json
+{
+  "evolution_metrics": {
+    "last_synthesis": "2026-02-04",
+    "lessons_active": 5,
+    "total_lessons_learned": 12,
+    "avg_effectiveness": 0.875
+  },
+  "active_learning_focus": [
+    "Enfoque más reciente",
+    "Enfoque anterior",
+    "..."
+  ],
+  "stylistic_markers": {
+    "current_improvement_areas": [...]
+  }
+}
+```
+
+### 5. Flujo Combinado: RAG + Aprendizaje Abstracto
+
+El sistema no solo aprende lecciones abstractas, sino que las combina con ejemplos concretos a través de **Retrieval-Augmented Generation (RAG)**.
+
+```
+Usuario genera cuento → 
+  → RAG busca ejemplos similares exitosos en la BD
+  → Sistema construye prompt con:
+    • Reglas de estilo (ej. `LITERARY_QUALITY.md`)
+    • Lecciones abstractas aprendidas (de `learning_history.json`)
+    • Ejemplos concretos de cuentos similares (vía RAG)
+  → Gemini genera cuento mejorado
+  → Crítica automática en background
+  → Cada N críticas: síntesis automática de nuevas lecciones
+  → Ciclo se repite con mejora continua
+```
+
+**El sistema ahora aprende tanto de lecciones abstractas como de ejemplos concretos de éxito, creando un ciclo de mejora dual.**
