@@ -2,7 +2,7 @@
 
 Este documento es la única fuente de verdad sobre el estado actual y los planes futuros para el proyecto **CuentaCuentos AI**.
 
-*Última actualización: 6 de febrero de 2026*
+*Última actualización: 9 de febrero de 2026*
 
 ---
 
@@ -41,6 +41,9 @@ A continuación se listan las principales características que han sido completa
 - [x] **Dashboard de Aprendizaje:** Interfaz en `aprendizaje.html` para visualizar las estadísticas y lecciones del sistema de IA.
 - [x] **Scripts de Utilidad:** `iniciar.ps1` para levantar todo el entorno de desarrollo fácilmente.
 - [x] **Documentación de Seguridad:** Guías claras en `SECURITY.md` y `ANTES-DE-PUSH.md`.
+- [x] **Sistema de Autenticación:** Sistema completo con JWT, registro, login, reset de contraseña y cambio de contraseña.
+- [x] **Servicio de Email:** Integración con Brevo para envío de emails de recuperación y notificaciones.
+- [x] **Generación de Audio (TTS):** Integración con ElevenLabs para convertir cuentos a audio narrado.
 
 ---
 
@@ -55,8 +58,11 @@ Aquí se definen las futuras líneas de trabajo para mejorar y expandir el proye
 - [ ] **Testing Automatizado:** Desarrollar una suite de tests con `pytest` para los servicios y endpoints críticos del backend.
 
 ### Épicas a Futuro
-- [ ] **Generación de Audio (TTS):** Integrar un servicio como ElevenLabs para convertir los cuentos a formato de audio, utilizando la implementación ya documentada en `docs/IMPLEMENTACION-ELEVENLABS.md`.
-- [ ] **Sistema de Usuarios:** Añadir autenticación para que múltiples usuarios puedan tener sus propias bibliotecas de cuentos y perfiles de aprendizaje.
+- [ ] **Frontend para Autenticación:** Implementar páginas de login, registro, perfil, reset de contraseña y "olvidé mi contraseña" en React.
+- [ ] **Perfiles de Usuario:** Permitir que usuarios tengan bibliotecas personales de cuentos y configuraciones.
 - [ ] **Generación de Ilustraciones:** Conectar la `illustration_template` generada por el backend con una API de generación de imágenes (como DALL-E o Midjourney) para crear ilustraciones para los cuentos.
 - [ ] **Exportación de Cuentos:** Permitir a los usuarios exportar sus cuentos favoritos en formatos como PDF o ePub.
+- [ ] **Rate Limiting:** Implementar límites de peticiones para endpoints de autenticación y generación.
+- [ ] **2FA (Autenticación de Dos Factores):** Añadir capa adicional de seguridad con TOTP.
+- [ ] **Validación de Contraseñas:** Implementar requisitos de complejidad y fortaleza de contraseñas.
 - [ ] **Migración a Producción:** Preparar y documentar el proceso para desplegar el proyecto en un entorno de producción, incluyendo la migración de la base de datos a PostgreSQL.

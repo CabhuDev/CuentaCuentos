@@ -20,3 +20,11 @@ env/
 # IDE
 .vscode/
 .idea/
+
+# Frontend (no necesario para el build del backend)
+frontend/
+frontend-react/
+node_modules/
+*.md
+docs/
+deployment/

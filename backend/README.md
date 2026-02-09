@@ -11,6 +11,9 @@ La aplicación sigue una arquitectura modular y está en estado **completamente 
 - ✅ **Bucle de Aprendizaje Evolutivo** implementado y activo.
 - ✅ **Sistema RAG (Retrieval-Augmented Generation)** implementado y activo.
 - ✅ **Base de datos dual:** SQLite para desarrollo y preparada para PostgreSQL en producción.
+- ✅ **Sistema de autenticación** completo con JWT, reset y cambio de contraseñas.
+- ✅ **Servicio de email** con Brevo (bienvenida, reset, confirmación de cambios).
+- ✅ **Migraciones automáticas** de BD al iniciar el servidor.
 - ✅ **Documentación de API automática** en `/docs` (Swagger) y `/redoc`.
 
 Para una visión completa de la arquitectura del sistema, consulta el documento principal: **[🏗️ `docs/architecture.md`](../docs/architecture.md)**.
@@ -23,6 +26,25 @@ Las instrucciones detalladas para la configuración del entorno y la ejecución 
 - **Guía para Contribuidores:** **[🤝 `CONTRIBUTING.md`](../CONTRIBUTING.md)**
 
 Una vez en marcha, puedes verificar la salud del backend en `http://localhost:8000/health`.
+
+### Modo Local vs Produccion (root_path)
+
+El backend usa `root_path` para funcionar cuando se despliega bajo el subdirectorio `/cuentacuentos`.
+Esto ahora es configurable con la variable de entorno `ENVIRONMENT`:
+
+- **Local (default)**: `ENVIRONMENT` no definido o distinto de `production`
+    - `root_path = ""`
+    - Rutas directas: `/token`, `/users`, `/api/...`
+- **Produccion (VPS/Docker)**: `ENVIRONMENT=production`
+    - `root_path = "/cuentacuentos"`
+    - Rutas con prefijo: `/cuentacuentos/token`, `/cuentacuentos/users`, `/cuentacuentos/api/...`
+
+Ejemplo (PowerShell):
+
+```powershell
+$env:ENVIRONMENT="production"
+uvicorn main:app --reload
+```
 
 ## 🗃️ Base de Datos
 
@@ -53,13 +75,27 @@ El backend ahora incluye un sistema de autenticación de usuarios basado en **JW
     ```
 
 2.  **Tabla `users` en la Base de Datos**:
-    Asegúrate de que la tabla `users` exista en tu base de datos `cuentacuentos.db` (para SQLite) o en tu base de datos de producción. Puedes crearla con el siguiente comando SQL:
+    La tabla se crea automáticamente al iniciar el servidor. El esquema actual incluye:
     ```sql
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,
+        email VARCHAR UNIQUE,
         hashed_password TEXT NOT NULL
     );
+    ```
+    > **Nota:** Si tienes una BD antigua sin la columna `email`, el sistema de migración automática (`_run_migrations()`) la añadirá al iniciar el servidor.
+
+3.  **Variables de Brevo (opcional)** para emails de bienvenida, reset y confirmación:
+    ```
+    BREVO_API_KEY=tu_api_key_de_brevo
+    BREVO_SENDER_EMAIL=noreply@tudominio.com
+    BREVO_SENDER_NAME=CuentaCuentos
+    BREVO_LIST_ID=2
+    BREVO_WELCOME_TEMPLATE_ID=2
+    BREVO_CHANGEPASS_TEMPLATE_ID=3
+    FRONTEND_URL=http://localhost:3000  # Desarrollo (puerto de Vite)
+    # FRONTEND_URL=https://elratonsinverguencilla.es/cuentacuentos  # Producción
     ```
 
 ### Endpoints de Autenticación
@@ -67,11 +103,12 @@ El backend ahora incluye un sistema de autenticación de usuarios basado en **JW
 Los endpoints de autenticación están disponibles en la raíz de la API (no bajo `/api`) y son:
 
 -   `POST /users/`
-    *   **Descripción**: Registra un nuevo usuario en el sistema.
+    *   **Descripción**: Registra un nuevo usuario. Envía email de bienvenida automáticamente si se proporciona email.
     *   **Body de la solicitud (JSON)**:
         ```json
         {
             "username": "nombre_de_usuario",
+            "email": "usuario@ejemplo.com",
             "password": "tu_contraseña_segura"
         }
         ```
@@ -92,9 +129,24 @@ Los endpoints de autenticación están disponibles en la raíz de la API (no baj
         El `access_token` debe ser incluido en las solicitudes a endpoints protegidos.
 
 -   `GET /users/me`
-    *   **Descripción**: Un endpoint de ejemplo para verificar que la autenticación funciona. Devuelve la información del usuario actualmente autenticado.
-    *   **Cabeceras de la solicitud**: Requiere la cabecera `Authorization`.
-        *   `Authorization`: `Bearer TU_ACCES_TOKEN_AQUI` (reemplaza `TU_ACCES_TOKEN_AQUI` con el token obtenido de `/token`).
+    *   **Descripción**: Devuelve la información del usuario autenticado.
+    *   **Cabeceras de la solicitud**: Requiere `Authorization: Bearer TU_ACCESS_TOKEN`.
+
+### Endpoints de Gestión de Contraseñas
+
+-   `POST /forgot-password`
+    *   **Descripción**: Solicita un email de reset de contraseña.
+    *   **Body**: `{"email": "usuario@ejemplo.com"}`
+    *   **Respuesta**: Siempre responde con mensaje genérico (seguridad).
+
+-   `POST /reset-password`
+    *   **Descripción**: Resetea la contraseña usando el token recibido por email.
+    *   **Body**: `{"token": "token_del_email", "new_password": "nueva_contraseña"}`
+
+-   `POST /change-password`
+    *   **Descripción**: Cambia la contraseña del usuario autenticado.
+    *   **Cabeceras**: Requiere `Authorization: Bearer TU_ACCESS_TOKEN`.
+    *   **Body**: `{"current_password": "actual", "new_password": "nueva"}`
 
 ### Ejemplo de Uso (Python con `httpx`)
 

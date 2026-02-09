@@ -39,8 +39,11 @@ pip install -r requirements.txt
 # 4. Copia el archivo de configuración de ejemplo
 Copy-Item .env.example .env
 
-# 5. Añade tu API Key de Gemini en el archivo .env
-# GEMINI_API_KEY=tu_clave_aqui
+# 5. Añade tus API Keys en el archivo .env
+# GEMINI_API_KEY=tu_clave_de_gemini_aqui
+# SECRET_KEY=tu_clave_secreta_para_jwt  # Genera una con: openssl rand -hex 32
+# ELEVENLABS_API_KEY=tu_clave_de_elevenlabs_aqui  # Opcional, para TTS
+# BREVO_API_KEY=tu_clave_de_brevo_aqui  # Opcional, para emails de reset
 
 # 6. Inicia el servidor
 uvicorn main:app --reload --host 127.0.0.1 --port 8000

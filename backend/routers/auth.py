@@ -85,20 +85,148 @@ async def login_for_access_token(db: Session = Depends(database_sqlite.get_db), 
 def create_user(user: schemas.UserCreate, db: Session = Depends(database_sqlite.get_db)):
     """
     Endpoint para registrar un nuevo usuario.
+    Envía automáticamente un email de bienvenida si se proporciona email.
     """
+    from services import email_service
+    
     db_user = database_sqlite.get_user_by_username(db, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="El nombre de usuario ya está registrado")
     
     hashed_password = auth_service.get_password_hash(user.password)
     new_user = database_sqlite.create_user(db=db, user=user, hashed_password=hashed_password)
+    
+    # Enviar email de bienvenida si el usuario proporcionó email
+    if user.email:
+        try:
+            email_service.send_welcome_email(
+                email=user.email,
+                username=user.username
+            )
+        except Exception as e:
+            # No fallar el registro si falla el email
+            print(f"⚠️ Error al enviar email de bienvenida: {str(e)}")
+    
     return new_user
 
 
 @router.get("/users/me", response_model=schemas.User)
 async def read_users_me(current_user: schemas.User = Depends(get_current_active_user)):
     """
-
     Endpoint protegido que devuelve la información del usuario autenticado actualmente.
     """
     return current_user
+
+
+@router.post("/forgot-password", response_model=schemas.PasswordResetResponse)
+async def forgot_password(
+    request: schemas.ForgotPasswordRequest,
+    db: Session = Depends(database_sqlite.get_db)
+):
+    """
+    Endpoint para solicitar el reset de contraseña.
+    Envía un email con un token de reset si el email está registrado.
+    """
+    from services import email_service
+    
+    # Buscar usuario por email
+    user = database_sqlite.get_user_by_email(db, email=request.email)
+    
+    # Por seguridad, siempre devuelve el mismo mensaje incluso si el email no existe
+    if not user:
+        return schemas.PasswordResetResponse(
+            success=True,
+            message="Si el email está registrado, recibirás un enlace de recuperación en breve"
+        )
+    
+    # Generar token de reset
+    reset_token = auth_service.create_password_reset_token(db, user.id)
+    
+    # Enviar email
+    email_sent = email_service.send_password_reset_email(
+        email=user.email,
+        username=user.username,
+        reset_token=reset_token
+    )
+    
+    # Limpiar tokens expirados (tareas de mantenimiento)
+    database_sqlite.delete_expired_tokens(db)
+    
+    return schemas.PasswordResetResponse(
+        success=True,
+        message="Si el email está registrado, recibirás un enlace de recuperación en breve"
+    )
+
+
+@router.post("/reset-password", response_model=schemas.PasswordResetResponse)
+async def reset_password(
+    request: schemas.ResetPasswordRequest,
+    db: Session = Depends(database_sqlite.get_db)
+):
+    """
+    Endpoint para resetear la contraseña usando un token válido.
+    """
+    from services import email_service
+    
+    # Intentar resetear contraseña
+    success = auth_service.reset_password(db, request.token, request.new_password)
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Token inválido o expirado"
+        )
+    
+    # Obtener usuario para enviar email de confirmación
+    user_id = auth_service.validate_reset_token(db, request.token)
+    if user_id:
+        user = database_sqlite.get_user_by_id(db, user_id)
+        if user and user.email:
+            email_service.send_password_changed_confirmation(
+                email=user.email,
+                username=user.username
+            )
+    
+    return schemas.PasswordResetResponse(
+        success=True,
+        message="Contraseña actualizada exitosamente"
+    )
+
+
+@router.post("/change-password", response_model=schemas.PasswordResetResponse)
+async def change_password(
+    request: schemas.ChangePasswordRequest,
+    current_user: schemas.User = Depends(get_current_active_user),
+    db: Session = Depends(database_sqlite.get_db)
+):
+    """
+    Endpoint para cambiar la contraseña conociendo la contraseña actual.
+    Requiere autenticación.
+    """
+    from services import email_service
+    
+    # Intentar cambiar contraseña
+    success = auth_service.change_password(
+        db,
+        current_user.id,
+        request.current_password,
+        request.new_password
+    )
+    
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Contraseña actual incorrecta"
+        )
+    
+    # Enviar email de confirmación si el usuario tiene email
+    if current_user.email:
+        email_service.send_password_changed_confirmation(
+            email=current_user.email,
+            username=current_user.username
+        )
+    
+    return schemas.PasswordResetResponse(
+        success=True,
+        message="Contraseña cambiada exitosamente"
+    )

@@ -1,9 +1,8 @@
-version: '3.8'
-
 services:
   backend:
     # Construye la imagen usando el Dockerfile en el directorio actual
     build: .
+    container_name: cuentacuentos_backend
     ports:
       # Mapea el puerto 8002 del host al puerto 8000 del contenedor
       # El puerto 8002 es el recomendado para este proyecto en tu VPS.
@@ -17,3 +16,15 @@ services:
       # Los cambios que hagas en tu código local se reflejarán automáticamente
       # en el contenedor sin necesidad de reconstruir la imagen.
       - ./backend:/app/backend
+    restart: unless-stopped
+
+  frontend:
+    # Construye la imagen desde frontend-react/Dockerfile (multi-stage: Node build → Nginx serve)
+    build: ./frontend-react
+    container_name: cuentacuentos_frontend
+    ports:
+      # Puerto 8003 porque 3000 ya está ocupado por obratec-app en la VPS
+      - "8003:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

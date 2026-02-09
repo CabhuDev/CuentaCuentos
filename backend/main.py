@@ -1,4 +1,5 @@
 # Aplicación FastAPI principal - API REST pura para arquitectura frontend independiente
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import APP_TITLE, APP_DESCRIPTION, APP_VERSION
@@ -7,11 +8,16 @@ from services.character_service import character_service
 from services.prompt_service import prompt_service
 from services.gemini_service import gemini_service
 
+# En producción (VPS/Docker) root_path="/cuentacuentos" para que Nginx funcione
+# En local se omite para que las rutas sean directas (/token, /api/...)
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+ROOT_PATH = "/cuentacuentos" if ENVIRONMENT == "production" else ""
+
 app = FastAPI(
     title=APP_TITLE,
     description=APP_DESCRIPTION,
     version=APP_VERSION,
-    root_path="/cuentacuentos"  # Clave para el despliegue en un subdirectorio
+    root_path=ROOT_PATH
 )
 
 # CORS para permitir acceso del frontend independiente

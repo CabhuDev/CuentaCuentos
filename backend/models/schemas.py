@@ -183,10 +183,12 @@ class UserInDB(UserBase):
 
 class UserCreate(UserBase):
     password: str
+    email: Optional[str] = None  # Email opcional para reset de contraseña
 
 
 class User(UserBase):
     id: int
+    email: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -199,3 +201,59 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+
+
+# === SCHEMAS PARA RESET Y CAMBIO DE CONTRASEÑA ===
+
+class ForgotPasswordRequest(BaseModel):
+    """Schema para solicitar reset de contraseña"""
+    email: str = Field(..., description="Email del usuario")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": "usuario@ejemplo.com"
+            }
+        }
+
+
+class ResetPasswordRequest(BaseModel):
+    """Schema para resetear contraseña con token"""
+    token: str = Field(..., description="Token de reset recibido por email")
+    new_password: str = Field(..., min_length=6, description="Nueva contraseña")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "token": "abc123...",
+                "new_password": "nuevaContraseña123"
+            }
+        }
+
+
+class ChangePasswordRequest(BaseModel):
+    """Schema para cambiar contraseña conociendo la actual"""
+    current_password: str = Field(..., description="Contraseña actual")
+    new_password: str = Field(..., min_length=6, description="Nueva contraseña")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "current_password": "contraseñaActual123",
+                "new_password": "nuevaContraseña123"
+            }
+        }
+
+
+class PasswordResetResponse(BaseModel):
+    """Schema para respuesta de operaciones de contraseña"""
+    success: bool = Field(..., description="Indica si la operación fue exitosa")
+    message: str = Field(..., description="Mensaje descriptivo")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "success": True,
+                "message": "Contraseña actualizada exitosamente"
+            }
+        }

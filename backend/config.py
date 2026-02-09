@@ -39,3 +39,14 @@ APP_VERSION = "0.1.0"
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Configuración de Brevo (Email Service)
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+BREVO_SENDER_EMAIL = os.getenv("BREVO_SENDER_EMAIL", "noreply@cuentacuentos.com")
+BREVO_SENDER_NAME = os.getenv("BREVO_SENDER_NAME", "CuentaCuentos")
+BREVO_LIST_ID = os.getenv("BREVO_LIST_ID")  # ID de lista de contactos
+BREVO_WELCOME_TEMPLATE_ID = os.getenv("BREVO_WELCOME_TEMPLATE_ID")  # Template de bienvenida
+BREVO_CHANGEPASS_TEMPLATE_ID = os.getenv("BREVO_CHANGEPASS_TEMPLATE_ID")  # Template de cambio de contraseña
+
+# URL del Frontend (para enlaces en emails)
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")

@@ -8,11 +8,12 @@ Este documento contiene información crítica de seguridad para el proyecto Cuen
 
 ### Archivos que NUNCA deben subirse a GitHub:
 
-1. **`backend/.env`** - Contiene tu API key de Google Gemini
-2. **`backend/*.db`** - Bases de datos SQLite con datos de producción
+1. **`backend/.env`** - Contiene API keys (Gemini, ElevenLabs, Brevo) y SECRET_KEY
+2. **`backend/*.db`** - Bases de datos SQLite con datos de producción y tokens de sesión
 3. **`backend/.venv/`** - Entorno virtual de Python
 4. **`backend/data/*.json`** - Pueden contener datos sensibles de desarrollo
 5. **`backend/__pycache__/`** - Archivos compilados de Python
+6. **Cualquier archivo con contraseñas o tokens** - Logs, dumps, respaldos
 
 ### ✅ Verificación antes de commit
 
@@ -32,7 +33,7 @@ git diff --cached --name-only
 git diff --cached | Select-String "AIzaSy"
 ```
 
-## 🔑 Gestión de API Keys
+## 🔑 Gestión de API Keys y Secretos
 
 ### Google Gemini API Key
 
@@ -46,10 +47,74 @@ git diff --cached | Select-String "AIzaSy"
 - ❌ En archivos JSON de configuración
 - ❌ En commits de git
 
+### ElevenLabs API Key (Text-to-Speech)
+
+**Protección:**
+- ✅ Solo en `backend/.env`
+- ❌ Nunca en código fuente
+- ❌ Nunca en logs del servidor
+
+**Obtener clave:** [ElevenLabs Dashboard](https://elevenlabs.io/)
+
+### Brevo API Key (Servicio de Email)
+
+**Protección:**
+- ✅ Solo en `backend/.env`
+- ❌ Nunca en código fuente
+- ✅ Plan gratuito: 300 emails/día
+
+**Obtener clave:** [Brevo API Keys](https://app.brevo.com/settings/keys/api)
+
+**Permisos necesarios:**
+- ✅ Send emails
+- ❌ No necesita acceso de lectura
+
+### SECRET_KEY (JWT Authentication)
+
+**Generación segura:**
+```bash
+# Genera una clave aleatoria de 32 bytes
+openssl rand -hex 32
+
+# O en PowerShell
+[Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Minimum 0 -Maximum 256 }))
+```
+
+**Requisitos:**
+- Mínimo 32 caracteres
+- Caracteres aleatorios
+- Única por entorno (desarrollo, producción)
+- ❌ NUNCA reutilices la del `.env.example`
+
+**Impacto si se expone:**
+- ⚠️ Atacantes pueden generar tokens de sesión válidos
+- ⚠️ Puede comprometer todas las cuentas de usuario
+- 🔄 **Acción:** Regenerar inmediatamente y cerrar todas las sesiones activas
+
+### Tokens de Reset de Contraseña
+
+**Características de seguridad:**
+- ✅ Generados con `secrets.token_urlsafe(32)` (256 bits de entropía)
+- ✅ Expiran en 1 hora
+- ✅ Un solo uso (marcados como usados en BD)
+- ✅ Almacenados en base de datos, no en archivos
+
+**Buenas prácticas:**
+- ❌ No logs de tokens en producción
+- ✅ HTTPS obligatorio para enlaces de reset
+- ✅ Limpieza periódica de tokens expirados
+
 ### Si expones accidentalmente una clave:
 
-1. **Regenera INMEDIATAMENTE** la API key en [Google AI Studio](https://aistudio.google.com/app/apikey)
+**Para API Keys (Gemini, ElevenLabs, Brevo):**
+
+1. **Regenera INMEDIATAMENTE** la API key en el dashboard correspondiente:
+   - Gemini: [Google AI Studio](https://aistudio.google.com/app/apikey)
+   - ElevenLabs: [Dashboard](https://elevenlabs.io/)
+   - Brevo: [API Keys](https://app.brevo.com/settings/keys/api)
+
 2. Actualiza tu `backend/.env` con la nueva clave
+
 3. Si ya hiciste commit:
    ```bash
    # Reescribe la historia de git (PELIGROSO - úsalo con cuidado)
@@ -60,6 +125,13 @@ git diff --cached | Select-String "AIzaSy"
    # Fuerza el push (si ya subiste a GitHub)
    git push origin --force --all
    ```
+
+**Para SECRET_KEY:**
+
+1. **Genera nueva SECRET_KEY** inmediatamente
+2. **Invalida todas las sesiones activas** (cerrar sesión de todos los usuarios)
+3. **Notifica a usuarios** sobre el cambio de seguridad
+4. **Revisa logs** para detectar accesos no autorizados
 
 ## 📋 Checklist de Seguridad
 
@@ -83,6 +155,21 @@ Antes de hacer tu primer push a GitHub:
 Get-ChildItem -Path . -Recurse -File | 
   Select-String "AIzaSy[A-Za-z0-9_-]{33}" | 
   Where-Object { $_.Path -notlike "*\.env" -and $_.Path -notlike "*\.venv*" }
+
+# Buscar patrones de ElevenLabs API Keys
+Get-ChildItem -Path . -Recurse -File | 
+  Select-String "[a-f0-9]{32}" |
+  Where-Object { $_.Path -notlike "*\.env" }
+
+# Buscar patrones de Brevo API Keys
+Get-ChildItem -Path . -Recurse -File | 
+  Select-String "xkeysib-[a-zA-Z0-9-]+" |
+  Where-Object { $_.Path -notlike "*\.env" }
+
+# Buscar patrones de SECRET_KEY
+Get-ChildItem -Path . -Recurse -File | 
+  Select-String "SECRET_KEY\s*=\s*['\"][^'\"]{32,}['\"]" |
+  Where-Object { $_.Path -notlike "*\.env" }
 
 # Buscar patrones de contraseñas
 Get-ChildItem -Path . -Recurse -File | 
@@ -165,6 +252,21 @@ git diff --cached | Select-String -Pattern "AIzaSy", "password", "secret", "toke
 - ✅ Entorno virtual ignorado
 - ✅ No hay claves hardcodeadas en código Python
 - ✅ Documentación actualizada con instrucciones seguras
+- ✅ JWT con SECRET_KEY en entorno
+- ✅ Hashing de contraseñas con Bcrypt
+- ✅ Tokens de reset seguros con expiración
+- ✅ Rate limiting recomendado en producción
+
+### Configuración de Seguridad para Contraseñas:
+
+- ✅ Hash con Bcrypt (coste adaptativo)
+- ✅ Tokens de reset de un solo uso
+- ✅ Expiración automática de tokens (1 hora)
+- ✅ Mensajes ambiguos (no revela si email existe)
+- ✅ Verificación de contraseña actual para cambios
+- ✅ Emails de notificación por cambios de seguridad
+- ⚠️ Requiere HTTPS en producción
+- ⚠️ Recomienda rate limiting en endpoints de auth
 
 ### Archivos Seguros para GitHub:
 
@@ -177,5 +279,12 @@ Todos los archivos actualmente en staging (`git status`) son seguros:
 
 ---
 
-**Última auditoría:** 4 de febrero de 2026
+**Última auditoría:** 9 de febrero de 2026
+
+## 📚 Referencias Adicionales
+
+- [Guía de Reset de Contraseña](guides/password-reset.md)
+- [Documentación de Brevo](https://developers.brevo.com/)
+- [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+- [JWT Best Practices](https://tools.ietf.org/html/rfc8725)
 **Estado:** ✅ SEGURO PARA GITHUB

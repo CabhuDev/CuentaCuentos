@@ -12,32 +12,40 @@ graph TD
         A[Navegador Web]
     end
 
-    subgraph "Infraestructura Frontend"
-        B(Cliente Web<br>HTML/CSS/JS)
+    subgraph "Nginx Host - Reverse Proxy"
+        N{Nginx VPS<br>SSL/TLS}
+    end
+
+    subgraph "Docker: Frontend"
+        B(React SPA<br>Nginx Alpine<br>Puerto 8003)
     end
     
-    subgraph "Infraestructura Backend"
-        C{API Gateway / Servidor Web}
-        D[API REST<br>FastAPI]
-        E[Base de Datos<br>SQLite/PostgreSQL]
+    subgraph "Docker: Backend"
+        D[API REST<br>FastAPI<br>Puerto 8002]
+        E[Base de Datos<br>SQLite]
         F(Motor de IA<br>Google Gemini)
     end
 
-    A --> B
-    B --"Llamadas HTTP/REST"--> C
-    C --> D
+    A --"HTTPS"--> N
+    N --"/cuentacuentos/"--> B
+    N --"/cuentacuentos/api/"--> D
+    B --"API calls"--> N
     D <--> E
     D <--> F
 ```
 
-- **Frontend:** Un cliente ligero y estático (HTML, CSS, JS) que se comunica con el backend a través de una API REST. No tiene lógica de negocio.
-- **Backend:** Una aplicación FastAPI que expone endpoints REST para todas las operaciones. Contiene toda la lógica de negocio, la interacción con la base de datos y la comunicación con la IA de Google Gemini.
+- **Frontend:** SPA React 19 + Vite 6, servida por un contenedor Docker con Nginx Alpine. El build de producción se genera con multi-stage Docker (Node → Nginx). React Router maneja las rutas del cliente.
+- **Backend:** Aplicación FastAPI en contenedor Docker. Contiene toda la lógica de negocio, la interacción con la base de datos y la comunicación con la IA de Google Gemini.
+- **Nginx Host:** Actúa como reverse proxy, enruta `/cuentacuentos/` al contenedor frontend (puerto 8003) y `/cuentacuentos/api/` al contenedor backend (puerto 8002). Gestiona SSL/TLS con Let's Encrypt.
 
 ### Tecnologías Clave
-- **Framework Backend:** FastAPI (Python)
+- **Framework Backend:** FastAPI (Python 3.11)
 - **Motor de IA:** Google Gemini (gemini-2.5-flash)
-- **Base de Datos:** SQLite (desarrollo), con opción a PostgreSQL + pgvector (producción).
-- **Frontend:** HTML, CSS, JavaScript (sin frameworks).
+- **Base de Datos:** SQLite (desarrollo y producción), con opción a PostgreSQL + pgvector.
+- **Frontend:** React 19 + Vite 6 (SPA con React Router)
+- **Contenedores:** Docker + Docker Compose (backend y frontend)
+- **Servidor Web:** Nginx (host como reverse proxy + contenedor frontend)
+- **SSL:** Let's Encrypt (automático)
 
 ---
 
@@ -74,20 +82,32 @@ CuentaCuentos/
 │   ├── config.py              # Configuración centralizada
 │   ├── .env.example           # Plantilla de variables de entorno
 │   ├── requirements.txt       # Dependencias Python
-│   ├── data/                  # Archivos de datos y configuración
+│   ├── data/                  # Archivos de datos, BD SQLite y audio
 │   ├── models/                # Capa de datos (SQLAlchemy, Pydantic)
 │   ├── services/              # Lógica de negocio
 │   ├── routers/               # Endpoints API
 │   └── .venv/                 # Entorno virtual
-├── frontend/                  # 🎨 Interfaz Web (cliente estático)
-│   ├── index.html             # Página de generación
-│   ├── cuentos.html           # Biblioteca de cuentos
-│   ├── aprendizaje.html       # Dashboard del bucle de aprendizaje
-│   ├── css/
-│   └── js/
+├── frontend/                  # 🎨 Interfaz Web legacy (HTML/CSS/JS estático) [DEPRECATED]
+├── frontend-react/            # ⚛️ Interfaz Web moderna (React 19 + Vite 6) [PRODUCCIÓN]
+│   ├── Dockerfile             # Multi-stage: Node 20 build → Nginx Alpine serve
+│   ├── nginx.conf             # Nginx interno del contenedor (SPA routing, cache)
+│   ├── .dockerignore          # Exclusiones para build Docker
+│   ├── src/
+│   │   ├── api/               # Cliente API centralizado
+│   │   ├── components/        # Componentes reutilizables (Layout, Pagination, etc.)
+│   │   ├── context/           # React Context (autenticación)
+│   │   └── pages/             # Páginas (Login, Register, Profile, Generator, etc.)
+│   ├── vite.config.js         # Configuración de Vite (proxy, base URL)
+│   └── package.json           # Dependencias Node.js
+├── deployment/                # 📦 Configuración de infraestructura
+│   ├── nginx_vps.conf         # Config Nginx VPS (frontend estático - legacy)
+│   └── nginx_vps_react.conf   # Config Nginx VPS (frontend Docker - ACTUAL)
+├── docker-compose.yml         # 🐳 Orquestación: backend + frontend
+├── Dockerfile                 # 🐳 Backend (Python/FastAPI)
+├── .dockerignore              # Exclusiones para build Docker del backend
 ├── docs/                      # 📚 Documentación
 │   ├── ARCHITECTURE.md        # Este archivo
-│   ├── LITERARY_QUALITY.md    # Guía de estilo literario
+│   ├── deployment-vps.md      # Guía de despliegue completa
 │   └── ...
 └── README.md                  # Archivo principal de bienvenida
 ```
@@ -100,6 +120,8 @@ CuentaCuentos/
 2.  **The Editor (El Editor):** El `gemini_service` cuando genera críticas. Analiza el texto en busca de mejoras.
 3.  **The Archivist (El Archivista):** La capa de base de datos (`database_sqlite.py`) que almacena cuentos, críticas y sus embeddings.
 4.  **The Teacher (El Maestro):** El `learning_service` que orquesta la síntesis de lecciones y actualiza el perfil de estilo.
+5.  **The Guardian (El Guardián):** El sistema de autenticación (`auth_service`) que protege el acceso con JWT y gestiona sesiones.
+6.  **The Messenger (El Mensajero):** El `email_service` que envía notificaciones y emails de recuperación vía Brevo.
 
 ---
 
@@ -251,3 +273,224 @@ Usuario genera cuento →
 ```
 
 **El sistema ahora aprende tanto de lecciones abstractas como de ejemplos concretos de éxito, creando un ciclo de mejora dual.**
+
+---
+
+## 🔐 Sistema de Autenticación y Seguridad
+
+El sistema incluye un sistema completo de autenticación basado en JWT (JSON Web Tokens) con funcionalidades avanzadas de recuperación de contraseña.
+
+### Arquitectura de Autenticación
+
+```mermaid
+graph TD
+    A[Usuario] --> B{Login/Register}
+    B -->|Credenciales válidas| C[JWT Token]
+    B -->|Credenciales inválidas| D[Error 401]
+    C --> E[Acceso a API protegida]
+    
+    F[¿Olvidó contraseña?] --> G[Solicitud de reset]
+    G --> H[Email con token]
+    H --> I[Reset con token]
+    I --> J[Nueva contraseña]
+    
+    K[Usuario autenticado] --> L[Cambio de contraseña]
+    L -->|Contraseña actual válida| M[Nueva contraseña]
+    L -->|Contraseña actual inválida| N[Error 400]
+```
+
+### Componentes de Autenticación
+
+#### **1. Modelos de Base de Datos**
+
+**Tabla `users`:**
+```python
+class User(Base):
+    id: int (PK)
+    username: str (unique)
+    email: str (unique, nullable)
+    hashed_password: str
+```
+
+**Tabla `password_reset_tokens`:**
+```python
+class PasswordResetToken(Base):
+    id: str (UUID)
+    user_id: int (FK -> users.id)
+    token: str (unique, indexed)
+    expires_at: datetime
+    created_at: datetime
+    used: bool (default=False)
+```
+
+#### **2. Servicios**
+
+**`services/auth_service.py`**
+- `verify_password()` - Verifica contraseñas con Bcrypt
+- `get_password_hash()` - Hashea contraseñas con Bcrypt
+- `create_access_token()` - Genera tokens JWT
+- `generate_reset_token()` - Genera tokens seguros (256 bits)
+- `create_password_reset_token()` - Crea token en BD
+- `validate_reset_token()` - Valida token y expiración
+- `reset_password()` - Resetea contraseña con token
+- `change_password()` - Cambia contraseña autenticado
+
+**`services/email_service.py`**
+- `_send_template_email()` - Función genérica para enviar templates de Brevo
+- `send_welcome_email()` - Envía email de bienvenida automático al registrarse
+- `send_password_reset_email()` - Envía email con enlace de reset
+- `send_password_changed_confirmation()` - Confirma cambio exitoso (usa template Brevo)
+- `add_contact_to_list()` - Sincroniza contacto con lista de Brevo
+- Integración con Brevo API (300 emails/día en plan gratuito)
+- Sistema de templates profesionales configurables desde dashboard de Brevo
+
+#### **3. Endpoints de Autenticación**
+
+**Registro y Login:**
+- `POST /users/` - Registrar nuevo usuario (envía email de bienvenida automático)
+- `POST /token` - Login (OAuth2 password flow)
+- `GET /users/me` - Info del usuario autenticado
+
+**Recuperación de Contraseña:**
+- `POST /forgot-password` - Solicitar reset por email
+- `POST /reset-password` - Resetear con token
+- `POST /change-password` - Cambiar contraseña (requiere auth)
+
+### Flujo de Reset de Contraseña
+
+```
+1. Usuario olvida contraseña
+   ↓
+2. POST /forgot-password {email}
+   ↓
+3. Backend busca usuario por email
+   ↓
+4. Genera token seguro (expira en 1h)
+   ↓
+5. Guarda token en BD
+   ↓
+6. Envía email con enlace: /reset-password?token=xxx
+   ↓
+7. Usuario hace click en enlace
+   ↓
+8. Frontend captura token
+   ↓
+9. POST /reset-password {token, new_password}
+   ↓
+10. Backend valida token (no expirado, no usado)
+   ↓
+11. Actualiza contraseña hasheada
+   ↓
+12. Marca token como usado
+   ↓
+13. Envía email de confirmación
+```
+
+### Características de Seguridad
+
+**Hashing de Contraseñas:**
+- ✅ Bcrypt con coste adaptativo (a través de Passlib)
+- ✅ Salt único por contraseña
+- ✅ Resistente a ataques de fuerza bruta
+
+**Tokens de Sesión (JWT):**
+- ✅ Firmados con SECRET_KEY (HS256)
+- ✅ Expiración configurable (30 minutos por defecto)
+- ✅ Payload mínimo (solo username)
+
+**Tokens de Reset:**
+- ✅ Generados con `secrets.token_urlsafe(32)` (256 bits)
+- ✅ Expiración de 1 hora
+- ✅ Un solo uso (marcados como usados)
+- ✅ Almacenados en texto plano en BD (token opaco, no predecible)
+- ✅ Limpieza automática de tokens expirados
+
+**Protección de Información:**
+- ✅ Mensajes ambiguos (no revela si email existe)
+- ✅ Rate limiting recomendado en producción
+- ✅ HTTPS obligatorio en producción
+- ✅ Notificaciones por email en cambios de seguridad
+
+### Integración con Brevo (Email Service)
+
+**Configuración:**
+```python
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+BREVO_SENDER_EMAIL = os.getenv("BREVO_SENDER_EMAIL")
+BREVO_SENDER_NAME = os.getenv("BREVO_SENDER_NAME", "CuentaCuentos")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+```
+
+**API REST:**
+- Endpoint: `https://api.brevo.com/v3/smtp/email`
+- Autenticación: Header `api-key`
+- Formato: JSON con sender, to, subject, htmlContent o templateId
+
+**Templates de Email (Brevo Dashboard):**
+- Template de bienvenida (BREVO_WELCOME_TEMPLATE_ID)
+- Template de confirmación de cambio de contraseña (BREVO_CHANGEPASS_TEMPLATE_ID)
+- Email de reset con enlace único (HTML inline)
+- Parámetros dinámicos: `{{ params.USERNAME }}`, `{{ params.FRONTEND_URL }}`, `{{ params.CHANGE_DATE }}`
+
+**Sincronización de Contactos:**
+- Alta automática en lista de Brevo al registrarse
+- Variable: BREVO_LIST_ID
+
+**Migración Automática de BD:**
+- `_run_migrations()` se ejecuta al inicio del servidor
+- Detecta columnas faltantes en tablas existentes y las añade
+- Evita necesidad de eliminar la BD al actualizar el esquema
+
+### Mejores Prácticas Implementadas
+
+1. **Separación de Responsabilidades:**
+   - Modelos (BD) ← schemas (validación) ← servicios (lógica) ← routers (API)
+
+2. **Validación por Capas:**
+   - Pydantic valida entrada
+   - Servicios validan lógica de negocio
+   - BD valida integridad referencial
+
+3. **Gestión de Errores:**
+   - HTTPException con códigos apropiados (400, 401, 404)
+   - Mensajes descriptivos pero seguros
+   - Logging de operaciones críticas
+
+4. **Testing:**
+   - Endpoints documentados en Swagger/OpenAPI
+   - Ejemplos de uso en documentación
+   - Scripts de prueba con curl
+
+### Frontend React Implementado
+
+Todas las interfaces de usuario de autenticación y gestión de contraseñas están implementadas en `frontend-react/`:
+
+1. **Página de Login** (`/login`) ✅
+   - Formulario username/password
+   - Enlace a "¿Olvidé mi contraseña?"
+   - Enlace a registro
+
+2. **Página de Registro** (`/registro`) ✅
+   - Formulario username/email(opcional)/password
+   - Validación de formato y confirmación de contraseña
+   - Email opcional para habilitar recuperación de contraseña
+
+3. **Página "Olvidé mi contraseña"** (`/olvide-contrasena`) ✅
+   - Formulario de email
+   - Mensaje de confirmación (sin revelar si el email existe)
+   - Instrucciones sobre expiración del enlace (1h)
+
+4. **Página de Reset** (`/reset-password?token=...`) ✅
+   - Formulario de nueva contraseña con confirmación
+   - Indicador visual de fortaleza de contraseña
+   - Manejo de token inválido/expirado
+
+5. **Página de Perfil** (`/perfil`) ✅
+   - Tarjeta con avatar, username y email
+   - Formulario de cambio de contraseña (requiere actual + nueva)
+   - Indicador de fortaleza de contraseña
+   - Aviso si no tiene email (necesario para recuperación)
+
+Ver documentación completa del frontend: [`frontend-react/README.md`](../frontend-react/README.md)
+
+---

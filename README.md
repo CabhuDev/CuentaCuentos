@@ -10,6 +10,8 @@ Bienvenido a CuentaCuentos AI, un motor de escritura de cuentos infantiles que u
 - **Generación Aumentada por Recuperación (RAG):** Utiliza cuentos exitosos del pasado como inspiración para mejorar las nuevas creaciones.
 - **Arquitectura API-First:** Backend y frontend desacoplados para mayor escalabilidad y mantenibilidad.
 - **Personajes Persistentes:** Mantiene la consistencia de los personajes a través de múltiples historias.
+- **Sistema de Autenticación:** Control de acceso con JWT y funcionalidad completa de reset/cambio de contraseñas.
+- **Narración por Voz (TTS):** Convierte cuentos en audio con voces naturales mediante ElevenLabs.
 
 ---
 
@@ -61,13 +63,16 @@ Este `README` es solo la puerta de entrada. Para entender el proyecto a fondo, c
 
 | Archivo | Descripción |
 |---|---|
+| � **[`docs/INDEX.md`](docs/INDEX.md)** | **Índice completo de toda la documentación** con búsqueda por temas. |
 | 🗺️ **[`ROADMAP.md`](ROADMAP.md)** | **Estado actual del proyecto y funcionalidades futuras.** ¡Empieza aquí! |
-| 🏗️ **[`docs/ARCHITECTURE.md`](docs/architecture.md)** | **Visión general de la arquitectura,** incluyendo el bucle de aprendizaje. |
+| 📜 **[`CHANGELOG.md`](CHANGELOG.md)** | **Historial de cambios y versiones** del proyecto. |
+| 🏗️ **[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** | **Visión general de la arquitectura,** incluyendo el bucle de aprendizaje. |
 | 🎭 **[`docs/literary-quality.md`](docs/literary-quality.md)** | Detalla las **6 técnicas de escritura profesional** que usa la IA. |
 | 🤝 **[`CONTRIBUTING.md`](CONTRIBUTING.md)** | **Guía para contribuir**, configurar el entorno y directrices de seguridad. |
 | 🚀 **[`docs/deployment-vps.md`](docs/deployment-vps.md)** | Pasos para desplegar el proyecto en un **servidor de producción**. |
 | 🔒 **[`docs/security.md`](docs/security.md)** | **Guía de seguridad obligatoria** sobre el manejo de API keys. |
 | 🔉 **[`docs/guides/elevenlabs-tts.md`](docs/guides/elevenlabs-tts.md)** | Guía completa para la **integración de audio Text-to-Speech**. |
+| 🔑 **[`docs/guides/password-reset.md`](docs/guides/password-reset.md)** | Sistema de **reset y cambio de contraseñas** con Brevo. |
 
 ---
 
