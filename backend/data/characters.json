@@ -50,5 +50,188 @@
       "total_apariciones": 1,
       "coherencia_score": 1.0
     }
+  },
+
+
+  {
+    "id": "leo_001",
+    "nombre": "El león Leo",
+    "estado": "activo",
+    "rasgos_distintivos": {
+      "cabello": "Melena redondeada y suave de color naranja soleado (#FFB74D), enmarcando el rostro",
+      "ojos": "Grandes, oscuros y suaves, con cejas expresivas que denotan asombro",
+      "cuerpo": "Pequeño y robusto, pelaje amarillo dorado (#FFCC80) con barriga más clara",
+      "cola": "Larga con un mechón final en forma de pincel",
+      "expresion": "Mirada atenta y dulce, hocico corto con sonrisa tranquila",
+      "edad_aparente": "Cachorro (equivalente a niño pequeño)"
+    },
+    "armario_coherente": {
+      "nota": "Personaje animal sin ropa, se define por su pelaje",
+      "principal": "Pelaje base amarillo cálido (#FFCC80)",
+      "secundario": "Melena y punta de la cola naranja vibrante (#FFA726)",
+      "detalles": "Zona del hocico y barriga en tono crema suave (#FFF3E0)",
+      "paleta_colores": ["#FFCC80", "#FFA726", "#FFF3E0", "#4E342E"]
+    },
+    "accesorios_frecuentes": [
+      {
+        "item": "Piedrecitas de Colores",
+        "hex": "Multicolor (#E53935, #1E88E5, #FDD835)",
+        "vibe": "Tesoros brillantes y lisos",
+        "formas": "Círculos, triángulos, estrellas rotas",
+        "frecuencia": "evento_especifico"
+      }
+    ],
+    "personalidad_narrativa": {
+      "arquetipos": ["Explorador Inocente", "Observador Sensible", "Guardián de Tesoros"],
+      "miedos_naturales": ["Ruidos fuertes repentinos", "Que el río se lleve sus cosas"],
+      "motivaciones": ["Descubrir secretos", "Ordenar y cuidar objetos bellos", "Curiosidad táctil"],
+      "lenguaje_caracteristico": "Silencioso, observador, gestos delicados con las patitas"
+    },
+    "reglas_ilustracion": {
+      "estilo": "Minimalista infantil, estilo editorial de alta calidad (match con Martín)",
+      "tecnica": "Acuarela digital texturizada, bordes orgánicos, paleta cálida con acentos de río",
+      "paleta_maestra": ["#FFCC80", "#FFA726", "#80CBC4", "#FFF8E1"],
+      "prompt_base_ia": "Cute baby lion named Leo, golden yellow fur with orange mane, large soft eyes, lying down on sand, looking at colorful pebbles (red, blue, yellow), river background, high-quality minimalist children's book illustration, soft watercolor texture, white background, whimsical and gentle"
+    },
+    "historico_apariciones": [
+      {
+        "story_id": "seed_002",
+        "titulo": "El Secreto Brillante del Río",
+        "fecha": "2026-02-10",
+        "rol": "Protagonista"
+      }
+    ],
+    "metadata": {
+      "creado_en": "2026-02-10",
+      "ultima_aparicion": "2026-02-10",
+      "total_apariciones": 1,
+      "coherencia_score": 1.0
+    }
+  },
+
+  {
+    "id": "elio_001",
+    "nombre": "El elefanteElio",
+    "estado": "activo",
+    "rasgos_distintivos": {
+      "piel": "Tono gris azulado suave (#CFD8DC) con textura de acuarela",
+      "ojos": "Redondos, oscuros y brillantes, con expresión bondadosa",
+      "orejas": "Grandes y redondeadas, muy expresivas (se mueven con su estado de ánimo)",
+      "trompa": "Ágil y curvada hacia arriba, a veces con un destello mágico",
+      "mejillas": "Ligeramente sonrosadas (#EF9A9A) cuando está feliz",
+      "edad_aparente": "Cachorro (equivalente a niño pequeño)"
+    },
+    "armario_coherente": {
+      "nota": "Personaje animal natural, destaca por su textura y color",
+      "principal": "Piel base gris azulado (#90A4AE)",
+      "detalles": "Interior de las orejas y plantas de las patas en tono más claro",
+      "rubor": "Toques suaves de rosa en mejillas y punta de la trompa",
+      "paleta_colores": ["#90A4AE", "#CFD8DC", "#EF9A9A", "#4DB6AC"]
+    },
+    "accesorios_frecuentes": [
+      {
+        "item": "Canal de Bambú",
+        "hex": "#4DB6AC",
+        "vibe": "Ingenioso y natural",
+        "funcion": "Transportar agua",
+        "frecuencia": "situacional"
+      },
+      {
+        "item": "Flor Morada",
+        "hex": "#BA68C8",
+        "vibe": "Delicada y amiga",
+        "estado": "Reactiva al cuidado de Elio",
+        "frecuencia": "frecuente"
+      }
+    ],
+    "personalidad_narrativa": {
+      "arquetipos": ["Ingeniero Natural", "Protector Empático", "Solucionador de Problemas"],
+      "miedos_naturales": ["Que la flor se marchite", "Derramar el agua"],
+      "motivaciones": ["Cuidar a sus amigos", "Crear estructuras útiles", "Ver a la naturaleza feliz"],
+      "lenguaje_caracteristico": "Sonidos suaves de trompa, movimiento de orejas, soplidos delicados"
+    },
+    "reglas_ilustracion": {
+      "estilo": "Minimalista infantil, estilo editorial de alta calidad",
+      "tecnica": "Acuarela digital con degradados suaves de azul y verde",
+      "paleta_maestra": ["#90A4AE", "#81C784", "#BA68C8", "#E0F7FA"],
+      "prompt_base_ia": "Cute baby elephant named Elio, blue-grey skin, happy expression, large flapping ears, standing next to a bamboo water channel, watering a small purple flower, high-quality minimalist children's book illustration, soft watercolor texture, white background, simple clean lines, refreshing and kind"
+    },
+    "historico_apariciones": [
+      {
+        "story_id": "seed_003",
+        "titulo": "El Jardín del Elefante Elio",
+        "fecha": "2026-02-10",
+        "rol": "Protagonista"
+      }
+    ],
+    "metadata": {
+      "creado_en": "2026-02-10",
+      "ultima_aparicion": "2026-02-10",
+      "total_apariciones": 1,
+      "coherencia_score": 1.0
+    }
+  },
+
+  {
+    "id": "cucu_001",
+    "nombre": "El cocodrilo Cucu",
+    "estado": "activo",
+    "rasgos_distintivos": {
+      "piel": "Verde suave y luminoso (#AED581), con textura de acuarela y escamas apenas sugeridas",
+      "ojos": "Grandes, de color ámbar brillante (#FFD54F), muy expresivos (reflejan 'charquitos de sol')",
+      "hocico": "Redondeado y amigable, con una sonrisa natural que muestra pequeños dientes inofensivos",
+      "cuerpo": "Alargado pero regordete, con una cresta dorsal suave de tono verde más oscuro",
+      "cola": "Fuerte y ágil, usada para expresar emoción (chapoteos)",
+      "edad_aparente": "Cachorro (equivalente a niño pequeño)"
+    },
+    "armario_coherente": {
+      "nota": "Personaje animal natural, paleta basada en su piel y el entorno lacustre",
+      "principal": "Verde hoja suave (#AED581)",
+      "secundario": "Vientre y mandíbula inferior en crema verdoso (#F1F8E9)",
+      "detalles": "Crestas y manchas en verde bosque (#558B2F)",
+      "paleta_colores": ["#AED581", "#F1F8E9", "#558B2F", "#F48FB1"]
+    },
+    "accesorios_frecuentes": [
+      {
+        "item": "Flor de Loto",
+        "hex": "#F48FB1",
+        "centro": "#FDD835",
+        "vibe": "Juguete flotante favorito",
+        "frecuencia": "muy_frecuente"
+      },
+      {
+        "item": "Tronco Viejo",
+        "hex": "#8D6E63",
+        "vibe": "Obstáculo y lugar de descanso",
+        "frecuencia": "situacional"
+      }
+    ],
+    "personalidad_narrativa": {
+      "arquetipos": ["Soñador Acuático", "Jugador Incansable", "Amigo Sensible"],
+      "miedos_naturales": ["Perder su flor", "Quedarse atascado"],
+      "motivaciones": ["Jugar al 'persigue-la-flor'", "Nadar bajo el sol", "Compartir descubrimientos"],
+      "lenguaje_caracteristico": "Chapoteos (¡splash!), miradas fijas, movimientos de cola, silencio expresivo"
+    },
+    "reglas_ilustracion": {
+      "estilo": "Minimalista infantil, estilo editorial de alta calidad",
+      "tecnica": "Acuarela digital, transiciones suaves entre el agua y la piel",
+      "paleta_maestra": ["#AED581", "#81D4FA", "#F48FB1", "#5D4037"],
+      "prompt_base_ia": "Cute baby crocodile named Cucu, soft green skin, large yellow eyes, swimming in water next to a log, looking at a pink lotus flower, high-quality minimalist children's book illustration, soft watercolor texture, white background, friendly and playful, wet texture effects"
+    },
+    "historico_apariciones": [
+      {
+        "story_id": "seed_004",
+        "titulo": "Cucu y la Flor Flotante",
+        "fecha": "2026-02-10",
+        "rol": "Protagonista"
+      }
+    ],
+    "metadata": {
+      "creado_en": "2026-02-10",
+      "ultima_aparicion": "2026-02-10",
+      "total_apariciones": 1,
+      "coherencia_score": 1.0
+    }
   }
+
 ]
