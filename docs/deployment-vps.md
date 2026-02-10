@@ -78,10 +78,10 @@ Ideal para verificar que todo funciona antes de desplegar.
 
 ```powershell
 # Levantar ambos contenedores
-docker-compose up --build
+docker compose up --build
 
 # O solo el frontend (si el backend ya corre localmente)
-docker-compose up --build --no-deps frontend
+docker compose up --build --no-deps frontend
 ```
 
 | Servicio | URL Local | Puerto |
@@ -93,7 +93,7 @@ docker-compose up --build --no-deps frontend
 ### Opción C: Solo frontend Docker (sin backend Docker)
 
 ```powershell
-docker-compose up --build --no-deps frontend
+docker compose up --build --no-deps frontend
 ```
 
 El frontend se sirve en `http://localhost:8003` pero no tendrá backend a menos que lo lances con `uvicorn` aparte.
@@ -102,15 +102,15 @@ El frontend se sirve en `http://localhost:8003` pero no tendrá backend a menos 
 
 ```powershell
 # Construir sin levantar
-docker-compose build frontend
+docker compose build frontend
 
 # Verificar que el contenedor responde
-docker-compose up -d --no-deps frontend
+docker compose up -d --no-deps frontend
 curl http://localhost:8003/          # → 200 (index.html)
 curl http://localhost:8003/login     # → 200 (SPA routing OK)
 
 # Limpiar
-docker-compose down
+docker compose down
 ```
 
 ---
@@ -187,7 +187,7 @@ Este script:
 
 O manualmente:
 ```bash
-ssh root@31.97.36.248 "cd /var/www/cuentacuentos && git pull origin main && docker-compose up -d --build"
+ssh root@31.97.36.248 "cd /var/www/cuentacuentos && git pull origin main && docker compose up -d --build"
 ```
 
 ---
@@ -305,7 +305,7 @@ El script `limpiar-vps.ps1`:
 ```bash
 ssh root@31.97.36.248
 cd /var/www/cuentacuentos
-docker-compose logs backend
+docker compose logs backend
 ```
 
 ### Error: El frontend muestra página en blanco
@@ -314,7 +314,7 @@ docker-compose logs backend
 ssh root@31.97.36.248 "docker ps | grep cuentacuentos_frontend"
 
 # Ver logs del frontend
-ssh root@31.97.36.248 "cd /var/www/cuentacuentos && docker-compose logs frontend"
+ssh root@31.97.36.248 "cd /var/www/cuentacuentos && docker compose logs frontend"
 
 # Verificar que Nginx hace proxy al puerto correcto (8003)
 ssh root@31.97.36.248 "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8003/"
@@ -325,7 +325,7 @@ ssh root@31.97.36.248 "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8
 ssh root@31.97.36.248
 nano /var/www/cuentacuentos/backend/.env
 # Añade las claves necesarias
-docker-compose restart backend
+docker compose restart backend
 ```
 
 ### Verificar contenedores en ejecución
@@ -341,9 +341,9 @@ docker ps | grep cuentacuentos
 ```bash
 ssh root@31.97.36.248
 cd /var/www/cuentacuentos
-docker-compose logs -f                    # Todos
-docker-compose logs -f backend            # Solo backend
-docker-compose logs -f frontend           # Solo frontend
+docker compose logs -f                    # Todos
+docker compose logs -f backend            # Solo backend
+docker compose logs -f frontend           # Solo frontend
 ```
 
 ### Recargar Nginx
@@ -357,9 +357,9 @@ sudo systemctl reload nginx
 ```bash
 ssh root@31.97.36.248
 cd /var/www/cuentacuentos
-docker-compose down --remove-orphans
+docker compose down --remove-orphans
 docker system prune -f
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ---
@@ -409,7 +409,7 @@ docker-compose up -d --build
    ↓
 2. Probar localmente:
    - Frontend: npm run dev (hot reload)
-   - Docker: docker-compose up --build (simula producción)
+   - Docker: docker compose up --build (simula producción)
    ↓
 3. Commit y push a 'develop'
    ↓

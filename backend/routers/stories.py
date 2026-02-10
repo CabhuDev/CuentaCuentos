@@ -375,7 +375,7 @@ def get_stories(
 )
 def get_story(story_id: uuid.UUID, db_session: Session = Depends(get_db)):
     """Obtiene los detalles de un cuento específico por su ID."""
-    story = db_session.query(Story).filter(Story.id == story_id).first()
+    story = db_session.query(Story).filter(Story.id == str(story_id)).first()
     if not story:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Story not found"
