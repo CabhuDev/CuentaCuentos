@@ -17,8 +17,11 @@ class GeminiService:
         """Verifica si Gemini está configurado correctamente"""
         return self._configured
 
-    async def generate_story(self, prompt: str) -> Optional[str]:
-        """Genera un cuento usando Gemini 2.5 Flash"""
+    async def generate_story(self, prompt: str) -> Optional[Dict[str, Any]]:
+        """
+        Genera un cuento usando Gemini 2.5 Flash, esperando un JSON con título y contenido.
+        Retorna {'title': '...', 'content': '...'} o None si falla.
+        """
         if not self._configured:
             raise ValueError("Gemini API no está configurada. Verifica GEMINI_API_KEY.")
         
@@ -27,7 +30,30 @@ class GeminiService:
                 model='gemini-2.5-flash',
                 contents=prompt
             )
-            return response.text
+            
+            response_text = response.text.strip()
+            print(f"[gemini_service] 📝 Respuesta cruda de Gemini (story): {response_text[:200]}...")
+            
+            # Remover bloques de markdown si existen
+            import re
+            import json
+            json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', response_text, re.DOTALL)
+            if json_match:
+                response_text = json_match.group(1)
+            
+            story_data = json.loads(response_text)
+            
+            if "title" not in story_data or "content" not in story_data:
+                print(f"Error: La respuesta JSON no contiene las claves 'title' o 'content'.")
+                return None
+            
+            print(f"[gemini_service] ✅ JSON de cuento parseado correctamente")
+            return {"title": story_data["title"], "content": story_data["content"]}
+            
+        except json.JSONDecodeError as e:
+            print(f"Error parseando JSON de cuento: {e}")
+            print(f"Respuesta recibida: {response_text[:500]}")
+            return None
         except Exception as e:
             print(f"Error generando cuento: {e}")
             return None
@@ -195,12 +221,17 @@ class GeminiService:
             # Nuevo SDK usa el método embed_content desde el cliente
             # IMPORTANTE: El parámetro es 'contents' (plural), no 'content'
             result = self.client.models.embed_content(
-                model="models/text-embedding-004",
+                model="models/gemini-embedding-001",
                 contents=text
             )
-            return result.embeddings[0].values
+            # Log más conciso para el embedding
+            embedding_values = result.embeddings[0].values
+            print(f"[gemini_service] 📊 Embedding generado (primeros 5 valores: {embedding_values[:5]})")
+            return embedding_values
         except Exception as e:
+            import traceback
             print(f"Error generando embedding: {e}")
+            print(f"Traceback detallado:\n{traceback.format_exc()}")
             return None
 
 

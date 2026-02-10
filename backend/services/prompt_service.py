@@ -386,6 +386,19 @@ class PromptService:
         ])
 
         final_prompt = "\n".join(prompt_parts)
+        
+        # Añadir instrucción final para el formato de salida JSON
+        final_prompt += """
+
+⭐ FORMATO DE SALIDA REQUERIDO:
+Entrega tu respuesta EXCLUSIVAMENTE en formato JSON, con dos claves:
+{
+  "title": "El título del cuento",
+  "content": "El contenido completo del cuento aquí, estructurado con párrafos y saltos de línea."
+}
+Asegúrate de que el contenido del cuento sea una cadena de texto larga y coherente.
+NO incluyas ningún texto o comentario fuera del objeto JSON.
+"""
         print(f"[prompt_service] ✅ Prompt construido ({len(final_prompt)} caracteres)")
         
         return final_prompt

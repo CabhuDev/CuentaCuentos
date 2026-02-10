@@ -17,21 +17,20 @@
     ],
     "enforced_constraints": "Sin villanos, sin maldad, solo conflictos accidentales o malentendidos",
     "current_improvement_areas": [
-      "Profundizar el arco emocional de los protagonistas con momentos de frustración o intentos previos a la solución.",
-      "Garantizar la integración orgánica y preexistente de elementos clave para la resolución de problemas.",
-      "Experimentar con la forma de presentar la lección final, tendiendo a la inferencia sobre la pregunta directa."
+      "Dinamización y simplificación de secuencias de acción o resolución de problemas que implican múltiples pasos, especialmente para los niños más pequeños (2-3 años).",
+      "Asegurar la universalidad o la explícita explicación de referencias culturales o populares para evitar confusión."
     ]
   },
   "active_learning_focus": [
+    "En los próximos cuentos, concéntrate en desarrollar narrativas donde los personajes empleen sus características únicas (incluso si son inusuales) de manera ingeniosa para superar obstáculos, manteniendo siempre una narrativa clara, rica en detalles sensoriales y con un ritmo optimizado para la atención de los más pequeños.",
     "Para los próximos 5 cuentos, el enfoque principal debe ser la mejora de la profundidad emocional de los personajes y la organicidad de la trama, asegurando que cada elemento contribuya de forma natural al desarrollo del cuento y a la lección implícita, mientras se continúa deleitando a los niños con el rico lenguaje sensorial y los valores positivos.",
-    "Potenciar historias que celebren el descubrimiento y el aprendizaje a través de la observación sensorial y la interacción activa de personajes infantiles con su entorno natural, siempre apoyados por mensajes emocionales positivos y un ritmo que invite a la reflexión.",
-    "Para los próximos 5 cuentos, el enfoque principal será perfeccionar la integración orgánica de todos los componentes narrativos y la moral de la historia, transformándolos en descubrimientos intrínsecos del lector, al tiempo que se enriquece sutilmente la experiencia sensorial para potenciar la conexión con el cuento."
+    "Potenciar historias que celebren el descubrimiento y el aprendizaje a través de la observación sensorial y la interacción activa de personajes infantiles con su entorno natural, siempre apoyados por mensajes emocionales positivos y un ritmo que invite a la reflexión."
   ],
   "evolution_metrics": {
     "effectiveness_scale": "0.0 a 1.0",
-    "last_synthesis": "2026-02-08",
-    "lessons_active": 19,
+    "last_synthesis": "2026-02-10",
+    "lessons_active": 23,
     "avg_effectiveness": 0.875,
-    "total_lessons_learned": 19
+    "total_lessons_learned": 23
   }
 }

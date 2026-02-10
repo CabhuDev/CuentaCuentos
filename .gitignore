@@ -31,6 +31,8 @@ backend/*.env
 backend/*.db
 backend/*.sqlite
 backend/*.sqlite3
+merge_db.py
+sync_db_vps.ps1
 
 # Archivos de audio generados
 backend/data/audio/*.mp3

@@ -205,26 +205,24 @@ async def generate_story(
         
         # 3. Generar cuento con Gemini
         print(f"[generateStory] 🤖 Enviando request a Gemini...")
-        story_content = await gemini_service.generate_story(prompt)
+        gemini_response = await gemini_service.generate_story(prompt)
         
-        if not story_content:
-            print(f"[generateStory] ❌ Gemini no retornó contenido")
+        if not gemini_response:
+            print(f"[generateStory] ❌ Gemini no retornó contenido o título válido")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Error generando el cuento con Gemini"
+                detail="Error generando el cuento con Gemini: No se pudo obtener título o contenido."
             )
         
-        print(f"[generateStory] ✅ Cuento generado ({len(story_content)} caracteres)")
+        title = gemini_response.get("title", f"Cuento sobre {story_inputs.theme}")
+        story_content = gemini_response.get("content")
         
-        # 4. Generar título automáticamente (primera línea limpia)
-        title_lines = story_content.strip().split('\n')
-        title = title_lines[0] if title_lines else f"Cuento sobre {story_inputs.theme}"
-        
-        # Limpiar título de markdown o caracteres especiales
+        # Limpiar título de markdown o caracteres especiales (puede que Gemini aún los ponga)
         title = title.replace('#', '').replace('*', '').strip()
         if len(title) > 100:
             title = title[:97] + "..."
         
+        print(f"[generateStory] ✅ Cuento generado ({len(story_content)} caracteres)")
         print(f"[generateStory] 📌 Título: {title}")
         
         # 5. Generar embedding

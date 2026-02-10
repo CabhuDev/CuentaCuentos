@@ -232,6 +232,75 @@
       "total_apariciones": 1,
       "coherencia_score": 1.0
     }
+  },
+
+  {
+    "id": "lira_001",
+    "nombre": "La jirafaLira",
+    "estado": "activo",
+    "rasgos_distintivos": {
+      "pelaje": "Amarillo tostado suave (#FFE082) con manchas irregulares de color marrón cálido (#8D6E63)",
+      "ojos": "Grandes, redondos y oscuros, con pestañas largas que denotan dulzura",
+      "cuello": "Largo y flexible, capaz de hacer formas de 'S' suaves",
+      "compañero_constante": "Pío, un búho pequeño de color gris azulado (#B0BEC5) que se posa en su cabeza",
+      "postura": "A menudo vista estirándose o trepada en lianas de forma inusual para una jirafa",
+      "edad_aparente": "Cachorro (equivalente a niño pequeño)"
+    },
+    "armario_coherente": {
+      "nota": "Personaje animal, su paleta viene de su pelaje y la naturaleza",
+      "principal": "Amarillo pálido y marrón tierra",
+      "acento": "Verde esmeralda (hojas y lianas)",
+      "detalle_externo": "El azul grisáceo de Pío añade contraste frío a su paleta cálida",
+      "paleta_colores": ["#FFE082", "#8D6E63", "#66BB6A", "#B0BEC5"]
+    },
+    "accesorios_frecuentes": [
+      {
+        "item": "Hoja de Acacia",
+        "hex": "#00E676",
+        "vibe": "Brillante como esmeralda",
+        "frecuencia": "objetivo_principal"
+      },
+      {
+        "item": "Lianas",
+        "hex": "#43A047",
+        "vibe": "Herramienta de escalada",
+        "funcion": "Puente o escalera",
+        "frecuencia": "situacional"
+      },
+      {
+        "item": "Pío (Búho)",
+        "hex": "#B0BEC5",
+        "vibe": "Guía y amigo",
+        "frecuencia": "siempre_presente"
+      }
+    ],
+    "personalidad_narrativa": {
+      "arquetipos": ["Inventora Altura", "Soñadora Persistente", "Escaladora Atípica"],
+      "miedos_naturales": ["No alcanzar sus sueños", "Que las ramas se rompan"],
+      "motivaciones": ["La hoja más alta", "Superar su estatura con ingenio", "La brisa en las alturas"],
+      "lenguaje_caracteristico": "Resoplidos suaves, movimiento de cuello, miradas cómplices con Pío"
+    },
+    "reglas_ilustracion": {
+      "estilo": "Minimalista infantil, estilo editorial de alta calidad",
+      "tecnica": "Acuarela digital, trazos orgánicos para las lianas",
+      "paleta_maestra": ["#FFE082", "#8D6E63", "#81C784", "#CFD8DC"],
+      "prompt_base_ia": "Cute baby giraffe named Lira, spotted yellow fur, climbing green vines like a ladder, small blue-grey owl perched on her head, reaching for a glowing emerald leaf, high-quality minimalist children's book illustration, soft watercolor texture, white background, whimsical and clever"
+    },
+    "historico_apariciones": [
+      {
+        "story_id": "seed_005",
+        "titulo": "Lira y la Hoja Esmeralda",
+        "fecha": "2026-02-10",
+        "rol": "Protagonista"
+      }
+    ],
+    "metadata": {
+      "creado_en": "2026-02-10",
+      "ultima_aparicion": "2026-02-10",
+      "total_apariciones": 1,
+      "coherencia_score": 1.0
+    }
   }
+
 
 ]
