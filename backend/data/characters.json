@@ -111,7 +111,7 @@
 
   {
     "id": "elio_001",
-    "nombre": "El elefanteElio",
+    "nombre": "El elefante Elio",
     "estado": "activo",
     "rasgos_distintivos": {
       "piel": "Tono gris azulado suave (#CFD8DC) con textura de acuarela",
@@ -236,7 +236,7 @@
 
   {
     "id": "lira_001",
-    "nombre": "La jirafaLira",
+    "nombre": "La jirafa Lira",
     "estado": "activo",
     "rasgos_distintivos": {
       "pelaje": "Amarillo tostado suave (#FFE082) con manchas irregulares de color marrón cálido (#8D6E63)",
