@@ -19,7 +19,7 @@ class GeminiService:
 
     async def generate_story(self, prompt: str) -> Optional[Dict[str, Any]]:
         """
-        Genera un cuento usando Gemini 2.5 Flash, esperando un JSON con título y contenido.
+        Genera un cuento usando Gemini 2.5 Pro, esperando un JSON con título y contenido.
         Retorna {'title': '...', 'content': '...'} o None si falla.
         """
         if not self._configured:
@@ -27,7 +27,7 @@ class GeminiService:
         
         try:
             response = self.client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-2.5-pro',
                 contents=prompt
             )
             
@@ -59,7 +59,7 @@ class GeminiService:
             return None
 
     async def generate_critique(self, story_content: str) -> Optional[Dict[str, Any]]:
-        """Genera una crítica del cuento usando Gemini 2.5 Flash"""
+        """Genera una crítica del cuento usando Gemini 2.5 Pro"""
         if not self._configured:
             raise ValueError("Gemini API no está configurada. Verifica GEMINI_API_KEY.")
         
@@ -89,7 +89,7 @@ class GeminiService:
         
         try:
             response = self.client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-2.5-pro',
                 contents=critique_prompt
             )
             
@@ -185,7 +185,7 @@ class GeminiService:
         
         try:
             response = self.client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-2.5-pro',
                 contents=template_prompt
             )
             
@@ -304,7 +304,7 @@ IMPORTANTE:
         
         try:
             response = self.client.models.generate_content(
-                model='gemini-2.5-flash',
+                model='gemini-2.5-pro',
                 contents=synthesis_prompt
             )
             
