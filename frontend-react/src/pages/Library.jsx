@@ -16,8 +16,11 @@ export default function Library() {
     console.log('[Library] 📚 Cargando biblioteca de cuentos...');
     getStories(50)
       .then((data) => {
-        setStories(data);
-        console.log('[Library] ✅ Biblioteca cargada:', data.length, 'cuentos');
+        const sorted = [...data].sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        )
+        setStories(sorted);
+        console.log('[Library] ✅ Biblioteca cargada:', sorted.length, 'cuentos');
       })
       .catch((err) => {
         console.error('[Library] ❌ Error:', err);
@@ -53,6 +56,13 @@ export default function Library() {
   }
 
   const lastStory = stories[0]
+  const generatedCount = stories.filter((s) => !s.is_seed).length
+  const lastDate = lastStory
+    ? new Date(lastStory.created_at).toLocaleDateString('es-ES', {
+        day: 'numeric',
+        month: 'short',
+      })
+    : null
 
   return (
     <>
@@ -66,11 +76,16 @@ export default function Library() {
             <div className="library-summary-title">Tu colección</div>
             <div className="library-summary-details">
               <span className="library-detail">
-                <strong>{stories.length}</strong> {stories.length === 1 ? 'cuento creado' : 'cuentos creados'}
+                <strong>{stories.length}</strong> {stories.length === 1 ? 'cuento' : 'cuentos'}
               </span>
+              {generatedCount > 0 && (
+                <span className="library-detail">
+                  <strong>{generatedCount}</strong> {generatedCount === 1 ? 'creado por ti' : 'creados por ti'}
+                </span>
+              )}
               {lastStory && (
                 <span className="library-detail">
-                  Último: <strong>{lastStory.title}</strong>
+                  Último: <strong>{lastStory.title}</strong>{lastDate && ` · ${lastDate}`}
                 </span>
               )}
             </div>
