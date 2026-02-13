@@ -523,6 +523,52 @@ button:disabled {
   margin: 0.9375rem 0;
 }
 
+/* === Library Summary === */
+.library-summary {
+  background: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.library-summary-main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.library-summary-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.library-summary-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.library-summary-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+}
+
+.library-detail {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.library-detail strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
 /* === Lista de Cuentos === */
 .stories-list {
   display: grid;
@@ -901,9 +947,106 @@ button:disabled {
   margin-top: 0.3125rem;
 }
 
-/* === RAG Stats Section === */
-.rag-stats-section {
-  margin: var(--space-xl) 0;
+/* === Learning Summary (compact) === */
+.learning-summary {
+  background: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.learning-summary-main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.learning-summary-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.learning-summary-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  padding-left: 1.75rem;
+}
+
+.learning-detail {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.learning-detail strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* === RAG Summary (compact) === */
+.rag-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  background: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.rag-summary-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.rag-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rag-dot--ok {
+  background: var(--color-success);
+  box-shadow: 0 0 0.375rem var(--color-success);
+}
+
+.rag-dot--off {
+  background: var(--color-danger);
+  box-shadow: 0 0 0.375rem var(--color-danger);
+}
+
+.rag-summary-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.rag-summary-details {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.rag-detail {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.rag-detail strong {
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 /* === Action Buttons === */
