@@ -102,8 +102,8 @@ export default function Learning() {
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
-      .then(() => alert('✅ Copiado al portapapeles'))
-      .catch(() => alert('❌ Error al copiar'))
+      .then(() => alert('Copiado al portapapeles'))
+      .catch(() => alert('Error al copiar'))
   }
 
   const downloadJSON = (data, filename) => {
@@ -133,8 +133,8 @@ export default function Learning() {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', color: '#333', marginBottom: 20 }}>
-        🧠 Sistema de Aprendizaje
+      <h2 className="page-title">
+        Sistema de Aprendizaje
       </h2>
 
       {error && <div className="error">{error}</div>}
@@ -165,29 +165,29 @@ export default function Learning() {
 
       {/* Estadísticas RAG */}
       {ragStats && (
-        <div style={{ margin: '30px 0' }}>
-          <h2 style={{ textAlign: 'center', color: '#333', marginBottom: 20 }}>
-            🔍 Estadísticas del Sistema RAG
+        <div className="rag-stats-section">
+          <h2 className="page-title">
+            Estadísticas del Sistema RAG
           </h2>
           <div className="stats-grid">
-            <div className="stat-card" style={{ background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' }}>
+            <div className="stat-card stat-card--tertiary">
               <div className="stat-label">Cuentos Totales</div>
               <div className="stat-value">{ragStats.total_stories ?? 0}</div>
             </div>
-            <div className="stat-card" style={{ background: 'linear-gradient(135deg, #3f51b5 0%, #5a55ae 100%)' }}>
+            <div className="stat-card stat-card--secondary">
               <div className="stat-label">Con Embeddings</div>
               <div className="stat-value">{ragStats.stories_with_embeddings ?? 0}</div>
             </div>
-            <div className="stat-card" style={{ background: `linear-gradient(135deg, ${ragStats.coverage_percentage === 100 ? '#28a745' : '#ffc107'} 0%, ${ragStats.coverage_percentage === 100 ? '#20c997' : '#ff9800'} 100%)` }}>
+            <div className={`stat-card ${ragStats.coverage_percentage === 100 ? 'stat-card--success' : 'stat-card--warning'}`}>
               <div className="stat-label">Cobertura</div>
               <div className="stat-value">{ragStats.coverage_percentage?.toFixed(1) ?? 0}%</div>
             </div>
-            <div className="stat-card" style={{ background: `linear-gradient(135deg, ${ragStats.ready_for_rag ? '#28a745' : '#dc3545'} 0%, ${ragStats.ready_for_rag ? '#20c997' : '#c82333'} 100%)` }}>
+            <div className={`stat-card ${ragStats.ready_for_rag ? 'stat-card--success' : 'stat-card--danger'}`}>
               <div className="stat-label">Estado RAG</div>
-              <div className="stat-value" style={{ fontSize: '2em' }}>
-                {ragStats.ready_for_rag ? '✅' : '❌'}
+              <div className="stat-value stat-value--emoji">
+                {ragStats.ready_for_rag ? '\u2705' : '\u274C'}
               </div>
-              <div style={{ fontSize: '0.8em', marginTop: 5 }}>
+              <div className="stat-sub-label">
                 {ragStats.ready_for_rag ? 'Listo' : 'No listo'}
               </div>
             </div>
@@ -202,16 +202,16 @@ export default function Learning() {
           onClick={handleSynthesize}
           disabled={synthesizing}
         >
-          {synthesizing ? '⏳ Sintetizando...' : '🧠 Sintetizar Lecciones'}
+          {synthesizing ? 'Sintetizando...' : 'Sintetizar Lecciones'}
         </button>
         <button className="btn-action btn-refresh" onClick={loadData}>
-          🔄 Actualizar
+          Actualizar
         </button>
       </div>
 
       {synthesisResult && (
         <div className="success-message">
-          ✅ Síntesis completada: {synthesisResult.lessons_extracted} lecciones
+          Síntesis completada: {synthesisResult.lessons_extracted} lecciones
           extraídas de {synthesisResult.critiques_analyzed} críticas.
         </div>
       )}
@@ -307,39 +307,29 @@ export default function Learning() {
       )}
 
       {/* Datos del Sistema */}
-      <div style={{ marginTop: 50, paddingTop: 30, borderTop: '2px solid #e0e0e0' }}>
-        <h2>📊 Datos del Sistema</h2>
-        
+      <div className="system-data-section">
+        <h2>Datos del Sistema</h2>
+
         {/* Resumen de Evolución */}
         {stats && (
-          <div style={{ 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-            color: 'white', 
-            padding: 20, 
-            borderRadius: 12, 
-            marginBottom: 20 
-          }}>
-            <h3 style={{ margin: '0 0 15px 0' }}>🚀 Resumen de Evolución</h3>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-              gap: 15 
-            }}>
+          <div className="evolution-card">
+            <h3>Resumen de Evolución</h3>
+            <div className="evolution-grid">
               <div>
-                <div style={{ fontSize: '0.9em', opacity: 0.9 }}>Última Síntesis</div>
-                <div style={{ fontSize: '1.3em', fontWeight: 'bold' }}>
+                <div className="evolution-label">Última Síntesis</div>
+                <div className="evolution-value">
                   {stats.last_synthesis || 'Nunca'}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.9em', opacity: 0.9 }}>Focos Actuales</div>
-                <div style={{ fontSize: '1.1em', fontWeight: 'bold' }}>
+                <div className="evolution-label">Focos Actuales</div>
+                <div className="evolution-value evolution-value--sm">
                   {stats.current_focus_areas?.slice(0, 2).join(', ') || 'Ninguno'}
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '0.9em', opacity: 0.9 }}>Score Promedio</div>
-                <div style={{ fontSize: '1.3em', fontWeight: 'bold' }}>
+                <div className="evolution-label">Score Promedio</div>
+                <div className="evolution-value">
                   {stats.database_stats?.avg_score_last_10 ? `${stats.database_stats.avg_score_last_10}/10` : 'N/A'}
                 </div>
               </div>
@@ -348,64 +338,41 @@ export default function Learning() {
         )}
 
         {/* Botones para mostrar/ocultar */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
-          <button 
-            className="btn-action" 
-            style={{ background: '#17a2b8', color: 'white' }} 
+        <div className="system-buttons">
+          <button
+            className="btn-action btn-info"
             onClick={toggleHistory}
           >
-            📜 {showHistory ? 'Ocultar' : 'Ver'} Learning History
+            {showHistory ? 'Ocultar' : 'Ver'} Learning History
           </button>
-          <button 
-            className="btn-action" 
-            style={{ background: '#6f42c1', color: 'white' }} 
+          <button
+            className="btn-action btn-accent"
             onClick={toggleProfile}
           >
-            🎨 {showProfile ? 'Ocultar' : 'Ver'} Style Profile
+            {showProfile ? 'Ocultar' : 'Ver'} Style Profile
           </button>
         </div>
 
         {/* Learning History */}
         {showHistory && historyData && (
-          <div style={{ marginBottom: 20 }}>
-            <h3>📜 Learning History (learning_history.json)</h3>
-            <div style={{ background: '#f8f9fa', padding: 20, borderRadius: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginBottom: 10 }}>
-                <button 
+          <div className="data-panel">
+            <h3>Learning History (learning_history.json)</h3>
+            <div className="data-panel-content">
+              <div className="data-panel-actions">
+                <button
+                  className="btn-copy"
                   onClick={() => copyToClipboard(JSON.stringify(historyData, null, 2))}
-                  style={{ 
-                    padding: '5px 15px', 
-                    border: 'none', 
-                    background: '#28a745', 
-                    color: 'white', 
-                    borderRadius: 5, 
-                    cursor: 'pointer' 
-                  }}
                 >
-                  📋 Copiar
+                  Copiar
                 </button>
-                <button 
+                <button
+                  className="btn-download"
                   onClick={() => downloadJSON(JSON.stringify(historyData, null, 2), 'learning_history.json')}
-                  style={{ 
-                    padding: '5px 15px', 
-                    border: 'none', 
-                    background: '#007bff', 
-                    color: 'white', 
-                    borderRadius: 5, 
-                    cursor: 'pointer' 
-                  }}
                 >
-                  💾 Descargar
+                  Descargar
                 </button>
               </div>
-              <pre style={{ 
-                background: 'white', 
-                padding: 15, 
-                borderRadius: 5, 
-                overflowX: 'auto', 
-                maxHeight: 400, 
-                border: '1px solid #ddd' 
-              }}>
+              <pre className="data-panel-pre">
                 {JSON.stringify(historyData, null, 2)}
               </pre>
             </div>
@@ -414,45 +381,24 @@ export default function Learning() {
 
         {/* Style Profile */}
         {showProfile && profileData && (
-          <div style={{ marginBottom: 20 }}>
-            <h3>🎨 Style Profile (style_profile.json)</h3>
-            <div style={{ background: '#f8f9fa', padding: 20, borderRadius: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginBottom: 10 }}>
-                <button 
+          <div className="data-panel">
+            <h3>Style Profile (style_profile.json)</h3>
+            <div className="data-panel-content">
+              <div className="data-panel-actions">
+                <button
+                  className="btn-copy"
                   onClick={() => copyToClipboard(JSON.stringify(profileData, null, 2))}
-                  style={{ 
-                    padding: '5px 15px', 
-                    border: 'none', 
-                    background: '#28a745', 
-                    color: 'white', 
-                    borderRadius: 5, 
-                    cursor: 'pointer' 
-                  }}
                 >
-                  📋 Copiar
+                  Copiar
                 </button>
-                <button 
+                <button
+                  className="btn-download"
                   onClick={() => downloadJSON(JSON.stringify(profileData, null, 2), 'style_profile.json')}
-                  style={{ 
-                    padding: '5px 15px', 
-                    border: 'none', 
-                    background: '#007bff', 
-                    color: 'white', 
-                    borderRadius: 5, 
-                    cursor: 'pointer' 
-                  }}
                 >
-                  💾 Descargar
+                  Descargar
                 </button>
               </div>
-              <pre style={{ 
-                background: 'white', 
-                padding: 15, 
-                borderRadius: 5, 
-                overflowX: 'auto', 
-                maxHeight: 400, 
-                border: '1px solid #ddd' 
-              }}>
+              <pre className="data-panel-pre">
                 {JSON.stringify(profileData, null, 2)}
               </pre>
             </div>

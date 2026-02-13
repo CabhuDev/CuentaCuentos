@@ -54,8 +54,8 @@ export default function Library() {
 
   return (
     <>
-      <h2 style={{ textAlign: 'center', color: '#333', marginBottom: 20 }}>
-        📚 Biblioteca de Cuentos ({stories.length})
+      <h2 className="page-title">
+        Biblioteca de Cuentos ({stories.length})
       </h2>
       <div className="stories-list">
         {paginatedStories.map((story) => (

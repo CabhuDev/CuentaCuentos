@@ -7,9 +7,9 @@ export default function ProtectedRoute() {
   if (loading) {
     return (
       <div className="app-background">
-        <div className="container" style={{ textAlign: 'center', padding: '60px 20px' }}>
+        <div className="loading-screen">
           <div className="spinner" />
-          <p style={{ color: '#666', marginTop: 15 }}>Verificando sesión...</p>
+          <p>Verificando sesión...</p>
         </div>
       </div>
     )

@@ -88,7 +88,7 @@ export default function Generator() {
           <label>Personajes (opcional – selecciona uno o varios)</label>
           <div className="checkbox-group">
             {characters.length === 0 ? (
-              <p style={{ color: '#666', margin: 0 }}>
+              <p className="text-muted">
                 No hay personajes disponibles
               </p>
             ) : (
@@ -121,7 +121,7 @@ export default function Generator() {
         </div>
 
         <div className="form-row">
-          <div className="form-group" style={{ flex: 1 }}>
+          <div className="form-group form-group--flex">
             <label htmlFor="target_age">Edad objetivo</label>
             <input
               type="number"
@@ -133,7 +133,7 @@ export default function Generator() {
               placeholder="6"
             />
           </div>
-          <div className="form-group" style={{ flex: 1 }}>
+          <div className="form-group form-group--flex">
             <label htmlFor="length">Longitud</label>
             <select
               id="length"
@@ -179,8 +179,7 @@ export default function Generator() {
             <div className="story-text">{result.content}</div>
             <Link
               to={`/cuentos/${result.id}`}
-              className="btn-primary"
-              style={{ marginTop: 15, display: 'inline-block' }}
+              className="btn-primary btn-primary--spaced"
             >
               Ver en la biblioteca →
             </Link>
