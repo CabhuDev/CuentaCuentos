@@ -52,17 +52,38 @@ export default function Library() {
     )
   }
 
+  const lastStory = stories[0]
+
   return (
     <>
-      <h2 className="page-title">
-        Biblioteca de Cuentos ({stories.length})
-      </h2>
+      <div className="library-summary">
+        <div className="library-summary-main">
+          <svg className="library-summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
+          <div>
+            <div className="library-summary-title">Tu colección</div>
+            <div className="library-summary-details">
+              <span className="library-detail">
+                <strong>{stories.length}</strong> {stories.length === 1 ? 'cuento creado' : 'cuentos creados'}
+              </span>
+              {lastStory && (
+                <span className="library-detail">
+                  Último: <strong>{lastStory.title}</strong>
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="stories-list">
         {paginatedStories.map((story) => (
           <StoryCard key={story.id} story={story} />
         ))}
       </div>
-      
+
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

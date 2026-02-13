@@ -139,58 +139,48 @@ export default function Learning() {
 
       {error && <div className="error">{error}</div>}
 
-      {/* Estadísticas */}
+      {/* Resumen de aprendizaje */}
       {stats && (
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-label">Score Promedio</div>
-            <div className="stat-value">
-              {stats.average_score?.toFixed(1) || '—'}
-            </div>
+        <div className="learning-summary">
+          <div className="learning-summary-main">
+            <svg className="learning-summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </svg>
+            <span>El sistema ha aprendido de <strong>{stats.database_stats?.total_stories ?? 0} cuentos</strong></span>
           </div>
-          <div className="stat-card">
-            <div className="stat-label">Total Lecciones</div>
-            <div className="stat-value">{stats.total_lessons ?? 0}</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label">Cuentos Generados</div>
-            <div className="stat-value">{stats.total_stories ?? 0}</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-label">Críticas</div>
-            <div className="stat-value">{stats.total_critiques ?? 0}</div>
+          <div className="learning-summary-details">
+            <span className="learning-detail">
+              <strong>{stats.active_lessons ?? 0}</strong> lecciones activas
+            </span>
+            <span className="learning-detail">
+              <strong>{stats.database_stats?.total_critiques ?? 0}</strong> revisiones
+            </span>
+            {stats.database_stats?.avg_score_last_10 > 0 && (
+              <span className="learning-detail">
+                Calidad: <strong>{stats.database_stats.avg_score_last_10}/10</strong>
+              </span>
+            )}
           </div>
         </div>
       )}
 
-      {/* Estadísticas RAG */}
+      {/* Resumen RAG */}
       {ragStats && (
-        <div className="rag-stats-section">
-          <h2 className="page-title">
-            Estadísticas del Sistema RAG
-          </h2>
-          <div className="stats-grid">
-            <div className="stat-card stat-card--tertiary">
-              <div className="stat-label">Cuentos Totales</div>
-              <div className="stat-value">{ragStats.total_stories ?? 0}</div>
-            </div>
-            <div className="stat-card stat-card--secondary">
-              <div className="stat-label">Con Embeddings</div>
-              <div className="stat-value">{ragStats.stories_with_embeddings ?? 0}</div>
-            </div>
-            <div className={`stat-card ${ragStats.coverage_percentage === 100 ? 'stat-card--success' : 'stat-card--warning'}`}>
-              <div className="stat-label">Cobertura</div>
-              <div className="stat-value">{ragStats.coverage_percentage?.toFixed(1) ?? 0}%</div>
-            </div>
-            <div className={`stat-card ${ragStats.ready_for_rag ? 'stat-card--success' : 'stat-card--danger'}`}>
-              <div className="stat-label">Estado RAG</div>
-              <div className="stat-value stat-value--emoji">
-                {ragStats.ready_for_rag ? '\u2705' : '\u274C'}
-              </div>
-              <div className="stat-sub-label">
-                {ragStats.ready_for_rag ? 'Listo' : 'No listo'}
-              </div>
-            </div>
+        <div className="rag-summary">
+          <div className="rag-summary-status">
+            <span className={`rag-dot ${ragStats.ready_for_rag ? 'rag-dot--ok' : 'rag-dot--off'}`} />
+            <span className="rag-summary-label">
+              Memoria activa {ragStats.ready_for_rag ? '' : '(no lista)'}
+            </span>
+          </div>
+          <div className="rag-summary-details">
+            <span className="rag-detail">
+              <strong>{ragStats.stories_with_embeddings ?? 0}</strong>/{ragStats.total_stories ?? 0} cuentos indexados
+            </span>
+            <span className="rag-detail">
+              <strong>{ragStats.coverage_percentage?.toFixed(0) ?? 0}%</strong> cobertura
+            </span>
           </div>
         </div>
       )}
