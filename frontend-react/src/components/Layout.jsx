@@ -14,12 +14,10 @@ export default function Layout() {
           </svg>
           CuentaCuentos
         </div>
-        <div className="user-info">
-          <NavLink to="/perfil" className="username">
-            {user?.username}
-          </NavLink>
-          <button onClick={logout} className="btn-logout">Salir</button>
-        </div>
+        <NavLink to="/perfil" className="username">
+          Bienvenido, {user?.username}
+        </NavLink>
+        <button onClick={logout} className="btn-logout">Salir</button>
       </header>
 
       <main className="content-area">
