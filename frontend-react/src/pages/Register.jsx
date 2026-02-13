@@ -59,7 +59,7 @@ export default function Register() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email <span style={{ color: '#999', fontWeight: 'normal' }}>(opcional, para recuperar contraseña)</span></label>
+            <label htmlFor="email">Email <span className="label-hint">(opcional, para recuperar contraseña)</span></label>
             <input
               type="email"
               id="email"

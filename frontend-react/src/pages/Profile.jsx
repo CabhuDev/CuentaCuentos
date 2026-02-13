@@ -45,8 +45,8 @@ export default function Profile() {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', color: '#333', marginBottom: 30 }}>
-        👤 Mi Perfil
+      <h2 className="page-title page-title--spaced">
+        Mi Perfil
       </h2>
 
       {/* Info del usuario */}
